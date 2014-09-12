@@ -3,15 +3,15 @@ require 'rspec'
 module RequestExpectations
 	include RSpec
 
-	def expectJSONTypes(expectations)
-		expectJSONTypesImpl(expectations, body)
+	def expect_json_types(expectations)
+		expect_json_types_impl(expectations, body)
 	end
 
-	def expectJSON(expectations)
-		expectJSONImpl(expectations, body)
+	def expect_json(expectations)
+		expect_json_impl(expectations, body)
 	end
 
-	def expectStatus(code)
+	def expect_status(code)
 		expect(response.code).to eq(code)
 	end
 
@@ -36,23 +36,23 @@ module RequestExpectations
 			mapper
 		end
 
-		def expectJSONTypesImpl(expectations, hash)
+		def expect_json_types_impl(expectations, hash)
 			@mapper ||= get_mapper
 			expectations.each do |prop_name, value|
 				val = hash[prop_name]
 				if val.class == Hash
-					expectJSONTypesImpl(value, val)
+					expect_json_types_impl(value, val)
 				else
 					expect(@mapper[value].include?(val.class)).to eq(true), "Expected #{prop_name} to be of type #{value}, got #{val.class} instead"
 				end
 			end			
 		end
 
-		def expectJSONImpl(expectations, hash)
+		def expect_json_impl(expectations, hash)
 			expectations.each do |prop_name, value|
 				val = hash[prop_name]
 				if(val.class == Hash)
-					expectJSONImpl(value, val)
+					expect_json_impl(value, val)
 				else
 					expect(value).to eq(val)
 				end
