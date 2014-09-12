@@ -1,5 +1,6 @@
 require 'rest_client'
 require 'json'
+require 'request_expectations'
 
 module AirBorne
 	include RequestExpectations
