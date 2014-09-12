@@ -3,13 +3,21 @@ require 'json'
 require 'request_expectations'
 
 module AirBorne
-	include RequestExpectations
-	def initialize(base_url)
-		@base_url = base_url
+
+	class Configuration
+		attr_accessor :base_url
 	end
 
+	def self.configure
+		config = Configuration.new
+		yield config
+		@@base_url = config.base_url
+	end
+
+	include RequestExpectations
+
 	def get(url)
-		@response = RestClient.get(@base_url + url)
+		@response = RestClient.get(@@base_url + url)
 		@body = JSON.parse(@response.body)
 		symbolize_keys_deep!(@body)
 	end

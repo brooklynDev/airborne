@@ -5,6 +5,7 @@ Gem::Specification.new do |s|
   s.summary = "RSpec driven API testing framework"
   s.authors     = ["Alex Friedman", "Seth Pollack"]
   s.email       = 'a.friedman07@gmail.com, teampollack@gmail.com'
-  s.files       = ["lib/airborne.rb"]
+  s.require_paths = ['lib']
+  s.files = ["lib/airborne.rb", "lib/request_expectations.rb"]
   s.license     = 'MIT'
 end
