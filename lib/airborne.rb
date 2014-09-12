@@ -3,7 +3,6 @@ require 'json'
 require 'request_expectations'
 
 module AirBorne
-
 	class Configuration
 		attr_accessor :base_url
 	end
@@ -45,6 +44,10 @@ module AirBorne
 			symbolize_keys_deep! h[ks] if h[ks].kind_of? Hash
 		end
 	end	
+end
+
+RSpec.configure do |config|
+	config.include AirBorne
 end
 
 
