@@ -1,6 +1,8 @@
 require 'rest_client'
 require 'json'
 require 'request_expectations'
+require 'active_support'
+require 'active_support/core_ext'
 
 module AirBorne
 	class Configuration
@@ -18,12 +20,11 @@ module AirBorne
 	def get(url)
 		@response = RestClient.get(@@base_url + url)
 		@body = JSON.parse(@response.body)
-		symbolize_keys_deep!(@body)
+		@body.deep_symbolize_keys!
 	end
 
 	def post(url, body)
 	end
-
 	def response
 		@response
 	end
@@ -36,14 +37,7 @@ module AirBorne
 
 	def get_headers
 	end
-	
-	def symbolize_keys_deep!(h)
-		h.keys.each do |k|
-			ks = k.to_sym
-			h[ks] = h.delete k
-			symbolize_keys_deep! h[ks] if h[ks].kind_of? Hash
-		end
-	end	
+
 end
 
 RSpec.configure do |config|
