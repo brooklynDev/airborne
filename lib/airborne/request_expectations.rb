@@ -12,6 +12,10 @@ module Airborne
 			expect_json_impl(expectations, body)
 		end
 
+		def expect_json_keys(keys)
+			expect(body.keys).to match_array(keys)
+		end
+
 		def expect_status(code)
 			expect(response.code).to eq(code)
 		end
@@ -77,6 +81,6 @@ module Airborne
 				end
 			end
 		end
-		
+
 	end
 end
