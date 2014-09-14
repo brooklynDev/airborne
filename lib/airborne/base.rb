@@ -1,6 +1,5 @@
 require 'rest_client'
 require 'json'
-require 'request_expectations'
 require 'active_support'
 require 'active_support/core_ext'
 

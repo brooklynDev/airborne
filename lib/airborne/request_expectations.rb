@@ -1,40 +1,40 @@
 require 'rspec'
 
+module Airborne
+	module RequestExpectations
+		include RSpec
 
-module RequestExpectations
-	include RSpec
-
-	def expect_json_types(expectations)
-		expect_json_types_impl(expectations, body)
-	end
-
-	def expect_json(expectations)
-		expect_json_impl(expectations, body)
-	end
-
-	def expect_status(code)
-		expect(response.code).to eq(code)
-	end
-
-	def expect_header(key, content)
-		header = headers[key]
-		if header
-		expect(header.downcase).to eq(content.downcase)
-		else 
-			raise "Header #{key} not present in HTTP response"
+		def expect_json_types(expectations)
+			expect_json_types_impl(expectations, body)
 		end
-	end
 
-	def expect_header_contains(key, content)
-		header = headers[key]
-		if header
-		expect(header.downcase).to include(content.downcase)
-		else 
-			raise "Header #{key} not present in HTTP response"
+		def expect_json(expectations)
+			expect_json_impl(expectations, body)
 		end
-	end
-	
-	private
+
+		def expect_status(code)
+			expect(response.code).to eq(code)
+		end
+
+		def expect_header(key, content)
+			header = headers[key]
+			if header
+				expect(header.downcase).to eq(content.downcase)
+			else
+				raise "Header #{key} not present in HTTP response"
+			end
+		end
+
+		def expect_header_contains(key, content)
+			header = headers[key]
+			if header
+				expect(header.downcase).to include(content.downcase)
+			else
+				raise "Header #{key} not present in HTTP response"
+			end
+		end
+
+		private
 
 		def get_mapper
 			base_mapper = {
@@ -57,14 +57,14 @@ module RequestExpectations
 
 		def expect_json_types_impl(expectations, hash)
 			@mapper ||= get_mapper
-			expectations.each do |prop_name, value|
-				val = hash[prop_name]
-				if val.class == Hash
-					expect_json_types_impl(value, val)
+			expectations.each do |prop_name, expected_type|
+				value = hash[prop_name]
+				if expected_type.class == Hash
+					expect_json_types_impl(expected_type, value)
 				else
-					expect(@mapper[value].include?(val.class)).to eq(true), "Expected #{prop_name} to be of type #{value}, got #{val.class} instead"
+					expect(@mapper[expected_type].include?(value.class)).to eq(true), "Expected #{prop_name} to be of type #{expected_type}, got #{value.class} instead"
 				end
-			end			
+			end
 		end
 
 		def expect_json_impl(expectations, hash)
@@ -77,4 +77,5 @@ module RequestExpectations
 				end
 			end
 		end
+	end
 end

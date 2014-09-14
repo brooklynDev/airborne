@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'rest_client'
 
 describe 'expect_json_types' do
 	it 'should detect current type' do
@@ -7,28 +6,16 @@ describe 'expect_json_types' do
 		get '/simple_get'
 		expect_json_types({name: :string, age: :int})
 	end
-end
 
-describe 'expect header' do
-	it 'should find exact match for header content' do
-		mock_get('simple_get', {'Content-Type' => 'text/json'})
+	it 'should fail when incorrect json types tested' do
+		mock_get('simple_get')
 		get '/simple_get'
-		expect_header(:content_type, 'text/json')
+		expect{expect_json_types({bad: :bool})}.to raise_error
 	end
-end
 
-describe 'expect header contains' do
-	it 'should find partial match for header content' do
-		mock_get('simple_get', {'Content-Type' => 'text/json'})
+	it 'should not fail when optional property is not present' do
+		mock_get('simple_get')
 		get '/simple_get'
-		expect_header_contains(:content_type, '')
-	end
-end
-
-describe 'post' do
-	it 'should allow testing on post requests' do
-		mock_post('simple_post')
-		post '/simple_post', {}
-		expect_json_types({status: :string, someNumber: :int})
+		expect_json_types({name: :string, age: :int, optional: :bool_or_null })
 	end
 end

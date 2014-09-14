@@ -1,3 +1,4 @@
+require 'airborne/request_expectations'
 require 'airborne/base'
 
 Airborne.configure do |config|
