@@ -18,14 +18,15 @@ module AirBorne
 	include RequestExpectations
 
 	def get(url)
-		@response = RestClient.get(@@base_url + url)
-		@headers = @response.headers.deep_symbolize_keys!
-		@body = JSON.parse(@response.body)
-		@body.deep_symbolize_keys!
+		res = RestClient.get(get_url(url))
+		get_response(res)
 	end
 
 	def post(url, body)
+		res = RestClient.post(get_url(url), body)
+		get_response(res)
 	end
+
 	def response
 		@response
 	end
@@ -35,11 +36,23 @@ module AirBorne
 	def body
 		@body
 	end
+	
+	private
+
+	def get_url(url)
+		base = @@base_url ||= ""
+		base + url
+	end
+
+	def get_response(res)
+		@response = res
+		@headers = res.headers.deep_symbolize_keys!
+		@body = JSON.parse(res.body)
+		@body.deep_symbolize_keys!
+	end
 
 end
 
 RSpec.configure do |config|
 	config.include AirBorne
 end
-
-
