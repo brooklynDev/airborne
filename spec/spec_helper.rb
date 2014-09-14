@@ -7,5 +7,5 @@ end
 
 def mock_get(url)
 	stub_request(:get, 'http://www.example.com/' + url)
-		.to_return(body: IO.read(File.join('spec/test_responses', url + ".json")))
+		.to_return(headers: {'Content-Type' => 'text/json'}, body: IO.read(File.join('spec/test_responses', url + ".json")))
 end

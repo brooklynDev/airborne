@@ -16,6 +16,24 @@ module RequestExpectations
 		expect(response.code).to eq(code)
 	end
 
+	def expect_header(key, content)
+		header = headers[key]
+		if header
+		expect(header.downcase).to eq(content.downcase)
+		else 
+			raise "Header #{key} not present in HTTP response"
+		end
+	end
+
+	def expect_header_contains(key, content)
+		header = headers[key]
+		if header
+		expect(header.downcase).to include(content.downcase)
+		else 
+			raise "Header #{key} not present in HTTP response"
+		end
+	end
+	
 	private
 
 		def get_mapper

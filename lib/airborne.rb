@@ -19,6 +19,7 @@ module AirBorne
 
 	def get(url)
 		@response = RestClient.get(@@base_url + url)
+		@headers = @response.headers.deep_symbolize_keys!
 		@body = JSON.parse(@response.body)
 		@body.deep_symbolize_keys!
 	end
@@ -28,14 +29,11 @@ module AirBorne
 	def response
 		@response
 	end
-
+	def headers
+		@headers
+	end
 	def body
 		@body
-	end
-
-	private
-
-	def get_headers
 	end
 
 end
