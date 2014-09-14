@@ -68,12 +68,12 @@ module Airborne
 		end
 
 		def expect_json_impl(expectations, hash)
-			expectations.each do |prop_name, value|
-				val = hash[prop_name]
-				if(val.class == Hash)
-					expect_json_impl(value, val)
+			expectations.each do |prop_name, expected_value|
+				actual_value = hash[prop_name]
+				if(expected_value.class == Hash)
+					expect_json_impl(expected_value, actual_value)
 				else
-					expect(value).to eq(val)
+					expect(expected_value).to eq(actual_value)
 				end
 			end
 		end
