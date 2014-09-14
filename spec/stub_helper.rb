@@ -4,7 +4,6 @@ module StubHelper
 
 	def initialize
 		@base_url = 'http://www.example.com/'
-
 	end
 
 	def mock_get(url, response_headers = {})
