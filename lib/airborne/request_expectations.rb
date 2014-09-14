@@ -1,40 +1,40 @@
 require 'rspec'
 
-module AirBorne
-	module RequestExpectations
-		include RSpec
 
-		def expect_json_types(expectations)
-			expect_json_types_impl(expectations, body)
+module RequestExpectations
+	include RSpec
+
+	def expect_json_types(expectations)
+		expect_json_types_impl(expectations, body)
+	end
+
+	def expect_json(expectations)
+		expect_json_impl(expectations, body)
+	end
+
+	def expect_status(code)
+		expect(response.code).to eq(code)
+	end
+
+	def expect_header(key, content)
+		header = headers[key]
+		if header
+		expect(header.downcase).to eq(content.downcase)
+		else 
+			raise "Header #{key} not present in HTTP response"
 		end
+	end
 
-		def expect_json(expectations)
-			expect_json_impl(expectations, body)
+	def expect_header_contains(key, content)
+		header = headers[key]
+		if header
+		expect(header.downcase).to include(content.downcase)
+		else 
+			raise "Header #{key} not present in HTTP response"
 		end
-
-		def expect_status(code)
-			expect(response.code).to eq(code)
-		end
-
-		def expect_header(key, content)
-			header = headers[key]
-			if header
-				expect(header.downcase).to eq(content.downcase)
-			else
-				raise "Header #{key} not present in HTTP response"
-			end
-		end
-
-		def expect_header_contains(key, content)
-			header = headers[key]
-			if header
-				expect(header.downcase).to include(content.downcase)
-			else
-				raise "Header #{key} not present in HTTP response"
-			end
-		end
-
-		private
+	end
+	
+	private
 
 		def get_mapper
 			base_mapper = {
@@ -64,7 +64,7 @@ module AirBorne
 				else
 					expect(@mapper[value].include?(val.class)).to eq(true), "Expected #{prop_name} to be of type #{value}, got #{val.class} instead"
 				end
-			end
+			end			
 		end
 
 		def expect_json_impl(expectations, hash)
@@ -77,5 +77,4 @@ module AirBorne
 				end
 			end
 		end
-	end
 end
