@@ -25,27 +25,30 @@ module Airborne
 		res = RestClient.post(get_url(url), post_body, Airborne.configuration.headers || {})
 		get_response(res)
 	end
+	
 	def patch(url, patch_body = {} )
-		res = RestClient.patch(get_url(url), patch_body)
+		res = RestClient.patch(get_url(url), patch_body, Airborne.configuration.headers || {})
 		get_response(res)
 	end
 	
 	def put(url, put_body = {} )
-		res = RestClient.put(get_url(url), put_body)
+		res = RestClient.put(get_url(url), put_body, Airborne.configuration.headers || {})
 		get_response(res)
 	end
 	
 	def delete(url)
-		res = RestClient.delete(get_url(url))
+		res = RestClient.delete(get_url(url), headers || Airborne.configuration.headers || {})
 		get_response(res)
 	end
 
 	def response
 		@response
 	end
+
 	def headers
 		@headers
 	end
+
 	def body
 		@body
 	end
@@ -65,4 +68,5 @@ module Airborne
 			@body.deep_symbolize_keys!
 		end
 	end
+
 end
