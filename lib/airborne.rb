@@ -1,5 +1,6 @@
 require 'airborne/base'
 
-RSpec.configure do |config|
-	config.include AirBorne
+Airborne.configure do |config|
+	config.include Airborne
+	config.add_setting :base_url
 end

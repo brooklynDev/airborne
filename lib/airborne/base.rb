@@ -4,17 +4,17 @@ require 'request_expectations'
 require 'active_support'
 require 'active_support/core_ext'
 
-module AirBorne
+module Airborne
 	include RequestExpectations
 
 	def self.configure
 		RSpec.configure do |config|
-			class << config
-				attr_accessor :base_url		
-			end
 			yield config
-			@@base_url = config.base_url
 		end
+	end
+
+	def self.configuration
+		RSpec.configuration
 	end
 
 	def get(url)
@@ -40,7 +40,7 @@ module AirBorne
 	private
 
 	def get_url(url)
-		base = @@base_url ||= ""
+		base = Airborne.configuration.base_url ||= ""
 		base + url
 	end
 

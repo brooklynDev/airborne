@@ -1,6 +1,6 @@
 require 'rspec'
 
-module AirBorne
+module Airborne
 	module RequestExpectations
 		include RSpec
 
