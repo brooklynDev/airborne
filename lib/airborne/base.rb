@@ -60,7 +60,9 @@ module Airborne
 	def get_response(res)
 		@response = res
 		@headers = res.headers.deep_symbolize_keys!
-		@body = JSON.parse(res.body)
-		@body.deep_symbolize_keys!
+		unless res.body == ""
+			@body = JSON.parse(res.body)
+			@body.deep_symbolize_keys!
+		end
 	end
 end
