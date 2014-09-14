@@ -16,13 +16,13 @@ module Airborne
 		RSpec.configuration
 	end
 
-	def get(url)
-		res = RestClient.get(get_url(url))
+	def get(url, headers = nil)
+		res = RestClient.get(get_url(url), headers || Airborne.configuration.headers || {})
 		get_response(res)
 	end
 
-	def post(url, post_body = {} )
-		res = RestClient.post(get_url(url), post_body)
+	def post(url, post_body = {})
+		res = RestClient.post(get_url(url), post_body, Airborne.configuration.headers || {})
 		get_response(res)
 	end
 
@@ -39,7 +39,7 @@ module Airborne
 	private
 
 	def get_url(url)
-		base = Airborne.configuration.base_url ||= ""
+		base = Airborne.configuration.base_url || ""
 		base + url
 	end
 
