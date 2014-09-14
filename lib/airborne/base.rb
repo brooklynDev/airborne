@@ -25,6 +25,20 @@ module Airborne
 		res = RestClient.post(get_url(url), post_body, Airborne.configuration.headers || {})
 		get_response(res)
 	end
+	def patch(url, patch_body = {} )
+		res = RestClient.patch(get_url(url), patch_body)
+		get_response(res)
+	end
+	
+	def put(url, put_body = {} )
+		res = RestClient.put(get_url(url), put_body)
+		get_response(res)
+	end
+	
+	def delete(url)
+		res = RestClient.delete(get_url(url))
+		get_response(res)
+	end
 
 	def response
 		@response
