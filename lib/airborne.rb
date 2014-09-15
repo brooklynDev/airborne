@@ -1,3 +1,4 @@
+require 'airborne/path_matcher'
 require 'airborne/request_expectations'
 require 'airborne/base'
 
