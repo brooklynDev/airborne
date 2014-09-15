@@ -8,7 +8,7 @@ module Airborne
 		def expect_json_types(param1, param2 = nil)
 			if param1.instance_of?(String)
 				get_by_path(param1, body) do|json_chunk|
-					expect_json_types_impl(param2, json_chunk)	
+					expect_json_types_impl(param2, json_chunk)
 				end
 			else
 				expect_json_types_impl(param1, body)

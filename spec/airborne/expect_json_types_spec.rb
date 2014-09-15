@@ -36,4 +36,29 @@ describe 'expect_json_types' do
 		get '/array_with_index'
 		expect_json_types('cars.0', {make: :string, model: :string})
 	end
+
+	it 'should test against all elements in the array' do 
+		mock_get('array_with_index')
+		get '/array_with_index'
+		expect_json_types('cars.*', {make: :string, model: :string})
+	end
+
+	it 'should ensure all elements of array are valid' do 
+		mock_get('array_with_index')
+		get '/array_with_index'
+		expect{expect_json_types('cars.*', {make: :string, model: :int})}.to raise_error
+	end	
+
+	it 'should check all nested arrays for specified elements' do
+		mock_get('array_with_nested')
+		get '/array_with_nested'
+		expect_json_types('cars.*.owners.*', {name: :string})
+	end
+
+	it 'should ensure all nested arrays contain correct data' do
+		mock_get('array_with_nested_bad_data')
+		get '/array_with_nested_bad_data'
+		expect{expect_json_types('cars.*.owners.*', {name: :string})}.to raise_error
+	end
+
 end
