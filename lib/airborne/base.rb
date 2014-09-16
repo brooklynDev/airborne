@@ -17,28 +17,23 @@ module Airborne
 	end
 
 	def get(url, headers = nil)
-		res = RestClient.get(get_url(url), headers || Airborne.configuration.headers || {})
-		get_response(res)
+		make_request(:get, url, {headers: headers})
 	end
 
-	def post(url, post_body = {})
-		res = RestClient.post(get_url(url), post_body, Airborne.configuration.headers || {})
-		get_response(res)
+	def post(url, post_body = nil, headers = nil)
+		make_request(:post, url, {body: post_body, headers: headers})
 	end
-	
-	def patch(url, patch_body = {} )
-		res = RestClient.patch(get_url(url), patch_body, Airborne.configuration.headers || {})
-		get_response(res)
+
+	def patch(url, patch_body = nil, headers = nil )
+		make_request(:patch, url, {body: patch_body, headers: headers})
 	end
-	
-	def put(url, put_body = {} )
-		res = RestClient.put(get_url(url), put_body, Airborne.configuration.headers || {})
-		get_response(res)
+
+	def put(url, put_body = nil, headers = nil )
+		make_request(:put, url, {body: put_body, headers: headers})
 	end
-	
-	def delete(url)
-		res = RestClient.delete(get_url(url), headers || Airborne.configuration.headers || {})
-		get_response(res)
+
+	def delete(url, headers = nil)
+		make_request(:delete, url, {headers: headers})
 	end
 
 	def response
@@ -52,8 +47,21 @@ module Airborne
 	def body
 		@body
 	end
-	
+
+	def json_body
+		@json_body
+	end
+
 	private
+
+	def make_request(method, url, options = {})
+		res = unless options[:body].nil?
+			RestClient.send(method, get_url(url), options[:body], options[:headers] || Airborne.configuration.headers || {})
+		else
+			RestClient.send(method, get_url(url), options[:headers] || Airborne.configuration.headers || {})
+		end
+		get_response(res)
+	end
 
 	def get_url(url)
 		base = Airborne.configuration.base_url || ""
@@ -62,11 +70,8 @@ module Airborne
 
 	def get_response(res)
 		@response = res
+		@body = res.body
 		@headers = res.headers.deep_symbolize_keys!
-		unless res.body == ""
-			@body = JSON.parse(res.body)
-			@body.deep_symbolize_keys!
-		end
+		@json_body = JSON.parse(res.body).deep_symbolize_keys unless res.body == ""
 	end
-
 end

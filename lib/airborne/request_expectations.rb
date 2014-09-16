@@ -5,20 +5,20 @@ module Airborne
 		include RSpec
 		include PathMatcher
 
-		def expect_json_types(param1, param2 = nil)
-			call_with_path(param1, param2) do |param, body|
+		def expect_json_types(*args)
+			call_with_path(args) do |param, body|
 				expect_json_types_impl(param, body)
 			end
 		end
 
-		def expect_json(param1, param2 = nil)
-			call_with_path(param1, param2) do |param, body|
+		def expect_json(*args)
+			call_with_path(args) do |param, body|
 				expect_json_impl(param, body)
 			end
 		end
 
-		def expect_json_keys(param1, param2 = nil)
-			call_with_path(param1, param2) do |param, body|
+		def expect_json_keys(*args)
+			call_with_path(args) do |param, body|
 				expect(body.keys).to include(*param)
 			end
 		end
@@ -29,6 +29,7 @@ module Airborne
 
 		def expect_header(key, content)
 			header = headers[key]
+			expect(header).to_not be_nil
 			if header
 				expect(header.downcase).to eq(content.downcase)
 			else
@@ -38,6 +39,7 @@ module Airborne
 
 		def expect_header_contains(key, content)
 			header = headers[key]
+			expect(header).to_not be_nil
 			if header
 				expect(header.downcase).to include(content.downcase)
 			else
@@ -47,13 +49,13 @@ module Airborne
 
 		private
 
-		def call_with_path(param1, param2)
-			if param1.instance_of?(String)
-				get_by_path(param1, body) do|json_chunk|
-					yield(param2, json_chunk)
+		def call_with_path(args)
+			if args.length == 2
+				get_by_path(args[0], json_body) do|json_chunk|
+					yield(args[1], json_chunk)
 				end
 			else
-				yield(param1, body)
+				yield(args[0], json_body)
 			end
 		end
 

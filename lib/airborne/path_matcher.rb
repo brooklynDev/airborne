@@ -29,14 +29,12 @@ module Airborne
 			elsif type == '?'
 				item_count = json.length
 				error_count = 0
-				json.each do |part| 
+				json.each do |part|
 					begin
 						yield part
 					rescue Exception => e
 						error_count += 1
-						if item_count == error_count
-							raise "Expected one object in path #{path} to match provided JSON values"
-						end
+						raise "Expected one object in path #{path} to match provided JSON values" if item_count == error_count
 					end
 				end
 			else
