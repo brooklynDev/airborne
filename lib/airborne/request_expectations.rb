@@ -6,21 +6,21 @@ module Airborne
 		include PathMatcher
 
 		def expect_json_types(param1, param2 = nil)
-			if param1.instance_of?(String)
-				get_by_path(param1, body) do|json_chunk|
-					expect_json_types_impl(param2, json_chunk)
-				end
-			else
-				expect_json_types_impl(param1, body)
+			call_with_path(param1, param2) do |param, body|
+				expect_json_types_impl(param, body)
 			end
 		end
 
-		def expect_json(expectations)
-			expect_json_impl(expectations, body)
+		def expect_json(param1, param2 = nil)
+			call_with_path(param1, param2) do |param, body|
+				expect_json_impl(param, body)
+			end
 		end
 
-		def expect_json_keys(keys)
-			expect(body.keys).to match_array(keys)
+		def expect_json_keys(param1, param2 = nil)
+			call_with_path(param1, param2) do |param, body|
+				expect(body.keys).to match_array(param)
+			end
 		end
 
 		def expect_status(code)
@@ -46,6 +46,16 @@ module Airborne
 		end
 
 		private
+
+		def call_with_path(param1, param2)
+			if param1.instance_of?(String)
+				get_by_path(param1, body) do|json_chunk|
+					yield(param2, json_chunk)
+				end
+			else
+				yield(param1, body)
+			end
+		end
 
 		def get_mapper
 			base_mapper = {
