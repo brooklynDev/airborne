@@ -60,7 +60,7 @@ module Airborne
 		else
 			RestClient.send(method, get_url(url), options[:headers] || Airborne.configuration.headers || {})
 		end
-		get_response(res)
+		set_response(res)
 	end
 
 	def get_url(url)
@@ -68,10 +68,18 @@ module Airborne
 		base + url
 	end
 
-	def get_response(res)
+	def set_response(res)
 		@response = res
 		@body = res.body
 		@headers = res.headers.deep_symbolize_keys!
-		@json_body = JSON.parse(res.body).deep_symbolize_keys unless res.body == ""
+		unless res.body == ""
+			@json_body = JSON.parse(res.body)
+			if @json_body.class == Array
+				hash = {res: @json_body}.deep_symbolize_keys
+				@json_body = hash[:res]
+			else 
+				@json_body = @json_body.deep_symbolize_keys
+			end
+		end
 	end
 end

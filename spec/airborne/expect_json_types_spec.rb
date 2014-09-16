@@ -72,4 +72,10 @@ describe 'expect_json_types' do
 		get '/array_of_values'
 		expect{expect_json_types({bad: :array_of_ints})}.to raise_error
 	end
+
+	it 'should deep symbolize array responses' do
+		mock_get('array_response')
+		get '/array_response'
+		expect_json_types("*", {name: :string})
+	end
 end
