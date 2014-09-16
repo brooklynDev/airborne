@@ -6,6 +6,6 @@ Gem::Specification.new do |s|
   s.authors     = ["Alex Friedman", "Seth Pollack"]
   s.email       = 'a.friedman07@gmail.com, teampollack@gmail.com'
   s.require_paths = ['lib']
-  s.files = ["lib/airborne.rb", "lib/request_expectations.rb"]
+  s.files = `git ls-files`.split("\n")
   s.license     = 'MIT'
 end
