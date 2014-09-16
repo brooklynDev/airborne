@@ -63,7 +63,7 @@ module Airborne
 			base_mapper = {
 				integer: [Fixnum,Bignum],
 				int: [Fixnum,Bignum],
-				float: [Float],
+				float: [Float,Fixnum,Bignum],
 				string: [String],
 				boolean: [TrueClass, FalseClass],
 				bool: [TrueClass, FalseClass],
