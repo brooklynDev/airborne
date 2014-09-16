@@ -62,13 +62,21 @@ module Airborne
 		def get_mapper
 			base_mapper = {
 				integer: [Fixnum,Bignum],
+				array_of_integers: [Fixnum,Bignum],
 				int: [Fixnum,Bignum],
+				array_of_ints: [Fixnum,Bignum],
 				float: [Float,Fixnum,Bignum],
+				array_of_floata: [Float,Fixnum,Bignum],
 				string: [String],
+				array_of_strings: [String],
 				boolean: [TrueClass, FalseClass],
+				array_of_booleans: [TrueClass, FalseClass],
 				bool: [TrueClass, FalseClass],
+				array_of_bools: [TrueClass, FalseClass],
 				object: [Hash],
-				array: [Array]
+				array_of_objects: [Hash],
+				array: [Array],
+				array_of_arrays: [Array]
 			}
 
 			mapper = base_mapper.clone
@@ -84,6 +92,11 @@ module Airborne
 				value = hash[prop_name]
 				if expected_type.class == Hash
 					expect_json_types_impl(expected_type, value)
+				elsif expected_type.to_s.include?("array_of")
+					expect(value.class).to eq(Array), "Expected #{prop_name} to be of type #{expected_type}, got #{value.class} instead"
+					value.each do |val|
+						expect(@mapper[expected_type].include?(val.class)).to eq(true), "Expected #{prop_name} to be of type #{expected_type}, got #{val.class} instead"	
+					end
 				else
 					expect(@mapper[expected_type].include?(value.class)).to eq(true), "Expected #{prop_name} to be of type #{expected_type}, got #{value.class} instead"
 				end

@@ -61,4 +61,15 @@ describe 'expect_json_types' do
 		expect{expect_json_types('cars.*.owners.*', {name: :string})}.to raise_error
 	end
 
+	it 'should check all types in a simple array' do
+		mock_get('array_of_values')
+		get '/array_of_values'
+		expect_json_types({grades: :array_of_ints})
+	end
+
+	it 'should ensure all valid types in a simple array' do
+		mock_get('array_of_values')
+		get '/array_of_values'
+		expect{expect_json_types({bad: :array_of_ints})}.to raise_error
+	end
 end
