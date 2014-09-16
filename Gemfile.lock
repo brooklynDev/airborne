@@ -45,8 +45,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activesupport
-  activesupport-core-ext
+  activesupport (= 4.0.10)
+  activesupport-core-ext (= 4.0.0.2)
   rest_client
   rspec
   webmock
