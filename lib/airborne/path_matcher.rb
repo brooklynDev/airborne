@@ -26,21 +26,19 @@ module Airborne
 			end
 			if type == '*'
 				json.each{|part| yield part}
-			# elsif type == '?'
-			# 	item_count = json.length
-			# 	error_count = 0
-			# 	json.each do |part| 
-			# 		begin
-			# 			yield part
-			# 		rescue Exeptions => e
-			# 			p e
-			# 			p "here"
-			# 			error_count++
-			# 			if item_count == error_count
-			# 				raise "Expected one object in path #{path} to match provided JSON values"
-			# 			end
-			# 		end
-			# 	end
+			elsif type == '?'
+				item_count = json.length
+				error_count = 0
+				json.each do |part| 
+					begin
+						yield part
+					rescue Exception => e
+						error_count += 1
+						if item_count == error_count
+							raise "Expected one object in path #{path} to match provided JSON values"
+						end
+					end
+				end
 			else
 				yield json
 			end

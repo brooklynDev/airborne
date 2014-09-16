@@ -19,7 +19,7 @@ module Airborne
 
 		def expect_json_keys(param1, param2 = nil)
 			call_with_path(param1, param2) do |param, body|
-				expect(body.keys).to match_array(param)
+				expect(body.keys).to include(*param)
 			end
 		end
 

@@ -31,11 +31,11 @@ describe 'expect_json' do
 		expect_json('cars.0', {make: "Tesla", model: "Model S"})
 	end
 	
-	# it 'should test against all elements in the array' do 
-	# 	mock_get('array_with_index')
-	# 	get '/array_with_index'
-	# 	expect_json('cars.?', {make: "Tesla", model: "Model S"})
-	# 	expect_json('cars.?', {make: "Lamborghini", model: "Aventador"})
-	# end	
+	it 'should test against all elements in the array' do 
+		mock_get('array_with_index')
+		get '/array_with_index'
+		expect_json('cars.?', {make: "Tesla", model: "Model S"})
+		expect_json('cars.?', {make: "Lamborghini", model: "Aventador"})
+	end	
 
 end
