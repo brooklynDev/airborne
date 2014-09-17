@@ -83,7 +83,7 @@ module Airborne
 		@body = res.body
 		@headers = res.headers
 		begin
-			@json_body = JSON.parse(res.body, symbolize_names: true) unless res.body == ""
+			@json_body = JSON.parse(res.body, symbolize_names: true) unless res.body.empty?
 		rescue
 		end
 	end
