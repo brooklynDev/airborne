@@ -1,7 +1,7 @@
 # Airborne
 
 [![Jade Browser build status](https://travis-ci.org/brooklynDev/airborne.svg?branch=master)](https://travis-ci.org/brooklynDev/airborne)
-
+[![Gem Version](https://badge.fury.io/rb/airborne.svg)](http://badge.fury.io/rb/airborne)
 RSpec driven API testing framework inspired by [frisby.js](https://github.com/vlucas/frisby)
 
 ## Installation
