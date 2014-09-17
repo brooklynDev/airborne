@@ -17,15 +17,15 @@ Install Airborne:
     require 'airborne'
     
     describe 'sample spec' do
-    	it 'should validate types' do
-    		get 'http://example.com/api/v1/simple_get' #json api that returns { "name" : "John Doe" } 
-    		expect_json_types({name: :string})
-    	end
-    	
-    	it 'should validate values' do 
-    	    get 'http://example.com/api/v1/simple_get' #json api that returns { "name" : "John Doe" } 
-    	    expect_json({:name => "John Doe"})
-    	end
+        it 'should validate types' do
+            get 'http://example.com/api/v1/simple_get' #json api that returns { "name" : "John Doe" } 
+            expect_json_types({name: :string})
+        end
+        
+        it 'should validate values' do 
+            get 'http://example.com/api/v1/simple_get' #json api that returns { "name" : "John Doe" } 
+            expect_json({:name => "John Doe"})
+        end
     end
 
 When calling expect_json_types, these are the valid types that can be tested against:
@@ -51,7 +51,14 @@ If the properties are optional and may not appear in the response, you can appen
             expect_json_types({name: :string, age: :int_or_null})
         end
     end
-    
+
+Additionally, if an entire object could be null, but you'd still want to test the types if it does exist, you can wrap the expectations in a call to `optional`:
+
+    it 'should allow optional nested hash' do
+        get '/simple_path_get' #may or may not return coordinates
+        expect_json_types("address.coordinates", optional({lattitude: :float, longitutde: :float}))
+    end
+
 When calling `expect_json`, you can optionally provide a block and run your own `rspec` expectations:
 
     describe 'sample spec' do
@@ -69,6 +76,15 @@ Airborne uses `rest_client` to make the HTTP request, and supports all HTTP verb
 * `headers` - A symbolized hash of the response headers returned by the request
 * `body` - The raw HTTP body returned from the request
 * `json_body` - A symbolized hash representation of the JSON returned by the request
+
+Fo example:
+
+    it 'should validate types' do
+        get 'http://example.com/api/v1/simple_get' #json api that returns { "name" : "John Doe" } 
+        name = json_body[:name] #name will equal "John Doe"
+        body_as_string = body
+    end
+
 
 When calling any of the methods above, you can pass request headers to be used. 
 
@@ -92,86 +108,86 @@ When calling `expect_json_types`, `expect_json` or `expect_json_keys` you can op
 For example, if our API returns the following JSON:
 
     {
-    	"name": "Alex",
-    	"address": {
-    		"street": "Area 51",
-    		"city": "Roswell",
-    		"state": "NM",
-    		"coordinates":{
-    			"lattitude": 33.3872,
-    			"longitude": 104.5281 
-    		}
-    	}
+        "name": "Alex",
+        "address": {
+            "street": "Area 51",
+            "city": "Roswell",
+            "state": "NM",
+            "coordinates":{
+                "lattitude": 33.3872,
+                "longitude": 104.5281 
+            }
+        }
     }
     
 This test would only test the address object:
     
     describe 'path spec' do
-    	it 'should allow simple path and verify only that path' do
-    		get 'http://example.com/api/v1/simple_path_get'
-    		expect_json_types('address', {street: :string, city: :string, state: :string, coordinates: :object })
-    		#or this
-    		expect_json_types('address', {street: :string, city: :string, state: :string, coordinates: { lattitude: :float, longitude: :float } })
-	    end
+        it 'should allow simple path and verify only that path' do
+            get 'http://example.com/api/v1/simple_path_get'
+            expect_json_types('address', {street: :string, city: :string, state: :string, coordinates: :object })
+            #or this
+            expect_json_types('address', {street: :string, city: :string, state: :string, coordinates: { lattitude: :float, longitude: :float } })
+        end
     end
 
 Alternativley, if we only want to test `coordinates` we can dot into just the `coordinates`:
 
-	it 'should allow nested paths' do
-		get 'http://example.com/api/v1/simple_path_get'
-		expect_json('address.coordinates', {lattitude: 33.3872, longitutde: 104.5281} )		
-	end
+    it 'should allow nested paths' do
+        get 'http://example.com/api/v1/simple_path_get'
+        expect_json('address.coordinates', {lattitude: 33.3872, longitutde: 104.5281} )     
+    end
 
 When dealing with `arrays`, we can optionally test all (`*`) or a single (`?` - any, `0` - index) element of the array:
 
 Given the following JSON:
 
     {
-    	"cars":[
-    		{"make": "Tesla", "model": "Model S"},
-    		{"make": "Lamborghini", "model": "Aventador"}
-    	]
+        "cars":[
+            {"make": "Tesla", "model": "Model S"},
+            {"make": "Lamborghini", "model": "Aventador"}
+        ]
     }
 
 We can test against just the first car like this:
 
-	it 'should index into array and test against specific element' do 
-		get '/array_api'
-		expect_json('cars.0', {make: "Tesla", model: "Model S"})
-	end
+    it 'should index into array and test against specific element' do 
+        get '/array_api'
+        expect_json('cars.0', {make: "Tesla", model: "Model S"})
+    end
 
 To test the types of all elements in the array:
 
-	it 'should test all elements of the array' do 
-		get 'http://example.com/api/v1/array_api
-		expect_json('cars.?', {make: "Tesla", model: "Model S"}) # tests that one car in array matches the tesla
-		expect_json_types('cars.*', {make: :string, model: :string}) # tests all cars in array for make and model of type string
-	end
-	
+    it 'should test all elements of the array' do 
+        get 'http://example.com/api/v1/array_api
+        expect_json('cars.?', {make: "Tesla", model: "Model S"}) # tests that one car in array matches the tesla
+        expect_json_types('cars.*', {make: :string, model: :string}) # tests all cars in array for make and model of type string
+    end
+    
 `*` and `?` work for nested arrays as well. Given the following JSON:
 
     {
-    	"cars": [{
-    		"make": "Tesla",
-    		"model": "Model S",
-    		"owners": [{
-    			"name": "Bart Simpson"
-    		}]
-    	}, {
-    		"make": "Lamborghini",
-    		"model": "Aventador",
-    		"owners": [{
-    			"name": "Peter Griffin"
-    		}]
-    	}]
+        "cars": [{
+            "make": "Tesla",
+            "model": "Model S",
+            "owners": [{
+                "name": "Bart Simpson"
+            }]
+        }, {
+            "make": "Lamborghini",
+            "model": "Aventador",
+            "owners": [{
+                "name": "Peter Griffin"
+            }]
+        }]
     }
 
 ===
 
     it 'should check all nested arrays for specified elements' do
-		get 'http://example.com/api/v1/array_with_nested'
-		expect_json_types('cars.*.owners.*', {name: :string})
-	end
+        get 'http://example.com/api/v1/array_with_nested'
+        expect_json_types('cars.*.owners.*', {name: :string})
+    end
     
 
 ##Configuration

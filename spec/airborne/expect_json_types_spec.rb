@@ -84,4 +84,16 @@ describe 'expect_json_types' do
 		get '/array_of_values'
 		expect_json_types({emptyArray: :array_of_ints})
 	end	
+
+	it 'should test optional nested hash when exists' do
+		mock_get('simple_nested_path')
+		get '/simple_nested_path'
+		expect_json_types("address.coordinates", optional({lattitude: :float, longitutde: :float}))
+	end
+
+	it 'should allow optional nested hash' do
+		mock_get('simple_path_get')
+		get '/simple_path_get'
+		expect_json_types("address.coordinates", optional({lattitude: :float, longitutde: :float}))
+	end
 end

@@ -47,6 +47,10 @@ module Airborne
 			end
 		end
 
+		def optional(hash)
+			OptionalHashTypeExpectations.new(hash)
+		end
+
 		private
 
 		def call_with_path(args)
@@ -87,10 +91,11 @@ module Airborne
 		end
 
 		def expect_json_types_impl(expectations, hash)
+			return if expectations.class == Airborne::OptionalHashTypeExpectations && hash.nil?
 			@mapper ||= get_mapper
 			expectations.each do |prop_name, expected_type|
 				value = hash[prop_name]
-				if expected_type.class == Hash
+				if expected_type.class == Hash || expected_type.class ==  Airborne::OptionalHashTypeExpectations
 					expect_json_types_impl(expected_type, value)
 				elsif expected_type.to_s.include?("array_of")
 					expect(value.class).to eq(Array), "Expected #{prop_name} to be of type #{expected_type}, got #{value.class} instead"
