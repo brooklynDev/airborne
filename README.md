@@ -1,7 +1,10 @@
 # Airborne
 
-[![Jade Browser build status](https://travis-ci.org/brooklynDev/airborne.svg?branch=master)](https://travis-ci.org/brooklynDev/airborne)
-[![Gem Version](https://badge.fury.io/rb/airborne.svg)](http://badge.fury.io/rb/airborne)
+![airborne travis](http://img.shields.io/travis/brooklynDev/airborne.svg?branch=master&style=flat)
+![airborne gem version](http://img.shields.io/gem/v/airborne.svg?style=flat)
+![airbore gem downloads](http://img.shields.io/gem/dt/airborne.svg?style=flat)
+![airborne gem stable downloads](http://img.shields.io/gem/dv/airborne/stable.svg?style=flat)
+
 RSpec driven API testing framework inspired by [frisby.js](https://github.com/vlucas/frisby)
 
 ## Installation
