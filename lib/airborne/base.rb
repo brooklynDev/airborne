@@ -53,10 +53,22 @@ module Airborne
 	private
 
 	def make_request(method, url, options = {})
-		res = unless options[:body].nil?
-			RestClient.send(method, get_url(url), options[:body], options[:headers] || Airborne.configuration.headers || {})
+		headers = options[:headers] || {}
+		base_headers = Airborne.configuration.headers || {}
+		headers = base_headers.merge(headers)
+		res = if method == :post || method == :patch || method == :put
+			begin
+				RestClient.send(method, get_url(url), options[:body].nil? ? "" : options[:body].to_json, headers)
+			rescue RestClient::Exception => e
+				e.response
+			end
 		else
-			RestClient.send(method, get_url(url), options[:headers] || Airborne.configuration.headers || {})
+			begin
+				RestClient.send(method, get_url(url), headers)
+			rescue RestClient::Exception => e
+				e.response
+			end
+
 		end
 		set_response(res)
 	end
@@ -70,6 +82,9 @@ module Airborne
 		@response = res
 		@body = res.body
 		@headers = res.headers
-		@json_body = JSON.parse(res.body, symbolize_names: true) unless res.body == ""
+		begin
+			@json_body = JSON.parse(res.body, symbolize_names: true) unless res.body == ""
+		rescue
+		end
 	end
 end
