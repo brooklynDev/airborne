@@ -1,9 +1,9 @@
 # Airborne
 
-[![airborne travis](http://img.shields.io/travis/brooklynDev/airborne.svg?branch=master&style=flat)](https://travis-ci.org/brooklynDev/airborne)
-[![airborne gem version](http://img.shields.io/gem/v/airborne.svg?style=flat)](http://rubygems.org/gems/airborne)
-[![airbore gem downloads](http://img.shields.io/gem/dt/airborne.svg?style=flat)](http://rubygems.org/gems/airborne)
-[![airborne gem stable downloads](http://img.shields.io/gem/dv/airborne/stable.svg?style=flat)](http://rubygems.org/gems/airborne)
+[![airborne travis](http://img.shields.io/travis/brooklynDev/airborne.svg?branch=master&style=flat-square)](https://travis-ci.org/brooklynDev/airborne)
+[![airborne gem version](http://img.shields.io/gem/v/airborne.svg?style=flat-square)](http://rubygems.org/gems/airborne)
+[![airbore gem downloads](http://img.shields.io/gem/dt/airborne.svg?style=flat-square)](http://rubygems.org/gems/airborne)
+[![airborne gem stable downloads](http://img.shields.io/gem/dv/airborne/stable.svg?style=flat-square)](http://rubygems.org/gems/airborne)
 
 RSpec driven API testing framework inspired by [frisby.js](https://github.com/vlucas/frisby)
 
