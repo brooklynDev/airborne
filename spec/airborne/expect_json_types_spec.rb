@@ -78,4 +78,10 @@ describe 'expect_json_types' do
 		get '/array_response'
 		expect_json_types("*", {name: :string})
 	end
+
+	it 'should allow empty array' do
+		mock_get('array_of_values')
+		get '/array_of_values'
+		expect_json_types({emptyArray: :array_of_ints})
+	end	
 end
