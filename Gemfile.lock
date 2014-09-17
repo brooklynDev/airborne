@@ -5,9 +5,11 @@ GEM
     crack (0.4.2)
       safe_yaml (~> 1.0.0)
     diff-lcs (1.2.5)
+    mime-types (2.3)
     netrc (0.7.7)
-    rest_client (1.7.3)
-      netrc (~> 0.7.7)
+    rest-client (1.7.2)
+      mime-types (>= 1.16, < 3.0)
+      netrc (~> 0.7)
     rspec (3.1.0)
       rspec-core (~> 3.1.0)
       rspec-expectations (~> 3.1.0)
@@ -29,6 +31,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  rest_client
+  rest-client
   rspec
   webmock
