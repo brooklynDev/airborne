@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rspec'
-gem 'rest_client'
+gem 'rest-client'
 
 group :test do
 	gem 'webmock'
