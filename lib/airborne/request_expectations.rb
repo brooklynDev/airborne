@@ -66,7 +66,7 @@ module Airborne
 				int: [Fixnum,Bignum],
 				array_of_ints: [Fixnum,Bignum],
 				float: [Float,Fixnum,Bignum],
-				array_of_floata: [Float,Fixnum,Bignum],
+				array_of_floats: [Float,Fixnum,Bignum],
 				string: [String],
 				array_of_strings: [String],
 				boolean: [TrueClass, FalseClass],

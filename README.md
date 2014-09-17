@@ -36,6 +36,12 @@ When calling expect_json_types, these are the valid types that can be tested aga
 * `:string`
 * `:object`
 * `:array`
+* `:array_of_integers` or `:array_of_ints`
+* `:array_of_floats`
+* `:array_of_strings`
+* `:array_of_booleans` or `:array_of_bools`
+* `:array_of_objects`
+* `:array_of_arrays`
 
 If the properties are optional and may not appear in the response, you can append `_or_null` to the types above.
     
