@@ -1,7 +1,5 @@
 require 'rest_client'
 require 'json'
-require 'active_support'
-require 'active_support/core_ext'
 
 module Airborne
 	include RequestExpectations
@@ -71,15 +69,7 @@ module Airborne
 	def set_response(res)
 		@response = res
 		@body = res.body
-		@headers = res.headers.deep_symbolize_keys!
-		unless res.body == ""
-			@json_body = JSON.parse(res.body)
-			if @json_body.class == Array
-				hash = {res: @json_body}.deep_symbolize_keys
-				@json_body = hash[:res]
-			else 
-				@json_body = @json_body.deep_symbolize_keys
-			end
-		end
+		@headers = res.headers
+		@json_body = JSON.parse(res.body, symbolize_names: true) unless res.body == ""
 	end
 end
