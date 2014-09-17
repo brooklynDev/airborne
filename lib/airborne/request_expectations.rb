@@ -108,6 +108,8 @@ module Airborne
 				actual_value = hash[prop_name]
 				if(expected_value.class == Hash)
 					expect_json_impl(expected_value, actual_value)
+				elsif(expected_value.class == Proc)
+					expected_value.call(actual_value)
 				else
 					expect(expected_value).to eq(actual_value)
 				end
