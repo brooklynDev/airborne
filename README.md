@@ -266,6 +266,11 @@ describe 'spec' do
 end
 ```
 
+### Run it from the CLI
+
+    $ cd your/project
+    $ rspec spec
+    
 ## License 
 
 The MIT License
