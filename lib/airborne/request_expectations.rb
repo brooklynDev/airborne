@@ -29,7 +29,6 @@ module Airborne
 
 		def expect_header(key, content)
 			header = headers[key]
-			expect(header).to_not be_nil
 			if header
 				expect(header.downcase).to eq(content.downcase)
 			else
@@ -39,7 +38,6 @@ module Airborne
 
 		def expect_header_contains(key, content)
 			header = headers[key]
-			expect(header).to_not be_nil
 			if header
 				expect(header.downcase).to include(content.downcase)
 			else
