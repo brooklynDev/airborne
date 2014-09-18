@@ -196,7 +196,7 @@ To test the types of all elements in the array:
 
 ```ruby
 it 'should test all elements of the array' do 
-  get 'http://example.com/api/v1/array_api
+  get 'http://example.com/api/v1/array_api'
   expect_json('cars.?', {make: "Tesla", model: "Model S"}) # tests that one car in array matches the tesla
   expect_json_types('cars.*', {make: :string, model: :string}) # tests all cars in array for make and model of type string
 end
@@ -244,7 +244,8 @@ When setting up Airborne, you can call `configure` just like you would with `rsp
 
 ```ruby
 #config is the RSpec configuration and can be used just like it
-Airborne.configure.do |config|   config.include MyModule
+Airborne.configure.do |config|
+  config.include MyModule
 end
 ```
 
