@@ -155,6 +155,14 @@ describe 'path spec' do
   end
 end
 ```
+Or, to test the existence of specific keys:
+
+```ruby
+it 'should allow nested paths' do
+  get 'http://example.com/api/v1/simple_path_get'
+  expect_json_keys('address', [:street, :city, :state, :coordinates])    
+end
+```
 
 Alternativley, if we only want to test `coordinates` we can dot into just the `coordinates`:
 
