@@ -1,4 +1,3 @@
-require 'rest_client'
 require 'json'
 
 module Airborne
@@ -10,28 +9,38 @@ module Airborne
 		end
 	end
 
+	def self.included(base)
+		if (!Airborne.configuration.requester_type.nil? && Airborne.configuration.requester_type == :rack_test)
+			base.send(:include, RackTestRequester)
+		elsif(!Airborne.configuration.requester_module.nil?)
+			base.send(:include, Airborne.configuration.requester_module)
+		else
+			base.send(:include, RestClientRequester)
+		end
+	end
+
 	def self.configuration
 		RSpec.configuration
 	end
 
 	def get(url, headers = nil)
-		make_request(:get, url, {headers: headers})
+		set_response(make_request(:get, url, {headers: headers}))
 	end
 
 	def post(url, post_body = nil, headers = nil)
-		make_request(:post, url, {body: post_body, headers: headers})
+		set_response(make_request(:post, url, {body: post_body, headers: headers}))
 	end
 
 	def patch(url, patch_body = nil, headers = nil )
-		make_request(:patch, url, {body: patch_body, headers: headers})
+		set_response(make_request(:patch, url, {body: patch_body, headers: headers}))
 	end
 
 	def put(url, put_body = nil, headers = nil )
-		make_request(:put, url, {body: put_body, headers: headers})
+		set_response(make_request(:put, url, {body: put_body, headers: headers}))
 	end
 
 	def delete(url, headers = nil)
-		make_request(:delete, url, {headers: headers})
+		set_response(make_request(:delete, url, {headers: headers}))
 	end
 
 	def response
@@ -51,27 +60,6 @@ module Airborne
 	end
 
 	private
-
-	def make_request(method, url, options = {})
-		headers = (options[:headers] || {}).merge({content_type: :json})
-		base_headers = Airborne.configuration.headers || {}
-		headers = base_headers.merge(headers)
-		res = if method == :post || method == :patch || method == :put
-			begin
-				RestClient.send(method, get_url(url), options[:body].nil? ? "" : options[:body].to_json, headers)
-			rescue RestClient::Exception => e
-				e.response
-			end
-		else
-			begin
-				RestClient.send(method, get_url(url), headers)
-			rescue RestClient::Exception => e
-				e.response
-			end
-
-		end
-		set_response(res)
-	end
 
 	def get_url(url)
 		base = Airborne.configuration.base_url || ""
