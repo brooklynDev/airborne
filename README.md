@@ -13,7 +13,7 @@ Install Airborne:
 
     gem install airborne
     
-Or add it to your gemfile:
+Or add it to your Gemfile:
 
     gem 'airborne'
 
