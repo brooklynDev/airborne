@@ -12,6 +12,10 @@ RSpec driven API testing framework inspired by [frisby.js](https://github.com/vl
 Install Airborne:
 
     gem install airborne
+    
+Or add it to your gemfile:
+
+    gem 'airborne'
 
 ##Creating Tests
 
