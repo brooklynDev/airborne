@@ -97,6 +97,8 @@ module Airborne
 				value = hash[prop_name]
 				if expected_type.class == Hash || expected_type.class ==  Airborne::OptionalHashTypeExpectations
 					expect_json_types_impl(expected_type, value)
+				elsif expected_type.class == Proc
+					expected_type.call(value)
 				elsif expected_type.to_s.include?("array_of")
 					expect(value.class).to eq(Array), "Expected #{prop_name} to be of type #{expected_type}, got #{value.class} instead"
 					value.each do |val|
@@ -111,9 +113,9 @@ module Airborne
 		def expect_json_impl(expectations, hash)
 			expectations.each do |prop_name, expected_value|
 				actual_value = hash[prop_name]
-				if(expected_value.class == Hash)
+				if expected_value.class == Hash
 					expect_json_impl(expected_value, actual_value)
-				elsif(expected_value.class == Proc)
+				elsif expected_value.class == Proc
 					expected_value.call(actual_value)
 				else
 					expect(expected_value).to eq(actual_value)

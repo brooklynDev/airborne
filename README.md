@@ -70,13 +70,13 @@ it 'should allow optional nested hash' do
 end
 ```
 
-When calling `expect_json`, you can optionally provide a block and run your own `rspec` expectations:
+When calling `expect_json` or `expect_json_types`, you can optionally provide a block and run your own `rspec` expectations:
 
 ```ruby
 describe 'sample spec' do
   it 'should validate types' do
     get 'http://example.com/api/v1/simple_get' #json api that returns { "name" : "John Doe" }
-    expect_json({name: lambda |name| expect(name.length).to eq(8)})
+    expect_json({name: -> (name){expect(name.length).to eq(8)}})
   end
 end
 ```
