@@ -91,7 +91,7 @@ Airborne uses `rest_client` to make the HTTP request, and supports all HTTP verb
 * `body` - The raw HTTP body returned from the request
 * `json_body` - A symbolized hash representation of the JSON returned by the request
 
-Fo example:
+For example:
 
 ```ruby
 it 'should validate types' do
