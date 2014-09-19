@@ -49,6 +49,10 @@ module Airborne
 			OptionalHashTypeExpectations.new(hash)
 		end
 
+		def regex(reg)
+			Regexp.new(reg)
+		end
+
 		private
 
 		def call_with_path(args)
@@ -115,6 +119,8 @@ module Airborne
 					expect_json_impl(expected_value, actual_value)
 				elsif expected_value.class == Proc
 					expected_value.call(actual_value)
+				elsif expected_value.class == Regexp
+					expect(actual_value).to match(expected_value)
 				else
 					expect(expected_value).to eq(actual_value)
 				end

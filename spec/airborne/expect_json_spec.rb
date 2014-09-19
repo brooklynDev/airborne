@@ -50,4 +50,16 @@ describe 'expect_json' do
 		expect_json({name: -> (name){expect(name.length).to eq(4)}})
 	end
 
+	it 'should test against regex' do
+		mock_get('simple_get')
+		get '/simple_get'
+		expect_json({name: regex("^A")})
+	end
+
+	it 'should raise an error if regex does not match' do
+		mock_get('simple_get')
+		get '/simple_get'
+		expect{expect_json({name: regex("^B")})}.to raise_error
+	end
+
 end
