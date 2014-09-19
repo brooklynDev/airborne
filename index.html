@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Airborne by brooklynDev</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Airborne</h1>
+          <h2>RSpec driven API testing framework</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/brooklynDev/airborne/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/brooklynDev/airborne/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/brooklynDev/airborne" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <h1>
+<a name="airborne" class="anchor" href="#airborne"><span class="octicon octicon-link"></span></a>Airborne</h1>
+
+<p><a href="https://travis-ci.org/brooklynDev/airborne"><img src="http://img.shields.io/travis/brooklynDev/airborne.svg?branch=master&amp;style=flat-square" alt="airborne travis"></a>
+<a href="https://coveralls.io/r/brooklynDev/airborne?branch=master"><img src="http://img.shields.io/coveralls/brooklynDev/airborne/master.svg?style=flat-square" alt="airborne coveralls"></a>
+<a href="http://rubygems.org/gems/airborne"><img src="http://img.shields.io/gem/v/airborne.svg?style=flat-square" alt="airborne gem version"></a>
+<a href="http://rubygems.org/gems/airborne"><img src="http://img.shields.io/gem/dt/airborne.svg?style=flat-square" alt="airbore gem downloads"></a>
+<a href="http://rubygems.org/gems/airborne"><img src="http://img.shields.io/gem/dv/airborne/stable.svg?style=flat-square" alt="airborne gem stable downloads"></a></p>
+
+<p>RSpec driven API testing framework inspired by <a href="https://github.com/vlucas/frisby">frisby.js</a></p>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Install Airborne:</p>
+
+<pre><code>gem install airborne
+</code></pre>
+
+<p>Or add it to your Gemfile:</p>
+
+<pre><code>gem 'airborne'
+</code></pre>
+
+<h2>
+<a name="creating-tests" class="anchor" href="#creating-tests"><span class="octicon octicon-link"></span></a>Creating Tests</h2>
+
+<div class="highlight highlight-ruby"><pre><span class="nb">require</span> <span class="s1">'airborne'</span>
+
+<span class="n">describe</span> <span class="s1">'sample spec'</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="s1">'should validate types'</span> <span class="k">do</span>
+    <span class="n">get</span> <span class="s1">'http://example.com/api/v1/simple_get'</span> <span class="c1">#json api that returns { "name" : "John Doe" } </span>
+    <span class="n">expect_json_types</span><span class="p">({</span><span class="nb">name</span><span class="p">:</span> <span class="ss">:string</span><span class="p">})</span>
+  <span class="k">end</span>
+
+  <span class="n">it</span> <span class="s1">'should validate values'</span> <span class="k">do</span> 
+    <span class="n">get</span> <span class="s1">'http://example.com/api/v1/simple_get'</span> <span class="c1">#json api that returns { "name" : "John Doe" } </span>
+    <span class="n">expect_json</span><span class="p">({</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">"John Doe"</span><span class="p">})</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>When calling expect_json_types, these are the valid types that can be tested against:</p>
+
+<ul>
+<li>
+<code>:int</code> or <code>:integer</code>
+</li>
+<li><code>:float</code></li>
+<li>
+<code>:bool</code> or <code>:boolean</code>
+</li>
+<li><code>:string</code></li>
+<li><code>:object</code></li>
+<li><code>:array</code></li>
+<li>
+<code>:array_of_integers</code> or <code>:array_of_ints</code>
+</li>
+<li><code>:array_of_floats</code></li>
+<li><code>:array_of_strings</code></li>
+<li>
+<code>:array_of_booleans</code> or <code>:array_of_bools</code>
+</li>
+<li><code>:array_of_objects</code></li>
+<li><code>:array_of_arrays</code></li>
+</ul><p>If the properties are optional and may not appear in the response, you can append <code>_or_null</code> to the types above.</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">describe</span> <span class="s1">'sample spec'</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="s1">'should validate types'</span> <span class="k">do</span>
+    <span class="n">get</span> <span class="s1">'http://example.com/api/v1/simple_get'</span> <span class="c1">#json api that returns { "name" : "John Doe" } or { "name" : "John Doe", "age" : 45 }</span>
+    <span class="n">expect_json_types</span><span class="p">({</span><span class="nb">name</span><span class="p">:</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">age</span><span class="p">:</span> <span class="ss">:int_or_null</span><span class="p">})</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>Additionally, if an entire object could be null, but you'd still want to test the types if it does exist, you can wrap the expectations in a call to <code>optional</code>:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">it</span> <span class="s1">'should allow optional nested hash'</span> <span class="k">do</span>
+  <span class="n">get</span> <span class="s1">'/simple_path_get'</span> <span class="c1">#may or may not return coordinates</span>
+  <span class="n">expect_json_types</span><span class="p">(</span><span class="s2">"address.coordinates"</span><span class="p">,</span> <span class="n">optional</span><span class="p">({</span><span class="ss">latitude</span><span class="p">:</span> <span class="ss">:float</span><span class="p">,</span> <span class="ss">longitude</span><span class="p">:</span> <span class="ss">:float</span><span class="p">}))</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>Additionally, when calling <code>expect_json</code>, you can provide a regex pattern in a call to <code>regex</code>:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">describe</span> <span class="s1">'sample spec'</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="s1">'should validate types'</span> <span class="k">do</span>
+    <span class="n">get</span> <span class="s1">'http://example.com/api/v1/simple_get'</span> <span class="c1">#json api that returns { "name" : "John Doe" }</span>
+    <span class="n">expect_json</span><span class="p">({</span><span class="nb">name</span><span class="p">:</span> <span class="n">regex</span><span class="p">(</span><span class="s2">"^John"</span><span class="p">)})</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>When calling <code>expect_json</code> or <code>expect_json_types</code>, you can optionally provide a block and run your own <code>rspec</code> expectations:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">describe</span> <span class="s1">'sample spec'</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="s1">'should validate types'</span> <span class="k">do</span>
+    <span class="n">get</span> <span class="s1">'http://example.com/api/v1/simple_get'</span> <span class="c1">#json api that returns { "name" : "John Doe" }</span>
+    <span class="n">expect_json</span><span class="p">({</span><span class="nb">name</span><span class="p">:</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nb">name</span><span class="p">){</span><span class="n">expect</span><span class="p">(</span><span class="nb">name</span><span class="o">.</span><span class="n">length</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">eq</span><span class="p">(</span><span class="mi">8</span><span class="p">)}})</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<h2>
+<a name="making-requests" class="anchor" href="#making-requests"><span class="octicon octicon-link"></span></a>Making requests</h2>
+
+<p>Airborne uses <code>rest_client</code> to make the HTTP request, and supports all HTTP verbs. When creating a test, you can call any of the following methods: <code>get</code>, <code>post</code>, <code>put</code>, <code>patch</code>, <code>delete</code>. This will then give you access the following properties:</p>
+
+<ul>
+<li>
+<code>response</code> - The HTTP response returned from the request</li>
+<li>
+<code>headers</code> - A symbolized hash of the response headers returned by the request</li>
+<li>
+<code>body</code> - The raw HTTP body returned from the request</li>
+<li>
+<code>json_body</code> - A symbolized hash representation of the JSON returned by the request</li>
+</ul><p>For example:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">it</span> <span class="s1">'should validate types'</span> <span class="k">do</span>
+  <span class="n">get</span> <span class="s1">'http://example.com/api/v1/simple_get'</span> <span class="c1">#json api that returns { "name" : "John Doe" } </span>
+  <span class="nb">name</span> <span class="o">=</span> <span class="n">json_body</span><span class="o">[</span><span class="ss">:name</span><span class="o">]</span> <span class="c1">#name will equal "John Doe"</span>
+  <span class="n">body_as_string</span> <span class="o">=</span> <span class="n">body</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>When calling any of the methods above, you can pass request headers to be used. </p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">get</span> <span class="s1">'http://example.com/api/v1/my_api'</span><span class="p">,</span> <span class="p">{</span><span class="s1">'x-auth-token'</span> <span class="o">=&gt;</span> <span class="s1">'my_token'</span><span class="p">}</span>
+</pre></div>
+
+<p>For requests that require a body (<code>post</code>, <code>put</code>, <code>patch</code>) you can pass the body as a hash as well:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">post</span> <span class="s1">'http://example.com/api/v1/my_api'</span><span class="p">,</span> <span class="p">{</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s1">'John Doe'</span><span class="p">},</span> <span class="p">{</span><span class="s1">'x-auth-token'</span> <span class="o">=&gt;</span> <span class="s1">'my_token'</span><span class="p">}</span>
+</pre></div>
+
+<h2>
+<a name="testing-rack-applications" class="anchor" href="#testing-rack-applications"><span class="octicon octicon-link"></span></a>Testing Rack Applications</h2>
+
+<p>If you have an existing Rack application like <code>sinatra</code> or <code>grape</code> you can run Airborne against your application and test without actually having a server running. To do that, just specify your rack application in your Airborne configuration:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Airborne</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">rack_app</span> <span class="o">=</span> <span class="no">MySinatraApp</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>Under the covers, Airborne uses <a href="https://github.com/brynary/rack-test">rack-test</a> to make the requests. (Rails applications are still not working correctly, support for Rails will come soon!)</p>
+
+<h2>
+<a name="api" class="anchor" href="#api"><span class="octicon octicon-link"></span></a>API</h2>
+
+<ul>
+<li>
+<code>expect_json_types</code> - Tests the types of the JSON property values returned</li>
+<li>
+<code>expect_json</code> - Tests the values of the JSON property values returned</li>
+<li>
+<code>expect_json_keys</code> - Tests the existence of the specified keys in the JSON object</li>
+<li>
+<code>expect_status</code> - Tests the HTTP status code returned</li>
+<li>
+<code>expect_header</code> - Tests for a specified header in the response</li>
+<li>
+<code>expect_header_contains</code> - Partial match test on a specified header</li>
+</ul><h2>
+<a name="path-matching" class="anchor" href="#path-matching"><span class="octicon octicon-link"></span></a>Path Matching</h2>
+
+<p>When calling <code>expect_json_types</code>, <code>expect_json</code> or <code>expect_json_keys</code> you can optionally specify a path as a first parameter. </p>
+
+<p>For example, if our API returns the following JSON:</p>
+
+<div class="highlight highlight-json"><pre><span class="p">{</span>
+  <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"Alex"</span><span class="p">,</span>
+  <span class="nt">"address"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">"street"</span><span class="p">:</span> <span class="s2">"Area 51"</span><span class="p">,</span>
+    <span class="nt">"city"</span><span class="p">:</span> <span class="s2">"Roswell"</span><span class="p">,</span>
+    <span class="nt">"state"</span><span class="p">:</span> <span class="s2">"NM"</span><span class="p">,</span>
+    <span class="nt">"coordinates"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">"latitude"</span><span class="p">:</span> <span class="mf">33.3872</span><span class="p">,</span>
+      <span class="nt">"longitude"</span><span class="p">:</span> <span class="mf">104.5281</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>This test would only test the address object:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">describe</span> <span class="s1">'path spec'</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="s1">'should allow simple path and verify only that path'</span> <span class="k">do</span>
+    <span class="n">get</span> <span class="s1">'http://example.com/api/v1/simple_path_get'</span>
+    <span class="n">expect_json_types</span><span class="p">(</span><span class="s1">'address'</span><span class="p">,</span> <span class="p">{</span><span class="ss">street</span><span class="p">:</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">city</span><span class="p">:</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">state</span><span class="p">:</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">coordinates</span><span class="p">:</span> <span class="ss">:object</span> <span class="p">})</span>
+    <span class="c1">#or this</span>
+    <span class="n">expect_json_types</span><span class="p">(</span><span class="s1">'address'</span><span class="p">,</span> <span class="p">{</span><span class="ss">street</span><span class="p">:</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">city</span><span class="p">:</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">state</span><span class="p">:</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">coordinates</span><span class="p">:</span> <span class="p">{</span> <span class="ss">latitude</span><span class="p">:</span> <span class="ss">:float</span><span class="p">,</span> <span class="ss">longitude</span><span class="p">:</span> <span class="ss">:float</span> <span class="p">}</span> <span class="p">})</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>Or, to test the existence of specific keys:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">it</span> <span class="s1">'should allow nested paths'</span> <span class="k">do</span>
+  <span class="n">get</span> <span class="s1">'http://example.com/api/v1/simple_path_get'</span>
+  <span class="n">expect_json_keys</span><span class="p">(</span><span class="s1">'address'</span><span class="p">,</span> <span class="o">[</span><span class="ss">:street</span><span class="p">,</span> <span class="ss">:city</span><span class="p">,</span> <span class="ss">:state</span><span class="p">,</span> <span class="ss">:coordinates</span><span class="o">]</span><span class="p">)</span>    
+<span class="k">end</span>
+</pre></div>
+
+<p>Alternativley, if we only want to test <code>coordinates</code> we can dot into just the <code>coordinates</code>:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">it</span> <span class="s1">'should allow nested paths'</span> <span class="k">do</span>
+  <span class="n">get</span> <span class="s1">'http://example.com/api/v1/simple_path_get'</span>
+  <span class="n">expect_json</span><span class="p">(</span><span class="s1">'address.coordinates'</span><span class="p">,</span> <span class="p">{</span><span class="ss">latitude</span><span class="p">:</span> <span class="mi">33</span><span class="o">.</span><span class="mi">3872</span><span class="p">,</span> <span class="ss">longitude</span><span class="p">:</span> <span class="mi">104</span><span class="o">.</span><span class="mi">5281</span><span class="p">}</span> <span class="p">)</span>     
+<span class="k">end</span>
+</pre></div>
+
+<p>When dealing with <code>arrays</code>, we can optionally test all (<code>*</code>) or a single (<code>?</code> - any, <code>0</code> - index) element of the array:</p>
+
+<p>Given the following JSON:</p>
+
+<div class="highlight highlight-json"><pre><span class="p">{</span>
+  <span class="nt">"cars"</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">"make"</span><span class="p">:</span> <span class="s2">"Tesla"</span><span class="p">,</span>
+      <span class="nt">"model"</span><span class="p">:</span> <span class="s2">"Model S"</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">"make"</span><span class="p">:</span> <span class="s2">"Lamborghini"</span><span class="p">,</span>
+      <span class="nt">"model"</span><span class="p">:</span> <span class="s2">"Aventador"</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>We can test against just the first car like this:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">it</span> <span class="s1">'should index into array and test against specific element'</span> <span class="k">do</span> 
+  <span class="n">get</span> <span class="s1">'/array_api'</span>
+  <span class="n">expect_json</span><span class="p">(</span><span class="s1">'cars.0'</span><span class="p">,</span> <span class="p">{</span><span class="ss">make</span><span class="p">:</span> <span class="s2">"Tesla"</span><span class="p">,</span> <span class="ss">model</span><span class="p">:</span> <span class="s2">"Model S"</span><span class="p">})</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>To test the types of all elements in the array:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="n">it</span> <span class="s1">'should test all elements of the array'</span> <span class="k">do</span> 
+  <span class="n">get</span> <span class="s1">'http://example.com/api/v1/array_api'</span>
+  <span class="n">expect_json</span><span class="p">(</span><span class="s1">'cars.?'</span><span class="p">,</span> <span class="p">{</span><span class="ss">make</span><span class="p">:</span> <span class="s2">"Tesla"</span><span class="p">,</span> <span class="ss">model</span><span class="p">:</span> <span class="s2">"Model S"</span><span class="p">})</span> <span class="c1"># tests that one car in array matches the tesla</span>
+  <span class="n">expect_json_types</span><span class="p">(</span><span class="s1">'cars.*'</span><span class="p">,</span> <span class="p">{</span><span class="ss">make</span><span class="p">:</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">model</span><span class="p">:</span> <span class="ss">:string</span><span class="p">})</span> <span class="c1"># tests all cars in array for make and model of type string</span>
+<span class="k">end</span>
+</pre></div>
+
+<p><code>*</code> and <code>?</code> work for nested arrays as well. Given the following JSON:</p>
+
+<div class="highlight highlight-json"><pre><span class="p">{</span>
+  <span class="nt">"cars"</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">"make"</span><span class="p">:</span> <span class="s2">"Tesla"</span><span class="p">,</span>
+      <span class="nt">"model"</span><span class="p">:</span> <span class="s2">"Model S"</span><span class="p">,</span>
+      <span class="nt">"owners"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"Bart Simpson"</span>
+        <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">"make"</span><span class="p">:</span> <span class="s2">"Lamborghini"</span><span class="p">,</span>
+      <span class="nt">"model"</span><span class="p">:</span> <span class="s2">"Aventador"</span><span class="p">,</span>
+      <span class="nt">"owners"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"Peter Griffin"</span>
+        <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+<h1></h1>
+
+<div class="highlight highlight-ruby"><pre><span class="n">it</span> <span class="s1">'should check all nested arrays for specified elements'</span> <span class="k">do</span>
+  <span class="n">get</span> <span class="s1">'http://example.com/api/v1/array_with_nested'</span>
+  <span class="n">expect_json_types</span><span class="p">(</span><span class="s1">'cars.*.owners.*'</span><span class="p">,</span> <span class="p">{</span><span class="nb">name</span><span class="p">:</span> <span class="ss">:string</span><span class="p">})</span>
+<span class="k">end</span>
+</pre></div>
+
+<h2>
+<a name="configuration" class="anchor" href="#configuration"><span class="octicon octicon-link"></span></a>Configuration</h2>
+
+<p>When setting up Airborne, you can call <code>configure</code> just like you would with <code>rspec</code>:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="c1">#config is the RSpec configuration and can be used just like it</span>
+<span class="no">Airborne</span><span class="o">.</span><span class="n">configure</span><span class="o">.</span><span class="n">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="n">config</span><span class="o">.</span><span class="n">include</span> <span class="no">MyModule</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>Additionally, you can specify a <code>base_url</code> and default <code>headers</code> to be used on every request (unless overridden in the actual request):</p>
+
+<div class="highlight highlight-ruby"><pre><span class="no">Airborne</span><span class="o">.</span><span class="n">configure</span><span class="o">.</span><span class="n">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="n">config</span><span class="o">.</span><span class="n">base_url</span> <span class="o">=</span> <span class="s1">'http://example.com/api/v1'</span>
+  <span class="n">config</span><span class="o">.</span><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'x-auth-token'</span> <span class="o">=&gt;</span> <span class="s1">'my_token'</span><span class="p">}</span>
+<span class="k">end</span>
+
+<span class="n">describe</span> <span class="s1">'spec'</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="s1">'now we no longer need the full url'</span> <span class="k">do</span>
+    <span class="n">get</span> <span class="s1">'/simple_get'</span>
+    <span class="n">expect_json_types</span><span class="p">({</span><span class="nb">name</span><span class="p">:</span> <span class="ss">:string</span><span class="p">})</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<h3>
+<a name="run-it-from-the-cli" class="anchor" href="#run-it-from-the-cli"><span class="octicon octicon-link"></span></a>Run it from the CLI</h3>
+
+<pre><code>$ cd your/project
+$ rspec spec
+</code></pre>
+
+<h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>The MIT License</p>
+
+<p>Copyright (c) 2014 brooklyndev, sethpollack</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+        </section>
+
+        <footer>
+          Airborne is maintained by <a href="https://github.com/brooklynDev">brooklynDev</a><br>
+          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
