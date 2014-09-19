@@ -6,23 +6,23 @@ module StubHelper
 		@base_url = 'http://www.example.com/'
 	end
 
-	def mock_get(url, response_headers = {})
-		stub_request(:get, @base_url + url).to_return(headers: response_headers, body: get_json_response_file(url))
+	def mock_get(url, response_headers = {}, status = 200)
+		stub_request(:get, @base_url + url).to_return(headers: response_headers, body: get_json_response_file(url), status: status)
 	end
 
-	def mock_post(url, options = {})
+	def mock_post(url, options = {}, status = 200)
 		stub_request(:post, @base_url + url).with(body: options[:request_body] || {})
-			.to_return(headers: options[:response_headers] || {}, body: get_json_response_file(url))
+			.to_return(headers: options[:response_headers] || {}, body: get_json_response_file(url), status: status)
 	end
 
-	def mock_put(url, options = {})
+	def mock_put(url, options = {}, status = 200)
 		stub_request(:put, @base_url + url).with(body: options[:request_body] || {})
-			.to_return(headers: options[:response_headers] || {}, body: get_json_response_file(url))
+			.to_return(headers: options[:response_headers] || {}, body: get_json_response_file(url), status: status)
 	end
 
-	def mock_patch(url, options = {})
+	def mock_patch(url, options = {}, status = 200)
 		stub_request(:patch, @base_url + url).with(body: options[:request_body] || {})
-			.to_return(headers: options[:response_headers] || {}, body: get_json_response_file(url))
+			.to_return(headers: options[:response_headers] || {}, body: get_json_response_file(url), status: status)
 	end
 
 	def mock_delete(url)

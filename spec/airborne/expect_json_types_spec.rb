@@ -25,6 +25,12 @@ describe 'expect_json_types' do
 		expect_json_types('address', {street: :string, city: :string, state: :string})
 	end
 
+	it 'should allow full object graph' do
+		mock_get('simple_path_get')
+		get '/simple_path_get'
+		expect_json_types({name: :string, address: {street: :string, city: :string, state: :string}})
+	end
+
 	it 'should allow nested paths' do
 		mock_get('simple_nested_path')
 		get '/simple_nested_path'
