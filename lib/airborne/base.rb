@@ -11,10 +11,10 @@ module Airborne
 	end
 
 	def self.included(base)
-		if (!Airborne.configuration.requester_type.nil? && Airborne.configuration.requester_type == :rack_test)
-			base.send(:include, RackTestRequester)
-		elsif(!Airborne.configuration.requester_module.nil?)
+		if(!Airborne.configuration.requester_module.nil?)
 			base.send(:include, Airborne.configuration.requester_module)
+		elsif(!Airborne.configuration.rack_app.nil?)
+			base.send(:include, RackTestRequester)
 		else
 			base.send(:include, RestClientRequester)
 		end
