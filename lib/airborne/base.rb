@@ -1,4 +1,5 @@
 require 'json'
+require 'active_support/core_ext'
 
 module Airborne
 	include RequestExpectations
@@ -69,7 +70,7 @@ module Airborne
 	def set_response(res)
 		@response = res
 		@body = res.body
-		@headers = res.headers
+		@headers = HashWithIndifferentAccess.new(res.headers.deep_symbolize_keys) unless res.headers.nil?
 		begin
 			@json_body = JSON.parse(res.body, symbolize_names: true) unless res.body.empty?
 		rescue

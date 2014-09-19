@@ -13,11 +13,12 @@ describe 'base spec' do
 		expect(headers).to_not be(nil)		
 	end
 
-	it 'when request is made headers should be symbolized hash' do
+	it 'when request is made headers should be hash with indifferent access' do
 		mock_get('simple_get', {'Content-Type' => 'application/json'})
 		get '/simple_get'
 		expect(headers).to be_kind_of(Hash)
-		expect(headers.first[0]).to be_kind_of(Symbol)		
+		expect(headers[:content_type]).to eq('application/json')
+		expect(headers['content_type']).to eq('application/json')
 	end	
 
 	it 'when request is made body should be set' do
