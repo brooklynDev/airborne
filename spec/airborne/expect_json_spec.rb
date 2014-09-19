@@ -18,6 +18,12 @@ describe 'expect_json' do
 		get '/simple_path_get'
 		expect_json('address', {street: "Area 51", city: "Roswell", state: "NM"})
 	end
+	
+	it 'should allow full object graph' do
+		mock_get('simple_path_get')
+		get '/simple_path_get'
+		expect_json({name: "Alex", address: {street: "Area 51", city: "Roswell", state: "NM"}})
+	end
 
 	it 'should allow nested paths' do
 		mock_get('simple_nested_path')
