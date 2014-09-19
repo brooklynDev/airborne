@@ -67,7 +67,7 @@ Additionally, if an entire object could be null, but you'd still want to test th
 ```ruby
 it 'should allow optional nested hash' do
   get '/simple_path_get' #may or may not return coordinates
-  expect_json_types("address.coordinates", optional({lattitude: :float, longitutde: :float}))
+  expect_json_types("address.coordinates", optional({latitude: :float, longitude: :float}))
 end
 ```
 
@@ -124,7 +124,7 @@ post 'http://example.com/api/v1/my_api', {:name => 'John Doe'}, {'x-auth-token' 
 
 ##Path Matching
 
-When calling `expect_json_types`, `expect_json` or `expect_json_keys` you can optionaly specify a path as a first parameter. 
+When calling `expect_json_types`, `expect_json` or `expect_json_keys` you can optionally specify a path as a first parameter. 
 
 For example, if our API returns the following JSON:
 
@@ -136,7 +136,7 @@ For example, if our API returns the following JSON:
     "city": "Roswell",
     "state": "NM",
     "coordinates": {
-      "lattitude": 33.3872,
+      "latitude": 33.3872,
       "longitude": 104.5281
     }
   }
@@ -151,7 +151,7 @@ describe 'path spec' do
     get 'http://example.com/api/v1/simple_path_get'
     expect_json_types('address', {street: :string, city: :string, state: :string, coordinates: :object })
     #or this
-    expect_json_types('address', {street: :string, city: :string, state: :string, coordinates: { lattitude: :float, longitude: :float } })
+    expect_json_types('address', {street: :string, city: :string, state: :string, coordinates: { latitude: :float, longitude: :float } })
   end
 end
 ```
@@ -169,7 +169,7 @@ Alternativley, if we only want to test `coordinates` we can dot into just the `c
 ```ruby
 it 'should allow nested paths' do
   get 'http://example.com/api/v1/simple_path_get'
-  expect_json('address.coordinates', {lattitude: 33.3872, longitutde: 104.5281} )     
+  expect_json('address.coordinates', {latitude: 33.3872, longitude: 104.5281} )     
 end
 ```
 
@@ -258,7 +258,7 @@ Airborne.configure.do |config|
 end
 ```
 
-Additionally, you can specify a `base_url` and default `headers` to be used on every request (unless overriden in the actual request):
+Additionally, you can specify a `base_url` and default `headers` to be used on every request (unless overridden in the actual request):
 
 ```ruby
 Airborne.configure.do |config|
