@@ -112,6 +112,18 @@ For requests that require a body (`post`, `put`, `patch`) you can pass the body 
 ```ruby
 post 'http://example.com/api/v1/my_api', {:name => 'John Doe'}, {'x-auth-token' => 'my_token'}
 ```
+
+##Testing Rack Applications
+
+If you have an existing Rack application like `sinatra` or `grape` you can run Airborne against your application and test without actually having a server running. To do that, just specify your rack application in your Airborne configuration:
+
+```ruby
+Airborne.configure do |config|
+    config.rack_app = MySinatraApp
+end
+```
+
+Under the covers, Airborne uses [rack-test](https://github.com/brynary/rack-test) to make the requests. (Rails applications are still not working correctly, support for Rails will come soon!)
   
 ##API
 
