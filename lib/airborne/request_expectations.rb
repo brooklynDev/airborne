@@ -122,10 +122,9 @@ module Airborne
 				elsif expected_value.class == Regexp
 					expect(actual_value).to match(expected_value)
 				else
-					expect(expected_value).to eq(actual_value)
+					expect(actual_value).to eq(expected_value)
 				end
 			end
 		end
-
 	end
 end
