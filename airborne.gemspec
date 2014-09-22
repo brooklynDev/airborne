@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'airborne'
-  s.version     = '0.0.11'
+  s.version     = '0.0.19'
   s.date        = '2014-09-12'
   s.summary = "RSpec driven API testing framework"
   s.authors     = ["Alex Friedman", "Seth Pollack"]
@@ -10,5 +10,7 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
   s.add_runtime_dependency 'rspec', '~> 3.1', '>= 3.1.0'
   s.add_runtime_dependency 'rest-client', '~> 1.7', '>= 1.7.2'
+  s.add_runtime_dependency 'rack-test', '~> 0.6', '>= 0.6.2'
+  s.add_runtime_dependency 'activesupport', '~> 4.1.6', '>= 4.1.6'
   s.add_development_dependency 'webmock', '~> 0'
 end

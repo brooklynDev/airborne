@@ -1,3 +1,5 @@
+require 'coveralls'
+Coveralls.wear!
 require 'airborne'
 require 'stub_helper'
 

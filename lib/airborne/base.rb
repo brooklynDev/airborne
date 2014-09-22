@@ -1,5 +1,5 @@
-require 'rest_client'
 require 'json'
+require 'active_support/core_ext'
 
 module Airborne
 	include RequestExpectations
@@ -10,28 +10,38 @@ module Airborne
 		end
 	end
 
+	def self.included(base)
+		if(!Airborne.configuration.requester_module.nil?)
+			base.send(:include, Airborne.configuration.requester_module)
+		elsif(!Airborne.configuration.rack_app.nil?)
+			base.send(:include, RackTestRequester)
+		else
+			base.send(:include, RestClientRequester)
+		end
+	end
+
 	def self.configuration
 		RSpec.configuration
 	end
 
 	def get(url, headers = nil)
-		make_request(:get, url, {headers: headers})
+		set_response(make_request(:get, url, {headers: headers}))
 	end
 
 	def post(url, post_body = nil, headers = nil)
-		make_request(:post, url, {body: post_body, headers: headers})
+		set_response(make_request(:post, url, {body: post_body, headers: headers}))
 	end
 
 	def patch(url, patch_body = nil, headers = nil )
-		make_request(:patch, url, {body: patch_body, headers: headers})
+		set_response(make_request(:patch, url, {body: patch_body, headers: headers}))
 	end
 
 	def put(url, put_body = nil, headers = nil )
-		make_request(:put, url, {body: put_body, headers: headers})
+		set_response(make_request(:put, url, {body: put_body, headers: headers}))
 	end
 
 	def delete(url, headers = nil)
-		make_request(:delete, url, {headers: headers})
+		set_response(make_request(:delete, url, {headers: headers}))
 	end
 
 	def response
@@ -52,15 +62,6 @@ module Airborne
 
 	private
 
-	def make_request(method, url, options = {})
-		res = unless options[:body].nil?
-			RestClient.send(method, get_url(url), options[:body], options[:headers] || Airborne.configuration.headers || {})
-		else
-			RestClient.send(method, get_url(url), options[:headers] || Airborne.configuration.headers || {})
-		end
-		set_response(res)
-	end
-
 	def get_url(url)
 		base = Airborne.configuration.base_url || ""
 		base + url
@@ -69,7 +70,10 @@ module Airborne
 	def set_response(res)
 		@response = res
 		@body = res.body
-		@headers = res.headers
-		@json_body = JSON.parse(res.body, symbolize_names: true) unless res.body == ""
+		@headers = HashWithIndifferentAccess.new(res.headers.deep_symbolize_keys) unless res.headers.nil?
+		begin
+			@json_body = JSON.parse(res.body, symbolize_names: true) unless res.body.empty?
+		rescue
+		end
 	end
 end

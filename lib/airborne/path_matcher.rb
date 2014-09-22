@@ -7,9 +7,9 @@ module Airborne
 				if part == '*' || part == '?'
 					type = part
 					raise "Expected #{path} to be array got #{json.class} from JSON response" unless json.class == Array
-					if index < parts.length - 1
+					if index < parts.length.pred
 						json.each do |element|
-							sub_path = parts[(index + 1)..(parts.length-1)].join('.')
+							sub_path = parts[(index.next)...(parts.length)].join('.')
 							get_by_path(sub_path, element, &block)
 						end
 						return
@@ -21,7 +21,7 @@ module Airborne
 					json = json[part]
 				else
 					json = json[part.to_sym]
-					raise "Expected #{path} to be object or array got #{json.class} from JSON response" unless json.class == Array || json.class == Hash
+					raise "Expected #{path} to be object or array got #{json.class} from JSON response" unless [Array, Hash, NilClass].include?(json.class)
 				end
 			end
 			if type == '*'

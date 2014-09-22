@@ -25,6 +25,12 @@ describe 'expect_json_types' do
 		expect_json_types('address', {street: :string, city: :string, state: :string})
 	end
 
+	it 'should allow full object graph' do
+		mock_get('simple_path_get')
+		get '/simple_path_get'
+		expect_json_types({name: :string, address: {street: :string, city: :string, state: :string}})
+	end
+
 	it 'should allow nested paths' do
 		mock_get('simple_nested_path')
 		get '/simple_nested_path'
@@ -77,5 +83,29 @@ describe 'expect_json_types' do
 		mock_get('array_response')
 		get '/array_response'
 		expect_json_types("*", {name: :string})
+	end
+
+	it 'should allow empty array' do
+		mock_get('array_of_values')
+		get '/array_of_values'
+		expect_json_types({emptyArray: :array_of_ints})
+	end	
+
+	it 'should test optional nested hash when exists' do
+		mock_get('simple_nested_path')
+		get '/simple_nested_path'
+		expect_json_types("address.coordinates", optional({lattitude: :float, longitutde: :float}))
+	end
+
+	it 'should allow optional nested hash' do
+		mock_get('simple_path_get')
+		get '/simple_path_get'
+		expect_json_types("address.coordinates", optional({lattitude: :float, longitutde: :float}))
+	end
+
+	it 'should invoke proc passed in' do
+		mock_get('simple_get')
+		get '/simple_get'
+		expect_json_types({name: -> (name){expect(name.length).to eq(4)}})
 	end
 end

@@ -18,6 +18,12 @@ describe 'expect_json' do
 		get '/simple_path_get'
 		expect_json('address', {street: "Area 51", city: "Roswell", state: "NM"})
 	end
+	
+	it 'should allow full object graph' do
+		mock_get('simple_path_get')
+		get '/simple_path_get'
+		expect_json({name: "Alex", address: {street: "Area 51", city: "Roswell", state: "NM"}})
+	end
 
 	it 'should allow nested paths' do
 		mock_get('simple_nested_path')
@@ -36,6 +42,24 @@ describe 'expect_json' do
 		get '/array_with_index'
 		expect_json('cars.?', {make: "Tesla", model: "Model S"})
 		expect_json('cars.?', {make: "Lamborghini", model: "Aventador"})
-	end	
+	end
+
+	it 'should invoke proc passed in' do
+		mock_get('simple_get')
+		get '/simple_get'
+		expect_json({name: -> (name){expect(name.length).to eq(4)}})
+	end
+
+	it 'should test against regex' do
+		mock_get('simple_get')
+		get '/simple_get'
+		expect_json({name: regex("^A")})
+	end
+
+	it 'should raise an error if regex does not match' do
+		mock_get('simple_get')
+		get '/simple_get'
+		expect{expect_json({name: regex("^B")})}.to raise_error
+	end
 
 end

@@ -29,7 +29,6 @@ module Airborne
 
 		def expect_header(key, content)
 			header = headers[key]
-			expect(header).to_not be_nil
 			if header
 				expect(header.downcase).to eq(content.downcase)
 			else
@@ -39,12 +38,19 @@ module Airborne
 
 		def expect_header_contains(key, content)
 			header = headers[key]
-			expect(header).to_not be_nil
 			if header
 				expect(header.downcase).to include(content.downcase)
 			else
 				raise "Header #{key} not present in HTTP response"
 			end
+		end
+
+		def optional(hash)
+			OptionalHashTypeExpectations.new(hash)
+		end
+
+		def regex(reg)
+			Regexp.new(reg)
 		end
 
 		private
@@ -87,11 +93,14 @@ module Airborne
 		end
 
 		def expect_json_types_impl(expectations, hash)
+			return if expectations.class == Airborne::OptionalHashTypeExpectations && hash.nil?
 			@mapper ||= get_mapper
 			expectations.each do |prop_name, expected_type|
 				value = hash[prop_name]
-				if expected_type.class == Hash
+				if expected_type.class == Hash || expected_type.class ==  Airborne::OptionalHashTypeExpectations
 					expect_json_types_impl(expected_type, value)
+				elsif expected_type.class == Proc
+					expected_type.call(value)
 				elsif expected_type.to_s.include?("array_of")
 					expect(value.class).to eq(Array), "Expected #{prop_name} to be of type #{expected_type}, got #{value.class} instead"
 					value.each do |val|
@@ -106,13 +115,16 @@ module Airborne
 		def expect_json_impl(expectations, hash)
 			expectations.each do |prop_name, expected_value|
 				actual_value = hash[prop_name]
-				if(expected_value.class == Hash)
+				if expected_value.class == Hash
 					expect_json_impl(expected_value, actual_value)
+				elsif expected_value.class == Proc
+					expected_value.call(actual_value)
+				elsif expected_value.class == Regexp
+					expect(actual_value).to match(expected_value)
 				else
-					expect(expected_value).to eq(actual_value)
+					expect(actual_value).to eq(expected_value)
 				end
 			end
 		end
-
 	end
 end
