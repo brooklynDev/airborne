@@ -62,7 +62,7 @@ GEM
     tins (1.3.3)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    webmock (1.18.0)
+    webmock (1.19.0)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
 
