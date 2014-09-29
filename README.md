@@ -134,7 +134,35 @@ Airborne.configure do |config|
 end
 ```
 
-Under the covers, Airborne uses [rack-test](https://github.com/brynary/rack-test) to make the requests. (Rails applications are still not working correctly, support for Rails will come soon!)
+Under the covers, Airborne uses [rack-test](https://github.com/brynary/rack-test) to make the requests. 
+
+##Rails Applications
+
+If you're testing and API you've written in Rails, Airborne plays along with `rspec-rails` using the following setup:
+
+In your `spec/rails_helper.rb` file, change RSpec configure to Airborne configure, and set the `rack_app` configuration setting to your Rails Application:
+
+```ruby
+Airborne.configure do |config|
+  config.rack_app = Rails.application
+end
+```
+
+Then, in your actual tests, since `rspec-rails` already has `get`, `post`, `put`... functions, you need to use `airborne_get`, `airborne_post` instead:
+
+```ruby
+require 'rails_helper'
+
+RSpec.describe FooController, :type => :controller do
+  describe "GET bar" do
+    it "returns correct types" do
+      airborne_get '/foo/bar.json'
+      expect_json_types({foo: :string})
+    end
+  end
+end
+```
+Just like with all other Rack applications, Airborne uses [rack-test](https://github.com/brynary/rack-test) to make the requests. 
   
 ##API
 

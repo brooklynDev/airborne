@@ -60,6 +60,16 @@ module Airborne
 		@json_body
 	end
 
+	alias_method :airborne_get, :get
+	alias_method :airborne_post, :post
+	alias_method :airborne_patch, :patch
+	alias_method :airborne_put, :put
+	alias_method :airborne_delete, :delete
+	alias_method :airborne_response, :response
+	alias_method :airborne_headers, :headers
+	alias_method :airborne_body, :body
+	alias_method :airborne_json_body, :json_body
+
 	private
 
 	def get_url(url)
