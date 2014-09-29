@@ -138,7 +138,7 @@ Under the covers, Airborne uses [rack-test](https://github.com/brynary/rack-test
 
 ##Rails Applications
 
-If you're testing and API you've written in Rails, Airborne plays along with `rspec-rails` using the following setup:
+If you're testing an API you've written in Rails, Airborne plays along with `rspec-rails` using the following setup:
 
 In your `spec/rails_helper.rb` file, change RSpec configure to Airborne configure, and set the `rack_app` configuration setting to your Rails Application:
 
