@@ -7,10 +7,10 @@ require 'airborne/base'
 
 
 RSpec.configure do |config|
-	config.include Airborne
-	config.add_setting :base_url
-	config.add_setting :headers
-	config.add_setting :rack_app
-	config.add_setting :requester_type
-	config.add_setting :requester_module
+  config.include Airborne
+  config.add_setting :base_url
+  config.add_setting :headers
+  config.add_setting :rack_app
+  config.add_setting :requester_type
+  config.add_setting :requester_module
 end
