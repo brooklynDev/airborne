@@ -6,21 +6,18 @@ module Airborne
     include PathMatcher
 
     def expect_json_types(*args)
-      set_rails_response
       call_with_path(args) do |param, body|
         expect_json_types_impl(param, body)
       end
     end
 
     def expect_json(*args)
-      set_rails_response
       call_with_path(args) do |param, body|
         expect_json_impl(param, body)
       end
     end
 
     def expect_json_keys(*args)
-      set_rails_response
       call_with_path(args) do |param, body|
         expect(body.keys).to include(*param)
       end
@@ -32,7 +29,6 @@ module Airborne
     end
 
     def expect_header(key, content)
-      set_rails_response
       header = headers[key]
       if header
         expect(header.downcase).to eq(content.downcase)
@@ -42,7 +38,6 @@ module Airborne
     end
 
     def expect_header_contains(key, content)
-      set_rails_response
       header = headers[key]
       if header
         expect(header.downcase).to include(content.downcase)
@@ -59,6 +54,14 @@ module Airborne
       Regexp.new(reg)
     end
 
+    [:expect_json_types, :expect_json, :expect_json_keys, :expect_status, :expect_header, :expect_header_contains].each do |method_name|
+        method = instance_method(method_name)
+        define_method(method_name) do |*args, &block|
+          set_rails_response
+          method.bind(self).(*args, &block)
+        end      
+    end
+   
     private
 
     def set_rails_response
