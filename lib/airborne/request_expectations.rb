@@ -6,28 +6,33 @@ module Airborne
     include PathMatcher
 
     def expect_json_types(*args)
+      set_response(@response) if @json_body.nil?
       call_with_path(args) do |param, body|
         expect_json_types_impl(param, body)
       end
     end
 
     def expect_json(*args)
+      set_response(@response) if @json_body.nil?
       call_with_path(args) do |param, body|
         expect_json_impl(param, body)
       end
     end
 
     def expect_json_keys(*args)
+      set_response(@response) if @json_body.nil?
       call_with_path(args) do |param, body|
         expect(body.keys).to include(*param)
       end
     end
 
     def expect_status(code)
+      set_response(@response) if @json_body.nil?
       expect(response.code).to eq(code)
     end
 
     def expect_header(key, content)
+      set_response(@response) if @json_body.nil?
       header = headers[key]
       if header
         expect(header.downcase).to eq(content.downcase)
@@ -37,6 +42,7 @@ module Airborne
     end
 
     def expect_header_contains(key, content)
+      set_response(@response) if @json_body.nil?
       header = headers[key]
       if header
         expect(header.downcase).to include(content.downcase)
