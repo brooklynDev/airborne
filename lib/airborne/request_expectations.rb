@@ -24,7 +24,6 @@ module Airborne
     end
 
     def expect_status(code)
-      set_rails_response
       expect(response.code).to eq(code)
     end
 
