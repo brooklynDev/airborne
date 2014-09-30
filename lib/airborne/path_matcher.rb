@@ -21,7 +21,7 @@ module Airborne
           json = json[part]
         else
           json = json[part.to_sym]
-          raise "Expected #{path} to be object or array got #{json.class} from JSON response" unless [Array, Hash, NilClass].include?(json.class)
+          raise "Expected #{path} to be an object, array, number or string got #{json.class} from JSON response" unless [Array, Hash, NilClass, String, Float, Fixnum].include?(json.class)
         end
       end
       if type == '*'
