@@ -125,6 +125,8 @@ module Airborne
     end
 
     def expect_json_impl(expectations, hash)
+      hash = hash.to_s if expectations.class == Regexp
+      return expect(hash).to match(expectations) if [String, Regexp, Float, Fixnum].include?(expectations.class)
       expectations.each do |prop_name, expected_value|
         actual_value = hash[prop_name]
         if expected_value.class == Hash
@@ -132,7 +134,7 @@ module Airborne
         elsif expected_value.class == Proc
           expected_value.call(actual_value)
         elsif expected_value.class == Regexp
-          expect(actual_value).to match(expected_value)
+          expect(actual_value.to_s).to match(expected_value)
         else
           expect(actual_value).to eq(expected_value)
         end

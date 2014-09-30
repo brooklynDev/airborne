@@ -62,4 +62,40 @@ describe 'expect_json' do
     expect{expect_json({name: regex("^B")})}.to raise_error
   end
 
+  it 'should allow regex(Regexp) to be tested against a path' do
+    mock_get('simple_nested_path')
+    get '/simple_nested_path'
+    expect_json('address.city', regex("^R") )   
+  end
+
+  it 'should allow strings(String) to be tested against a path' do
+    mock_get('simple_nested_path')
+    get '/simple_nested_path'
+    expect_json('address.city', "Roswell" )   
+  end
+
+  it 'should allow floats(Float) to be tested against a path' do
+    mock_get('simple_nested_path')
+    get '/simple_nested_path'
+    expect_json('address.coordinates.lattitude', 33.3872 )   
+  end
+
+  it 'should allow integers(Fixnum) to be tested against a path' do
+    mock_get('simple_get')
+    get '/simple_get'
+    expect_json('age', 32 )   
+  end
+
+  it 'should allow testing regex against numbers directly' do
+    mock_get('simple_nested_path')
+    get '/simple_nested_path'
+    expect_json('address.coordinates.lattitude', regex("^3") )   
+  end
+
+  it 'should allow testing regex against numbers in the hash' do
+    mock_get('simple_nested_path')
+    get '/simple_nested_path'
+    expect_json('address.coordinates', {lattitude: regex("^3")} )   
+  end
+
 end
