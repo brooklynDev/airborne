@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'expect_json' do
+describe 'expect_json regex' do
 
 	it 'should test against regex' do
 		mock_get('simple_get')

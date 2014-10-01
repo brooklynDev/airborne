@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'expect_json' do
+describe 'expect_json lambda' do
 
   it 'should invoke proc passed in' do
     mock_get('simple_get')

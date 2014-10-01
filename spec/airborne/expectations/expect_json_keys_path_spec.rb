@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'expect_json_keys' do
+describe 'expect_json_keys with path' do
 
   it 'should ensure json keys with path' do
     mock_get('simple_nested_path')
