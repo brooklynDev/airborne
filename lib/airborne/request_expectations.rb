@@ -54,13 +54,13 @@ module Airborne
     end
 
     [:expect_json_types, :expect_json, :expect_json_keys, :expect_status, :expect_header, :expect_header_contains].each do |method_name|
-        method = instance_method(method_name)
-        define_method(method_name) do |*args, &block|
-          set_rails_response
-          method.bind(self).(*args, &block)
-        end      
+      method = instance_method(method_name)
+      define_method(method_name) do |*args, &block|
+        set_rails_response
+        method.bind(self).(*args, &block)
+      end
     end
-   
+
     private
 
     def set_rails_response
@@ -107,6 +107,7 @@ module Airborne
     def expect_json_types_impl(expectations, hash)
       return if expectations.class == Airborne::OptionalHashTypeExpectations && hash.nil?
       @mapper ||= get_mapper
+      return expect(@mapper[expectations].include?(hash.class)).to eq(true) if expectations.class == Symbol
       expectations.each do |prop_name, expected_type|
         value = hash[prop_name]
         if expected_type.class == Hash || expected_type.class ==  Airborne::OptionalHashTypeExpectations
@@ -116,7 +117,7 @@ module Airborne
         elsif expected_type.to_s.include?("array_of")
           expect(value.class).to eq(Array), "Expected #{prop_name} to be of type #{expected_type}, got #{value.class} instead"
           value.each do |val|
-            expect(@mapper[expected_type].include?(val.class)).to eq(true), "Expected #{prop_name} to be of type #{expected_type}, got #{val.class} instead"  
+            expect(@mapper[expected_type].include?(val.class)).to eq(true), "Expected #{prop_name} to be of type #{expected_type}, got #{val.class} instead"
           end
         else
           expect(@mapper[expected_type].include?(value.class)).to eq(true), "Expected #{prop_name} to be of type #{expected_type}, got #{value.class} instead"
@@ -126,7 +127,7 @@ module Airborne
 
     def expect_json_impl(expectations, hash)
       hash = hash.to_s if expectations.class == Regexp
-      return expect(hash).to match(expectations) if [String, Regexp, Float, Fixnum].include?(expectations.class)
+      return expect(hash).to match(expectations) if [String, Regexp, Float, Fixnum, Bignum].include?(expectations.class)
       expectations.each do |prop_name, expected_value|
         actual_value = hash[prop_name]
         if expected_value.class == Hash

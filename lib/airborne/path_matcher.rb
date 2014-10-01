@@ -16,12 +16,11 @@ module Airborne
           end
           next
         end
-        if /^[\d]+(\.[\d]+){0,1}$/ === part
+        if part =~ /^[\d]+(\.[\d]+){0,1}$/
           part = part.to_i
           json = json[part]
         else
           json = json[part.to_sym]
-          raise "Expected #{path} to be an object, array, number or string got #{json.class} from JSON response" unless [Array, Hash, NilClass, String, Float, Fixnum].include?(json.class)
         end
       end
       if type == '*'

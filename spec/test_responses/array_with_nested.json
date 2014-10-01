@@ -1,15 +1,17 @@
 {
-	"cars": [{
-		"make": "Tesla",
-		"model": "Model S",
-		"owners": [{
-			"name": "Bart Simpson"
-		}]
-	}, {
-		"make": "Lamborghini",
-		"model": "Aventador",
-		"owners": [{
-			"name": "Peter Griffin"
-		}]
-	}]
+    "cars": [{
+        "make": "Tesla",
+        "model": "Model S",
+        "owners": [
+            {"name": "Bart Simpson"},
+            {"name": "Peter Griffin"}
+        ]
+    }, {
+        "make": "Lamborghini",
+        "model": "Aventador",
+        "owners": [
+            {"name": "Peter Griffin"},
+            {"name": "Bart Simpson"}
+        ]
+    }]
 }
