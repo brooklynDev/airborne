@@ -27,13 +27,49 @@ describe 'expect_json with path' do
 		expect_json('cars.?', {make: "Lamborghini", model: "Aventador"})
 	end
 
-	xit 'should test against properties in the array' do
+	it 'should test against properties in the array' do
 		mock_get('array_with_index')
 		get '/array_with_index'
 		expect_json('cars.?.make', "Tesla")
 	end
 
-	it 'should work' do
+	it 'should ensure at least one match' do
+		mock_get('array_with_index')
+		get '/array_with_index'
+		expect{expect_json('cars.?.make', "Teslas")}.to raise_error
+	end
+
+	it 'should check for at least one match' do
+    mock_get('array_with_nested')
+    get '/array_with_nested'
+    expect_json('cars.?.owners.?', {name: "Bart Simpson"})
+  end
+
+  it 'should ensure at least one match' do
+    mock_get('array_with_nested')
+    get '/array_with_nested'
+    expect{expect_json('cars.?.owners.?', {name: "Bart Simpsons"})}.to raise_error
+  end
+
+  it 'should check for one match that matches all ' do
+    mock_get('array_with_nested')
+    get '/array_with_nested'
+    expect_json('cars.?.owners.*', {name: "Bart Simpson"})
+  end
+
+    it 'should check for one match that matches all with lambda' do
+    mock_get('array_with_nested')
+    get '/array_with_nested'
+    expect_json('cars.?.owners.*', {name: -> (name){expect(name).to eq("Bart Simpson")}})
+  end
+
+  it 'should ensure one match that matches all' do
+    mock_get('array_with_nested')
+    get '/array_with_nested'
+    expect{expect_json('cars.?.owners.*', {name: "Bart Simpsons"})}.to raise_error
+  end
+
+	it 'should allow indexing' do
     mock_get('array_with_nested')
     get '/array_with_nested'
     expect_json('cars.0.owners.0', {name: "Bart Simpson"})

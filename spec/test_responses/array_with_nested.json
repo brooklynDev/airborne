@@ -3,15 +3,14 @@
         "make": "Tesla",
         "model": "Model S",
         "owners": [
-            {"name": "Bart Simpson"},
-            {"name": "Peter Griffin"}
+            {"name": "Bart Simpson"}
         ]
     }, {
         "make": "Lamborghini",
         "model": "Aventador",
         "owners": [
-            {"name": "Peter Griffin"},
-            {"name": "Bart Simpson"}
+            {"name": "Peter Griffin"}
+
         ]
     }]
 }
