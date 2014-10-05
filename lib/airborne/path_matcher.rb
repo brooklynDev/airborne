@@ -82,7 +82,7 @@ module Airborne
     end
 
     def ensure_match_one(path, item_count, error_count)
-      raise "Expected one object in path #{path} to match provided JSON values" if item_count == error_count
+      raise RSpec::Expectations::ExpectationNotMetError, "Expected one object in path #{path} to match provided JSON values" if item_count == error_count
     end
 
     def ensure_match_all(error)
@@ -90,7 +90,7 @@ module Airborne
     end
 
     def ensure_array(path, json)
-      raise "Expected #{path} to be array got #{json.class} from JSON response" unless json.class == Array
+      raise RSpec::Expectations::ExpectationNotMetError, "Expected #{path} to be array got #{json.class} from JSON response" unless json.class == Array
     end
 
   end

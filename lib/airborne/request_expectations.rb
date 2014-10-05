@@ -104,6 +104,7 @@ module Airborne
       mapper
     end
 
+
     def expect_json_types_impl(expectations, hash)
       return if expectations.class == Airborne::OptionalHashTypeExpectations && hash.nil?
       @mapper ||= get_mapper
@@ -127,19 +128,20 @@ module Airborne
 
     def expect_json_impl(expectations, hash)
       hash = hash.to_s if expectations.class == Regexp
-      return expect(hash).to match(expectations) if [String, Regexp, Float, Fixnum, Bignum].include?(expectations.class)
+      return expect(hash).to match(expectations) if is_property?(expectations)
       expectations.each do |prop_name, expected_value|
         actual_value = hash[prop_name]
-        if expected_value.class == Hash
-          expect_json_impl(expected_value, actual_value)
-        elsif expected_value.class == Proc
-          expected_value.call(actual_value)
-        elsif expected_value.class == Regexp
-          expect(actual_value.to_s).to match(expected_value)
-        else
+        expected_class = expected_value.class
+          next expect_json_impl(expected_value, actual_value) if expected_class == Hash
+          next expected_value.call(actual_value) if expected_class == Proc
+          next expect(actual_value.to_s).to match(expected_value) if expected_class == Regexp
           expect(actual_value).to eq(expected_value)
-        end
       end
     end
+
+    def is_property?(expectations)
+      [String, Regexp, Float, Fixnum, Bignum, TrueClass, FalseClass, NilClass].include?(expectations.class)
+    end
+
   end
 end
