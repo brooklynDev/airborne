@@ -115,14 +115,17 @@ module Airborne
         next expect_json_types_impl(expected_type, value) if is_hash?(expected_class)
         next expected_type.call(value) if expected_class == Proc
         if expected_type.to_s.include?("array_of")
-          expect_array(value_class, prop_name, expected_type)
-          value.each do |val|
-            value_class = val.class
-            ensure_type(expected_type, value_class, prop_name)
-          end
+          check_array_types(value, value_class, prop_name, expected_type)
         else
-          ensure_type(expected_type, value_class, prop_name)
+          expect_type(expected_type, value_class, prop_name)
         end
+      end
+    end
+
+    def check_array_types(value, value_class, prop_name, expected_type)
+      expect_array(value_class, prop_name, expected_type)
+      value.each do |val|
+        expect_type(expected_type, val.class, prop_name)
       end
     end
 
@@ -130,7 +133,7 @@ module Airborne
       expectations.class == Airborne::OptionalHashTypeExpectations && hash.nil?
     end
 
-    def ensure_type(expected_type, value_class, prop_name)
+    def expect_type(expected_type, value_class, prop_name)
       expect(@mapper[expected_type].include?(value_class)).to eq(true), "Expected #{prop_name} to be of type #{expected_type}\n, got #{value_class} instead"
     end
 
@@ -148,10 +151,10 @@ module Airborne
       expectations.each do |prop_name, expected_value|
         actual_value = hash[prop_name]
         expected_class = expected_value.class
-          next expect_json_impl(expected_value, actual_value) if expected_class == Hash
-          next expected_value.call(actual_value) if expected_class == Proc
-          next expect(actual_value.to_s).to match(expected_value) if expected_class == Regexp
-          expect(actual_value).to eq(expected_value)
+        next expect_json_impl(expected_value, actual_value) if expected_class == Hash
+        next expected_value.call(actual_value) if expected_class == Proc
+        next expect(actual_value.to_s).to match(expected_value) if expected_class == Regexp
+        expect(actual_value).to eq(expected_value)
       end
     end
 
