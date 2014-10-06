@@ -104,26 +104,42 @@ module Airborne
       mapper
     end
 
-
     def expect_json_types_impl(expectations, hash)
-      return if expectations.class == Airborne::OptionalHashTypeExpectations && hash.nil?
+      return if is_nil_optional_hash?(expectations, hash)
       @mapper ||= get_mapper
       return expect(@mapper[expectations].include?(hash.class)).to eq(true) if expectations.class == Symbol
       expectations.each do |prop_name, expected_type|
         value = hash[prop_name]
-        if expected_type.class == Hash || expected_type.class ==  Airborne::OptionalHashTypeExpectations
-          expect_json_types_impl(expected_type, value)
-        elsif expected_type.class == Proc
-          expected_type.call(value)
-        elsif expected_type.to_s.include?("array_of")
-          expect(value.class).to eq(Array), "Expected #{prop_name} to be of type #{expected_type}, got #{value.class} instead"
+        expected_class = expected_type.class
+        value_class = value.class
+        next expect_json_types_impl(expected_type, value) if is_hash?(expected_class)
+        next expected_type.call(value) if expected_class == Proc
+        if expected_type.to_s.include?("array_of")
+          expect_array(value_class, prop_name, expected_type)
           value.each do |val|
-            expect(@mapper[expected_type].include?(val.class)).to eq(true), "Expected #{prop_name} to be of type #{expected_type}, got #{val.class} instead"
+            value_class = val.class
+            ensure_type(expected_type, value_class, prop_name)
           end
         else
-          expect(@mapper[expected_type].include?(value.class)).to eq(true), "Expected #{prop_name} to be of type #{expected_type}, got #{value.class} instead"
+          ensure_type(expected_type, value_class, prop_name)
         end
       end
+    end
+
+    def is_nil_optional_hash?(expectations, hash)
+      expectations.class == Airborne::OptionalHashTypeExpectations && hash.nil?
+    end
+
+    def ensure_type(expected_type, value_class, prop_name)
+      expect(@mapper[expected_type].include?(value_class)).to eq(true), "Expected #{prop_name} to be of type #{expected_type}\n, got #{value_class} instead"
+    end
+
+    def is_hash?(expected_class)
+      expected_class == Hash || expected_class ==  Airborne::OptionalHashTypeExpectations
+    end
+
+    def expect_array(value_class, prop_name, expected_type)
+      expect(value_class).to eq(Array), "Expected #{prop_name}\n to be of type #{expected_type}\n, got #{value_class} instead"
     end
 
     def expect_json_impl(expectations, hash)
