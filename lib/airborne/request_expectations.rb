@@ -28,21 +28,11 @@ module Airborne
     end
 
     def expect_header(key, content)
-      header = headers[key]
-      if header
-        expect(header.downcase).to eq(content.downcase)
-      else
-        raise "Header #{key} not present in HTTP response"
-      end
+      expect_header_impl(key, content)
     end
 
     def expect_header_contains(key, content)
-      header = headers[key]
-      if header
-        expect(header.downcase).to include(content.downcase)
-      else
-        raise "Header #{key} not present in HTTP response"
-      end
+      expect_header_impl(key, content, true)
     end
 
     def optional(hash)
@@ -62,6 +52,19 @@ module Airborne
     end
 
     private
+
+    def expect_header_impl(key, content, contains = nil)
+      header = headers[key]
+      if header
+        if contains
+          expect(header.downcase).to include(content.downcase)
+        else
+          expect(header.downcase).to eq(content.downcase)
+        end
+      else
+        raise RSpec::Expectations::ExpectationNotMetError, "Header #{key} not present in HTTP response"
+      end
+    end
 
     def set_rails_response
       set_response(@response) if @json_body.nil?
