@@ -107,7 +107,7 @@ module Airborne
     def expect_json_types_impl(expectations, hash)
       return if is_nil_optional_hash?(expectations, hash)
       @mapper ||= get_mapper
-      return expect(@mapper[expectations].include?(hash.class)).to eq(true) if expectations.class == Symbol
+      return expect_type(expectations, hash.class) if expectations.class == Symbol
       expectations.each do |prop_name, expected_type|
         value = hash[prop_name]
         expected_class = expected_type.class
@@ -133,8 +133,10 @@ module Airborne
       expectations.class == Airborne::OptionalHashTypeExpectations && hash.nil?
     end
 
-    def expect_type(expected_type, value_class, prop_name)
-      expect(@mapper[expected_type].include?(value_class)).to eq(true), "Expected #{prop_name} to be of type #{expected_type}\n, got #{value_class} instead"
+    def expect_type(expected_type, value_class, prop_name = nil)
+      insert = prop_name.nil? ? "" : "#{prop_name} to be of type"
+      msg = "Expected #{insert} #{expected_type}\n, got #{value_class} instead"
+      expect(@mapper[expected_type].include?(value_class)).to eq(true), msg
     end
 
     def is_hash?(expected_class)
