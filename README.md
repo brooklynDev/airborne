@@ -295,7 +295,7 @@ When setting up Airborne, you can call `configure` just like you would with `rsp
 
 ```ruby
 #config is the RSpec configuration and can be used just like it
-Airborne.configure.do |config|
+Airborne.configure do |config|
   config.include MyModule
 end
 ```
@@ -303,7 +303,7 @@ end
 Additionally, you can specify a `base_url` and default `headers` to be used on every request (unless overridden in the actual request):
 
 ```ruby
-Airborne.configure.do |config|
+Airborne.configure do |config|
   config.base_url = 'http://example.com/api/v1'
   config.headers = {'x-auth-token' => 'my_token'}
 end
