@@ -119,7 +119,7 @@ module Airborne
       hash = convert_to_date(hash) if expectations == :date
       return expect_type(expectations, hash.class) if expectations.class == Symbol
       expectations.each do |prop_name, expected_type|
-        value = convert_to_date(hash[prop_name]) if expected_type == :date
+        value = expected_type == :date ? convert_to_date(hash[prop_name]) : hash[prop_name]
         expected_class = expected_type.class
         value_class = value.class
         next expect_json_types_impl(expected_type, value) if is_hash?(expected_class)
