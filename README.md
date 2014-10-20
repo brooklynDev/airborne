@@ -43,6 +43,7 @@ When calling expect_json_types, these are the valid types that can be tested aga
 * `:float`
 * `:bool` or `:boolean`
 * `:string`
+* `:date`
 * `:object`
 * `:array`
 * `:array_of_integers` or `:array_of_ints`
@@ -286,6 +287,27 @@ end
 it 'should check all nested arrays for specified elements' do
   get 'http://example.com/api/v1/array_with_nested'
   expect_json_types('cars.*.owners.*', {name: :string})
+end
+```
+
+##Dates
+JSON has no support for dates, however airborne gives you the ability to check for dates using the following. For `expect_json_types` you would use it as you would for any of the other types:
+
+```ruby
+it 'should verify date type' do
+  get '/get_date' #api that returns {createdAt: "Mon Oct 20 2014 16:10:42 GMT-0400 (EDT)"}
+  expect_json_types({createdAt: :date})
+end
+```
+However if you want to check the actual date data with `expect_json`, you need to call the `date` function:
+
+```ruby
+it 'should verify correct date value' do
+  get '/get_date' #api that returns {createdAt: "Mon Oct 20 2014 16:10:42 GMT-0400 (EDT)"}
+  prev_day = DateTime.new(2014,10,19)
+  next_day = DateTime.new(2014,10,21)
+  #within the date callback, you can use regular RSpec expectations that work with dates
+  expect_json({createdAt: date {|value| expect(value).to be_between(prev_day, next_day)}})        
 end
 ```
 

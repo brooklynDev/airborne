@@ -1,4 +1,5 @@
 require 'rspec'
+require 'date'
 
 module Airborne
   module RequestExpectations
@@ -41,6 +42,10 @@ module Airborne
 
     def regex(reg)
       Regexp.new(reg)
+    end
+
+    def date
+      lambda {|value| yield DateTime.parse(value)}
     end
 
     [:expect_json_types, :expect_json, :expect_json_keys, :expect_status, :expect_header, :expect_header_contains].each do |method_name|
@@ -97,7 +102,8 @@ module Airborne
         object: [Hash],
         array_of_objects: [Hash],
         array: [Array],
-        array_of_arrays: [Array]
+        array_of_arrays: [Array],
+        date: [DateTime]
       }
 
       mapper = base_mapper.clone
@@ -110,9 +116,10 @@ module Airborne
     def expect_json_types_impl(expectations, hash)
       return if is_nil_optional_hash?(expectations, hash)
       @mapper ||= get_mapper
+      hash = convert_to_date(hash) if expectations == :date
       return expect_type(expectations, hash.class) if expectations.class == Symbol
       expectations.each do |prop_name, expected_type|
-        value = hash[prop_name]
+        value = convert_to_date(hash[prop_name]) if expected_type == :date
         expected_class = expected_type.class
         value_class = value.class
         next expect_json_types_impl(expected_type, value) if is_hash?(expected_class)
@@ -122,6 +129,13 @@ module Airborne
         else
           expect_type(expected_type, value_class, prop_name)
         end
+      end
+    end
+
+    def convert_to_date(value)
+      begin
+        value = DateTime.parse(value)
+      rescue
       end
     end
 
