@@ -24,6 +24,12 @@ module Airborne
       end
     end
 
+    def expect_json_sizes(*args)
+      args.push(convert_expectations_for_json_sizes(args.pop))
+
+      expect_json_types(*args)
+    end
+
     def expect_status(code)
       expect(response.code).to eq(code)
     end
@@ -113,17 +119,24 @@ module Airborne
       mapper
     end
 
-    def expect_json_types_impl(expectations, hash)
-      return if is_nil_optional_hash?(expectations, hash)
+    def expect_json_types_impl(expectations, hash_or_value)
+      return if is_nil_optional_hash?(expectations, hash_or_value)
+
       @mapper ||= get_mapper
-      hash = convert_to_date(hash) if expectations == :date
-      return expect_type(expectations, hash.class) if expectations.class == Symbol
+
+      hash_or_value = convert_to_date(hash_or_value) if expectations == :date
+
+      return expect_type(expectations, hash_or_value.class) if expectations.class == Symbol
+      return expectations.call(hash_or_value) if expectations.class == Proc
+
       expectations.each do |prop_name, expected_type|
-        value = expected_type == :date ? convert_to_date(hash[prop_name]) : hash[prop_name]
+        value = expected_type == :date ? convert_to_date(hash_or_value[prop_name]) : hash_or_value[prop_name]
         expected_class = expected_type.class
         value_class = value.class
+
         next expect_json_types_impl(expected_type, value) if is_hash?(expected_class)
         next expected_type.call(value) if expected_class == Proc
+
         if expected_type.to_s.include?("array_of")
           check_array_types(value, value_class, prop_name, expected_type)
         else
@@ -175,6 +188,30 @@ module Airborne
         next expect(actual_value.to_s).to match(expected_value) if expected_class == Regexp
         expect(actual_value).to eq(expected_value)
       end
+    end
+
+    # Convert integers in `old_expectations` to proc
+    #
+    # @param old_expectations [Hash]
+    def convert_expectations_for_json_sizes(old_expectations)
+      unless old_expectations.is_a?(Hash)
+        return convert_expectation_for_json_sizes(old_expectations)
+      end
+
+      old_expectations.each_with_object({}) do |(prop_name, expected_size), memo|
+        new_value = if expected_size.is_a?(Hash)
+                      convert_expectations_for_json_sizes(expected_size)
+                    else
+                      convert_expectation_for_json_sizes(expected_size)
+                    end
+        memo[prop_name] = new_value
+      end
+    end
+
+    # @param expected_size [Integer]
+    # @return [Proc]
+    def convert_expectation_for_json_sizes(expected_size)
+      -> (data) { expect(data.size).to eq(expected_size) }
     end
 
     def is_property?(expectations)
