@@ -95,6 +95,17 @@ describe 'sample spec' do
 end
 ```
 
+Calling `expect_json_sizes` actually make use of the above feature and call `expect_json` under the hood:
+
+```ruby
+describe 'sample spec' do
+  it 'should validate types' do
+    get 'http://example.com/api/v1/simple_get_collection' #json api that returns { "ids" : [1, 2, 3, 4] }
+    expect_json_sizes({ids: 4})
+  end
+end
+```
+
 ##Making requests
 
 Airborne uses `rest_client` to make the HTTP request, and supports all HTTP verbs. When creating a test, you can call any of the following methods: `get`, `post`, `put`, `patch`, `delete`. This will then give you access the following properties:
@@ -161,13 +172,14 @@ end
 * `expect_json_types` - Tests the types of the JSON property values returned
 * `expect_json` - Tests the values of the JSON property values returned
 * `expect_json_keys` - Tests the existence of the specified keys in the JSON object
+* `expect_json_sizes` - Tests the sizes of the JSON property values returned, also test if the values are arrays
 * `expect_status` - Tests the HTTP status code returned
 * `expect_header` - Tests for a specified header in the response
 * `expect_header_contains` - Partial match test on a specified header
 
 ##Path Matching
 
-When calling `expect_json_types`, `expect_json` or `expect_json_keys` you can optionally specify a path as a first parameter. 
+When calling `expect_json_types`, `expect_json`, `expect_json_keys` or `expect_json_sizes` you can optionally specify a path as a first parameter. 
 
 For example, if our API returns the following JSON:
 
