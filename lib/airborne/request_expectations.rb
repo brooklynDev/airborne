@@ -211,7 +211,7 @@ module Airborne
     # @param expected_size [Integer]
     # @return [Proc]
     def convert_expectation_for_json_sizes(expected_size)
-      -> (data) { expect(data.size).to eq(expected_size) }
+      ->(data) { expect(data.size).to eq(expected_size) }
     end
 
     def is_property?(expectations)
