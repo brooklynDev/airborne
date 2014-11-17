@@ -7,5 +7,5 @@ describe 'expect_json lambda' do
     get '/simple_get'
     expect_json({name: ->(name){expect(name.length).to eq(4)}})
   end
-  
+
 end
