@@ -29,6 +29,10 @@ module StubHelper
     stub_request(:delete, @base_url + url)
   end
 
+  def mock_head(url, response_headers = {}, status = 200)
+    stub_request(:head, @base_url + url).to_return(headers: response_headers, body: nil, status: status)
+  end
+
   private
 
     def get_json_response_file(name)

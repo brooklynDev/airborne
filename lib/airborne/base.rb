@@ -44,6 +44,10 @@ module Airborne
     set_response(make_request(:delete, url, {headers: headers}))
   end
 
+  def head(url, headers = nil)
+    set_response(make_request(:head, url, {headers: headers}))
+  end
+
   def response
     @response
   end
