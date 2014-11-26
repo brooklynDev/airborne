@@ -48,6 +48,10 @@ module Airborne
     set_response(make_request(:head, url, {headers: headers}))
   end
 
+  def options(url, headers = nil)
+    set_response(make_request(:options, url, {headers: headers}))
+  end
+
   def response
     @response
   end
