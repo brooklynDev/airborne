@@ -108,7 +108,7 @@ end
 
 ##Making requests
 
-Airborne uses `rest_client` to make the HTTP request, and supports all HTTP verbs. When creating a test, you can call any of the following methods: `get`, `post`, `put`, `patch`, `delete`, `head`. This will then give you access the following properties:
+Airborne uses `rest_client` to make the HTTP request, and supports all HTTP verbs. When creating a test, you can call any of the following methods: `get`, `post`, `put`, `patch`, `delete`, `head`, `options`. This will then give you access the following properties:
 
 * `response` - The HTTP response returned from the request
 * `headers` - A symbolized hash of the response headers returned by the request
