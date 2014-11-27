@@ -350,11 +350,16 @@ describe 'spec' do
 end
 ```
 
-### Run it from the CLI
+## Run it from the CLI
 
     $ cd your/project
     $ rspec spec
+## Authors
+* [Seth Pollack](https://github.com/sethpollack)
+* [Alex Friedman](https://github.com/brooklynDev)
 
+## Contributors
+https://github.com/brooklynDev/airborne/graphs/contributors
 ## License
 
 The MIT License
