@@ -8,7 +8,12 @@ module Airborne
       headers = base_headers.merge(headers)
       res = if method == :post || method == :patch || method == :put
         begin
-          RestClient.send(method, get_url(url), options[:body].nil? ? "" : options[:body].to_json, headers)
+          options[:body] = JSON.parse(options[:body])
+        resuce JSON::ParseError
+          options[:body].nil? ? "" : options[:body]
+        end
+        begin
+          RestClient.send(method, get_url(url), options[:body], headers)
         rescue RestClient::Exception => e
           e.response
         end
