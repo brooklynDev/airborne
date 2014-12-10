@@ -78,7 +78,7 @@ module Airborne
   def set_response(res)
     @response = res
     @body = res.body
-    @headers = HashWithIndifferentAccess.new(res.headers.deep_symbolize_keys) unless res.headers.nil?
+    @headers = HashWithIndifferentAccess.new(res.headers) unless res.headers.nil?
     @json_body = JSON.parse(res.body, symbolize_names: true) unless res.body.empty?
   end
 end
