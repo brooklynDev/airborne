@@ -9,7 +9,7 @@ module Airborne
       res = if method == :post || method == :patch || method == :put
         begin
           options[:body] = JSON.parse(options[:body])
-        resuce JSON::ParseError
+        rescue JSON::ParserError
           options[:body].nil? ? "" : options[:body]
         end
         begin
