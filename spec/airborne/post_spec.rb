@@ -9,7 +9,7 @@ describe 'post' do
   end
 
   it 'should allow testing on post requests' do
-  	url = 'http://www.example.com/simple_post'
+    url = 'http://www.example.com/simple_post'
     stub_request(:post, url)
     post '/simple_post', 'hello', {content_type: "text/plain"}
     expect(WebMock).to have_requested(:post, url).with(:body => "hello", :headers => {'Content-Type' => 'text/plain'})
