@@ -7,7 +7,7 @@
 [![airbore gem downloads](http://img.shields.io/gem/dt/airborne.svg?style=flat-square)](http://rubygems.org/gems/airborne)
 [![airborne gem stable downloads](http://img.shields.io/gem/dv/airborne/stable.svg?style=flat-square)](http://rubygems.org/gems/airborne)
 
-RSpec driven API testing framework inspired by [frisby.js](https://github.com/vlucas/frisby)
+RSpec driven API testing framework
 
 ## Installation
 
@@ -360,6 +360,9 @@ end
 
 ## Contributors
 https://github.com/brooklynDev/airborne/graphs/contributors
+
+Inspired by [frisby.js](https://github.com/vlucas/frisby)
+
 ## License
 
 The MIT License
