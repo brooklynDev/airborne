@@ -9,6 +9,10 @@
 
 RSpec driven API testing framework
 
+***
+If you want support, please use stackoverflow with the `airborne.rb` tag and not the GitHub issues tracker. Only post an issue here if you think you discovered a bug or have a feature request.
+***
+
 ## Installation
 
 Install Airborne:
