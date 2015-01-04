@@ -99,4 +99,11 @@ describe 'expect_json with path' do
 		expect_json('age', 32 )
 	end
 
+	it "should raise ExpectationError when expectation expects an object instead of value" do 
+		mock_get('array_with_index')
+		get '/array_with_index'
+		expect do
+			expect_json('cars.0.make', {make: "Tesla"})
+		end.to raise_error(Airborne::ExpectationError, "Expected String Tesla\nto to be an object with property make")
+	end
 end

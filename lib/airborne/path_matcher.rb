@@ -1,7 +1,9 @@
 module Airborne
+  class PathError < StandardError; end
   module PathMatcher
 
     def get_by_path(path, json, &block)
+      raise PathError, "Ivalid Path, contains '..'" if /\.\./ =~ path
       type = false
       parts = path.split('.')
       parts.each_with_index do |part, index|
@@ -14,7 +16,11 @@ module Airborne
           end
           next
         end
-        json = process_json(part, json)
+        begin
+          json = process_json(part, json)
+        rescue
+          raise PathError, "Expected #{json.class}\nto to be an object with property #{part}"
+        end
       end
       if type == '*'
         expect_all(json, &block)
@@ -64,7 +70,7 @@ module Airborne
       json.each do |part|
         begin
           yield part
-        rescue Exception => e
+        rescue Exception
           error_count += 1
           ensure_match_one(path, item_count, error_count)
         end

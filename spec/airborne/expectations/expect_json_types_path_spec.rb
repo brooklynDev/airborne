@@ -56,4 +56,12 @@ describe 'expect_json_types wih path' do
 		expect{expect_json_types('cars.*.owners.*', {name: :string})}.to raise_error
 	end
 
+	it "should raise ExpectationError when expectation expects an object instead of type" do
+		mock_get('array_with_index')
+		get '/array_with_index'
+		expect do
+			expect_json_types('cars.0.make', {make: :string})
+		end.to raise_error(Airborne::ExpectationError, "Expected String Tesla\nto be an object with property make")
+	end
+
 end

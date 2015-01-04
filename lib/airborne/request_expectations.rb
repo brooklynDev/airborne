@@ -2,6 +2,7 @@ require 'rspec'
 require 'date'
 
 module Airborne
+  class ExpectationError < StandardError; end
   module RequestExpectations
     include RSpec
     include PathMatcher
@@ -130,7 +131,11 @@ module Airborne
       return expectations.call(hash_or_value) if expectations.class == Proc
 
       expectations.each do |prop_name, expected_type|
-        value = expected_type == :date ? convert_to_date(hash_or_value[prop_name]) : hash_or_value[prop_name]
+        begin
+          value = expected_type == :date ? convert_to_date(hash_or_value[prop_name]) : hash_or_value[prop_name]
+        rescue
+          raise ExpectationError, "Expected #{hash_or_value.class} #{hash_or_value}\nto be an object with property #{prop_name}"
+        end
         expected_class = expected_type.class
         value_class = value.class
 
@@ -165,7 +170,7 @@ module Airborne
 
     def expect_type(expected_type, value_class, prop_name = nil)
       insert = prop_name.nil? ? "" : "#{prop_name} to be of type"
-      msg = "Expected #{insert} #{expected_type}\n, got #{value_class} instead"
+      msg = "Expected #{insert} #{expected_type}\n got #{value_class} instead"
       expect(@mapper[expected_type].include?(value_class)).to eq(true), msg
     end
 
@@ -174,14 +179,18 @@ module Airborne
     end
 
     def expect_array(value_class, prop_name, expected_type)
-      expect(value_class).to eq(Array), "Expected #{prop_name}\n to be of type #{expected_type}\n, got #{value_class} instead"
+      expect(value_class).to eq(Array), "Expected #{prop_name}\n to be of type #{expected_type}\n got #{value_class} instead"
     end
 
     def expect_json_impl(expectations, hash)
       hash = hash.to_s if expectations.class == Regexp
       return expect(hash).to match(expectations) if is_property?(expectations)
       expectations.each do |prop_name, expected_value|
-        actual_value = hash[prop_name]
+        begin
+          actual_value = hash[prop_name]
+        rescue
+          raise ExpectationError, "Expected #{hash.class} #{hash}\nto to be an object with property #{prop_name}"
+        end
         expected_class = expected_value.class
         next expect_json_impl(expected_value, actual_value) if expected_class == Hash
         next expected_value.call(actual_value) if expected_class == Proc
