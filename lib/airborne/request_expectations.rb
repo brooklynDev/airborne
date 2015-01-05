@@ -131,10 +131,8 @@ module Airborne
       return expectations.call(hash_or_value) if expectations.class == Proc
 
       expectations.each do |prop_name, expected_type|
-        begin
-          value = expected_type == :date ? convert_to_date(hash_or_value[prop_name]) : hash_or_value[prop_name]
-        rescue
-          raise ExpectationError, "Expected #{hash_or_value.class} #{hash_or_value}\nto be an object with property #{prop_name}"
+        value =  ensure_hash_contains_prop(prop_name, hash_or_value) do
+          expected_type == :date ? convert_to_date(hash_or_value[prop_name]) : hash_or_value[prop_name]
         end
         expected_class = expected_type.class
         value_class = value.class
@@ -186,16 +184,20 @@ module Airborne
       hash = hash.to_s if expectations.class == Regexp
       return expect(hash).to match(expectations) if is_property?(expectations)
       expectations.each do |prop_name, expected_value|
-        begin
-          actual_value = hash[prop_name]
-        rescue
-          raise ExpectationError, "Expected #{hash.class} #{hash}\nto to be an object with property #{prop_name}"
-        end
+        actual_value = ensure_hash_contains_prop(prop_name, hash) {hash[prop_name]}
         expected_class = expected_value.class
         next expect_json_impl(expected_value, actual_value) if expected_class == Hash
         next expected_value.call(actual_value) if expected_class == Proc
         next expect(actual_value.to_s).to match(expected_value) if expected_class == Regexp
         expect(actual_value).to eq(expected_value)
+      end
+    end
+
+    def ensure_hash_contains_prop(prop_name, hash)
+      begin
+        yield
+      rescue
+        raise ExpectationError, "Expected #{hash.class} #{hash}\nto be an object with property #{prop_name}"
       end
     end
 
