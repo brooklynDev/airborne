@@ -3,7 +3,7 @@ module Airborne
   module PathMatcher
 
     def get_by_path(path, json, &block)
-      raise PathError, "Ivalid Path, contains '..'" if /\.\./ =~ path
+      raise PathError, "Invalid Path, contains '..'" if /\.\./ =~ path
       type = false
       parts = path.split('.')
       parts.each_with_index do |part, index|
@@ -51,7 +51,7 @@ module Airborne
     end
 
     def process_json(part, json)
-      if is_index?(part)
+      if is_index?(part) && json.is_a?(Array)
         part = part.to_i
         json = json[part]
       else
