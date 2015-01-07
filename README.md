@@ -143,7 +143,7 @@ If you have an existing Rack application like `sinatra` or `grape` you can run A
 
 ```ruby
 Airborne.configure do |config|
-    config.rack_app = MySinatraApp
+  config.rack_app = MySinatraApp
 end
 ```
 
