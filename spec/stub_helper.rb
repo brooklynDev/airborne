@@ -2,7 +2,7 @@ require 'webmock/rspec'
 
 module StubHelper
 
-  def initialize
+  def initialize(*args)
     @base_url = 'http://www.example.com/'
   end
 
