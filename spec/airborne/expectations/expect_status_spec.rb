@@ -12,4 +12,12 @@ describe 'expect_status' do
     get '/simple_get'
     expect{expect_status(123)}.to raise_error
   end
+
+  it 'should translate symbol codes to whatever is appropriate for the request' do
+    mock_get('simple_get')
+    get '/simple_get'
+    expect_status(:ok)
+    expect_status(200)
+    expect_status('200')
+  end
 end
