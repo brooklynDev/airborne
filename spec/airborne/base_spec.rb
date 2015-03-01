@@ -34,9 +34,10 @@ describe 'base spec' do
     expect(json_body.first[0]).to be_kind_of(Symbol)    
   end
 
-  it 'should error on invalid JSON' do
+  it 'should set json_body to nil on invalid json' do
     mock_get('invalid_get')
-    expect{get '/invalid_get'}.to raise_error
+    get '/invalid_get'
+    expect(json_body).to be(nil)
   end
 
   it 'should handle a 500 error on get' do

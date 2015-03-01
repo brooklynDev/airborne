@@ -79,6 +79,9 @@ module Airborne
     @response = res
     @body = res.body
     @headers = HashWithIndifferentAccess.new(res.headers) unless res.headers.nil?
-    @json_body = JSON.parse(res.body, symbolize_names: true) unless res.body.empty?
+    begin
+      @json_body = JSON.parse(res.body, symbolize_names: true) unless res.body.empty?
+    rescue
+    end
   end
 end
