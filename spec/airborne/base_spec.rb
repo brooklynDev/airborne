@@ -13,6 +13,13 @@ describe 'base spec' do
     expect(headers).to_not be(nil)    
   end
 
+  it 'should throw an InvalidJsonError when accessing json_body on invalid json' do
+    mock_get('invalid_json')
+    get '/invalid_json'
+    expect(body).to eq("1234")
+    expect{json_body}.to raise_error
+  end
+
   it 'when request is made headers should be hash with indifferent access' do
     mock_get('simple_get', {'Content-Type' => 'application/json'})
     get '/simple_get'
@@ -32,12 +39,6 @@ describe 'base spec' do
     get '/simple_get'
     expect(json_body).to be_kind_of(Hash)
     expect(json_body.first[0]).to be_kind_of(Symbol)    
-  end
-
-  it 'should set json_body to nil on invalid json' do
-    mock_get('invalid_get')
-    get '/invalid_get'
-    expect(json_body).to be(nil)
   end
 
   it 'should handle a 500 error on get' do
