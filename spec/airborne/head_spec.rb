@@ -6,6 +6,5 @@ describe 'head' do
     head '/simple_head', {}
     expect_status(200)
     expect_header('foo', 'foo')
-    expect(json_body).to be(nil)
   end
 end

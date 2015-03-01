@@ -2,8 +2,8 @@ require 'json'
 require 'active_support/hash_with_indifferent_access'
 
 module Airborne
+  class InvalidJsonError < StandardError; end
   include RequestExpectations
-
   def self.configure
     RSpec.configure do |config|
       yield config
@@ -65,6 +65,7 @@ module Airborne
   end
 
   def json_body
+    raise InvalidJsonError, "Api request returned invalid json" unless @json_body
     @json_body
   end
 

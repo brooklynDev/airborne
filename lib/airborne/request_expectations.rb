@@ -201,9 +201,6 @@ module Airborne
       end
     end
 
-    # Convert integers in `old_expectations` to proc
-    #
-    # @param old_expectations [Hash]
     def convert_expectations_for_json_sizes(old_expectations)
       unless old_expectations.is_a?(Hash)
         return convert_expectation_for_json_sizes(old_expectations)
@@ -219,8 +216,6 @@ module Airborne
       end
     end
 
-    # @param expected_size [Integer]
-    # @return [Proc]
     def convert_expectation_for_json_sizes(expected_size)
       ->(data) { expect(data.size).to eq(expected_size) }
     end
