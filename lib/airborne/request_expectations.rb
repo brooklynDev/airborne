@@ -1,5 +1,6 @@
 require 'rspec'
 require 'date'
+require 'rack/utils'
 
 module Airborne
   class ExpectationError < StandardError; end
@@ -32,7 +33,7 @@ module Airborne
     end
 
     def expect_status(code)
-      expect(response.code).to eq(code)
+      expect(response.code).to eq(resolve_status(code, response.code))
     end
 
     def expect_header(key, content)
@@ -224,5 +225,20 @@ module Airborne
       [String, Regexp, Float, Fixnum, Bignum, TrueClass, FalseClass, NilClass].include?(expectations.class)
     end
 
+    # Resolve a supplied status to the appropriate class for the returned
+    # status being tested. This helps reduce brittleness due to '200' != 200
+    # when for the purposes of testing a response it is the same thing.
+    #
+    # @param candidate
+    # @param authority
+    # @return [String]
+    def resolve_status(candidate, authority)
+      candidate = Rack::Utils::SYMBOL_TO_STATUS_CODE[candidate] if candidate.kind_of?(Symbol)
+      case authority
+      when String then candidate.to_s
+      when Fixnum then candidate.to_i
+      else candidate
+      end
+    end
   end
 end
