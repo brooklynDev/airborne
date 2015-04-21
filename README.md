@@ -137,6 +137,12 @@ For requests that require a body (`post`, `put`, `patch`) you can pass the body 
 post 'http://example.com/api/v1/my_api', {:name => 'John Doe'}, {'x-auth-token' => 'my_token'}
 ```
 
+For requests that require Query params you can pass a params hash into headers.
+
+```ruby
+post 'http://example.com/api/v1/my_api' {}, {'params' => {'param_key' => 'param_value'}
+```
+
 ##Testing Rack Applications
 
 If you have an existing Rack application like `sinatra` or `grape` you can run Airborne against your application and test without actually having a server running. To do that, just specify your rack application in your Airborne configuration:
