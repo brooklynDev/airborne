@@ -151,7 +151,7 @@ module Airborne
 
     def convert_to_date(value)
       begin
-        value = DateTime.parse(value)
+        DateTime.parse(value)
       rescue
       end
     end
