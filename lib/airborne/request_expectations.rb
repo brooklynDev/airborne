@@ -187,7 +187,7 @@ module Airborne
       expectations.each do |prop_name, expected_value|
         actual_value = ensure_hash_contains_prop(prop_name, hash) {hash[prop_name]}
         expected_class = expected_value.class
-        next expect_json_impl(expected_value, actual_value) if expected_class == Hash
+        next expect(actual_value).to match(expected_value) if expected_class == Hash
         next expected_value.call(actual_value) if expected_class == Proc
         next expect(actual_value.to_s).to match(expected_value) if expected_class == Regexp
         expect(actual_value).to eq(expected_value)
