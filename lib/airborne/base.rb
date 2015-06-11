@@ -1,5 +1,6 @@
 require 'json'
-require 'active_support/hash_with_indifferent_access'
+require 'active_support'
+require 'active_support/core_ext/hash/indifferent_access'
 
 module Airborne
   class InvalidJsonError < StandardError; end
