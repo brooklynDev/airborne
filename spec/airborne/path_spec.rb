@@ -17,7 +17,7 @@ describe 'expect path' do
 		it "should raise PathError when trying to call property on an array" do
 			expect do
 				expect_json('cars.make', "Tesla")
-			end.to raise_error(Airborne::PathError, "Expected Array\nto to be an object with property make")
+			end.to raise_error(Airborne::PathError, "Expected Array\nto be an object with property make")
 		end
 	end
 
