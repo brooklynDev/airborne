@@ -19,7 +19,7 @@ module Airborne
         begin
           json = process_json(part, json)
         rescue
-          raise PathError, "Expected #{json.class}\nto to be an object with property #{part}"
+          raise PathError, "Expected #{json.class}\nto be an object with property #{part}"
         end
       end
       if type == '*'
