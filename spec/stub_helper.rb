@@ -1,7 +1,6 @@
 require 'webmock/rspec'
 
 module StubHelper
-
   def initialize(*args)
     @base_url = 'http://www.example.com/'
   end
@@ -39,7 +38,7 @@ module StubHelper
 
   private
 
-    def get_json_response_file(name)
-      IO.read(File.join('spec/test_responses', name + ".json"))
-    end
+  def get_json_response_file(name)
+    IO.read(File.join('spec/test_responses', name + '.json'))
+  end
 end

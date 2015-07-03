@@ -7,8 +7,8 @@ module Airborne
     end
 
     def each
-      @hash.each do|k,v|
-        yield(k,v)
+      @hash.each do|k, v|
+        yield(k, v)
       end
     end
   end

@@ -53,14 +53,14 @@ module Airborne
     end
 
     def date
-      lambda {|value| yield DateTime.parse(value)}
+      -> (value) { yield DateTime.parse(value) }
     end
 
     [:expect_json_types, :expect_json, :expect_json_keys, :expect_status, :expect_header, :expect_header_contains].each do |method_name|
       method = instance_method(method_name)
       define_method(method_name) do |*args, &block|
         set_rails_response
-        method.bind(self).(*args, &block)
+        method.bind(self).call(*args, &block)
       end
     end
 
@@ -75,7 +75,7 @@ module Airborne
           expect(header.downcase).to eq(content.downcase)
         end
       else
-        raise RSpec::Expectations::ExpectationNotMetError, "Header #{key} not present in HTTP response"
+        fail RSpec::Expectations::ExpectationNotMetError, "Header #{key} not present in HTTP response"
       end
     end
 
@@ -95,12 +95,12 @@ module Airborne
 
     def get_mapper
       base_mapper = {
-        integer: [Fixnum,Bignum],
-        array_of_integers: [Fixnum,Bignum],
-        int: [Fixnum,Bignum],
-        array_of_ints: [Fixnum,Bignum],
-        float: [Float,Fixnum,Bignum],
-        array_of_floats: [Float,Fixnum,Bignum],
+        integer: [Fixnum, Bignum],
+        array_of_integers: [Fixnum, Bignum],
+        int: [Fixnum, Bignum],
+        array_of_ints: [Fixnum, Bignum],
+        float: [Float, Fixnum, Bignum],
+        array_of_floats: [Float, Fixnum, Bignum],
         string: [String],
         array_of_strings: [String],
         boolean: [TrueClass, FalseClass],
@@ -117,13 +117,13 @@ module Airborne
 
       mapper = base_mapper.clone
       base_mapper.each do |key, value|
-        mapper[(key.to_s + "_or_null").to_sym] = value + [NilClass]
+        mapper[(key.to_s + '_or_null').to_sym] = value + [NilClass]
       end
       mapper
     end
 
     def expect_json_types_impl(expectations, hash_or_value)
-      return if is_nil_optional_hash?(expectations, hash_or_value)
+      return if nil_optional_hash?(expectations, hash_or_value)
 
       @mapper ||= get_mapper
 
@@ -139,10 +139,10 @@ module Airborne
         expected_class = expected_type.class
         value_class = value.class
 
-        next expect_json_types_impl(expected_type, value) if is_hash?(expected_class)
+        next expect_json_types_impl(expected_type, value) if hash?(expected_class)
         next expected_type.call(value) if expected_class == Proc
 
-        if expected_type.to_s.include?("array_of")
+        if expected_type.to_s.include?('array_of')
           check_array_types(value, value_class, prop_name, expected_type)
         else
           expect_type(expected_type, value_class, prop_name)
@@ -164,19 +164,19 @@ module Airborne
       end
     end
 
-    def is_nil_optional_hash?(expectations, hash)
+    def nil_optional_hash?(expectations, hash)
       expectations.class == Airborne::OptionalHashTypeExpectations && hash.nil?
     end
 
     def expect_type(expected_type, value_class, prop_name = nil)
-      insert = prop_name.nil? ? "" : "#{prop_name} to be of type"
+      insert = prop_name.nil? ? '' : "#{prop_name} to be of type"
       msg = "Expected #{insert} #{expected_type}\n got #{value_class} instead"
-      raise ExpectationError, "Expected type #{expected_type}\nis an invalid type" if @mapper[expected_type].nil?
+      fail ExpectationError, "Expected type #{expected_type}\nis an invalid type" if @mapper[expected_type].nil?
       expect(@mapper[expected_type].include?(value_class)).to eq(true), msg
     end
 
-    def is_hash?(expected_class)
-      expected_class == Hash || expected_class ==  Airborne::OptionalHashTypeExpectations
+    def hash?(expected_class)
+      expected_class == Hash || expected_class == Airborne::OptionalHashTypeExpectations
     end
 
     def expect_array(value_class, prop_name, expected_type)
@@ -185,9 +185,9 @@ module Airborne
 
     def expect_json_impl(expectations, hash)
       hash = hash.to_s if expectations.class == Regexp
-      return expect(hash).to match(expectations) if is_property?(expectations)
+      return expect(hash).to match(expectations) if property?(expectations)
       expectations.each do |prop_name, expected_value|
-        actual_value = ensure_hash_contains_prop(prop_name, hash) {hash[prop_name]}
+        actual_value = ensure_hash_contains_prop(prop_name, hash) { hash[prop_name] }
         expected_class = expected_value.class
         next expect(actual_value).to match(expected_value) if expected_class == Hash
         next expected_value.call(actual_value) if expected_class == Proc
@@ -223,19 +223,12 @@ module Airborne
       ->(data) { expect(data.size).to eq(expected_size) }
     end
 
-    def is_property?(expectations)
+    def property?(expectations)
       [String, Regexp, Float, Fixnum, Bignum, TrueClass, FalseClass, NilClass].include?(expectations.class)
     end
 
-    # Resolve a supplied status to the appropriate class for the returned
-    # status being tested. This helps reduce brittleness due to '200' != 200
-    # when for the purposes of testing a response it is the same thing.
-    #
-    # @param candidate
-    # @param authority
-    # @return [String]
     def resolve_status(candidate, authority)
-      candidate = Rack::Utils::SYMBOL_TO_STATUS_CODE[candidate] if candidate.kind_of?(Symbol)
+      candidate = Rack::Utils::SYMBOL_TO_STATUS_CODE[candidate] if candidate.is_a?(Symbol)
       case authority
       when String then candidate.to_s
       when Fixnum then candidate.to_i

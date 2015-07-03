@@ -1,9 +1,9 @@
 module Airborne
   class PathError < StandardError; end
-  module PathMatcher
 
+  module PathMatcher
     def get_by_path(path, json, &block)
-      raise PathError, "Invalid Path, contains '..'" if /\.\./ =~ path
+      fail PathError, "Invalid Path, contains '..'" if /\.\./ =~ path
       type = false
       parts = path.split('.')
       parts.each_with_index do |part, index|
@@ -11,8 +11,7 @@ module Airborne
           ensure_array(path, json)
           type = part
           if index < parts.length.pred
-            walk_with_path(type, index, path, parts, json, &block)
-            return
+            walk_with_path(type, index, path, parts, json, &block) && return
           end
           next
         end
@@ -51,7 +50,7 @@ module Airborne
     end
 
     def process_json(part, json)
-      if is_index?(part) && json.is_a?(Array)
+      if index?(part) && json.is_a?(Array)
         part = part.to_i
         json = json[part]
       else
@@ -60,7 +59,7 @@ module Airborne
       json
     end
 
-    def is_index?(part)
+    def index?(part)
       part =~ /^\d+$/
     end
 
@@ -80,7 +79,7 @@ module Airborne
     def expect_all(json, &block)
       last_error = nil
       begin
-        json.each{|part| yield part}
+        json.each { |part| yield part }
       rescue Exception => e
         last_error = e
       end
@@ -88,16 +87,15 @@ module Airborne
     end
 
     def ensure_match_one(path, item_count, error_count)
-      raise RSpec::Expectations::ExpectationNotMetError, "Expected one object in path #{path} to match provided JSON values" if item_count == error_count
+      fail RSpec::Expectations::ExpectationNotMetError, "Expected one object in path #{path} to match provided JSON values" if item_count == error_count
     end
 
     def ensure_match_all(error)
-      raise error unless error.nil?
+      fail error unless error.nil?
     end
 
     def ensure_array(path, json)
-      raise RSpec::Expectations::ExpectationNotMetError, "Expected #{path} to be array got #{json.class} from JSON response" unless json.class == Array
+      fail RSpec::Expectations::ExpectationNotMetError, "Expected #{path} to be array got #{json.class} from JSON response" unless json.class == Array
     end
-
   end
 end
