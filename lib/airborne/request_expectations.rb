@@ -171,6 +171,7 @@ module Airborne
     def expect_type(expected_type, value_class, prop_name = nil)
       insert = prop_name.nil? ? "" : "#{prop_name} to be of type"
       msg = "Expected #{insert} #{expected_type}\n got #{value_class} instead"
+      raise ExpectationError, "Expected type #{expected_type}\nis an invalid type" if @mapper[expected_type].nil?
       expect(@mapper[expected_type].include?(value_class)).to eq(true), msg
     end
 

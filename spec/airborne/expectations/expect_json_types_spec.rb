@@ -50,4 +50,10 @@ describe 'expect_json_types' do
     expect_json_types({name: :string, age: :int, address: :null})
   end
 
+  it 'Should throw bad type error' do
+    mock_get('simple_get')
+    get '/simple_get'
+    expect { expect_json_types(name: :foo) }.to raise_error(Airborne::ExpectationError, "Expected type foo\nis an invalid type")
+  end
+
 end
