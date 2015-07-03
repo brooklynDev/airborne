@@ -66,6 +66,7 @@ module Airborne
   end
 
   def json_body
+    set_response(@response) if @json_body.nil? && !@response.nil?
     raise InvalidJsonError, "Api request returned invalid json" unless @json_body
     @json_body
   end

@@ -24,4 +24,10 @@ describe 'rack app' do
     get '/'
     expect{expect_json_types({foo: :int})}.to raise_error
   end 
+  
+  it 'Should set json_body even when not using the airborne http requests' do 
+    Response = Struct.new(:body, :headers)
+    @response = Response.new({foo: "bar"}.to_json)
+    expect(json_body).to eq({foo: 'bar'})
+  end
 end
