@@ -111,7 +111,8 @@ module Airborne
         array_of_objects: [Hash],
         array: [Array],
         array_of_arrays: [Array],
-        date: [DateTime]
+        date: [DateTime],
+        null: [NilClass]
       }
 
       mapper = base_mapper.clone

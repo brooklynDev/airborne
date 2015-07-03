@@ -1,4 +1,5 @@
 {
 	"name": "Alex",
-	"age": 32
+	"age": 32,
+	"address": null
 }

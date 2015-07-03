@@ -44,4 +44,10 @@ describe 'expect_json_types' do
     expect_json_types({emptyArray: :array_of_ints})
   end
 
+  it 'should be able to test for a nil type' do
+    mock_get('simple_get')
+    get '/simple_get'
+    expect_json_types({name: :string, age: :int, address: :null})
+  end
+
 end
