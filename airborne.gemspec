@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'airborne'
-  s.version     = '0.1.15'
+  s.version     = '0.1.16'
   s.date        = '2015-03-03'
   s.summary = 'RSpec driven API testing framework'
   s.authors     = ['Alex Friedman', 'Seth Pollack']
