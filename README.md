@@ -45,6 +45,7 @@ When calling expect_json_types, these are the valid types that can be tested aga
 * `:string`
 * `:date`
 * `:object`
+* `:null`
 * `:array`
 * `:array_of_integers` or `:array_of_ints`
 * `:array_of_floats`
