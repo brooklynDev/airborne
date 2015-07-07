@@ -56,14 +56,6 @@ module Airborne
       -> (value) { yield DateTime.parse(value) }
     end
 
-    [:expect_json_types, :expect_json, :expect_json_keys, :expect_status, :expect_header, :expect_header_contains].each do |method_name|
-      method = instance_method(method_name)
-      define_method(method_name) do |*args, &block|
-        set_rails_response
-        method.bind(self).call(*args, &block)
-      end
-    end
-
     private
 
     def expect_header_impl(key, content, contains = nil)
@@ -77,10 +69,6 @@ module Airborne
       else
         fail RSpec::Expectations::ExpectationNotMetError, "Header #{key} not present in HTTP response"
       end
-    end
-
-    def set_rails_response
-      set_response(@response) if @json_body.nil?
     end
 
     def call_with_path(args)
