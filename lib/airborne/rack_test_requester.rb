@@ -6,7 +6,8 @@ module Airborne
       headers = options[:headers] || {}
       base_headers = Airborne.configuration.headers || {}
       headers = base_headers.merge(headers)
-      browser = Rack::Test::Session.new(Rack::MockSession.new(Airborne.configuration.rack_app))
+      browser = Airborne.configuration.rack_browser
+      browser ||= Rack::Test::Session.new(Rack::MockSession.new(Airborne.configuration.rack_app))
       headers.each { |name, value| browser.header(name, value) }
       browser.send(method, url, options[:body] || {}, headers)
       Rack::MockResponse.class_eval do
