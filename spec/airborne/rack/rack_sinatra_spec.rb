@@ -31,4 +31,13 @@ describe 'rack app' do
     @response = Response.new({ foo: 'bar' }.to_json)
     expect(json_body).to eq(foo: 'bar')
   end
+
+  it 'Should work with consecutive requests' do
+    Response = Struct.new(:body, :headers)
+    @response = Response.new({ foo: 'bar' }.to_json)
+    expect(json_body).to eq(foo: 'bar')
+
+    @response = Response.new({ foo: 'boo' }.to_json)
+    expect(json_body).to eq(foo: 'boo')
+  end
 end
