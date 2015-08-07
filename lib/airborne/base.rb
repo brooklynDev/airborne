@@ -57,8 +57,20 @@ module Airborne
     set_response(make_request(:options, url, headers: headers))
   end
 
+  def response
+    @response
+  end
+
+  def headers
+    @headers
+  end
+
+  def body
+    @body
+  end
+
   def json_body
-    set_response(@response) unless @response.nil?
+    set_response(response) unless response.nil?
     fail InvalidJsonError, 'Api request returned invalid json' unless @json_body
     @json_body
   end

@@ -53,7 +53,7 @@ module Airborne
     end
 
     def date
-      -> (value) { yield DateTime.parse(value) }
+      ->(value) { yield DateTime.parse(value) }
     end
 
     private
