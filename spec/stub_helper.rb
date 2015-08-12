@@ -24,8 +24,9 @@ module StubHelper
       .to_return(headers: options[:response_headers] || {}, body: get_json_response_file(url), status: status)
   end
 
-  def mock_delete(url)
-    stub_request(:delete, @base_url + url)
+  def mock_delete(url, options = {}, status = 200)
+    stub_request(:delete, @base_url + url).with(body: options[:request_body] || {})
+    .to_return(headers: options[:response_headers] || {}, body: get_json_response_file(url), status: status)
   end
 
   def mock_head(url, response_headers = {}, status = 200)
