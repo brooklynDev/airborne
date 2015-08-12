@@ -27,12 +27,12 @@ require 'airborne'
 describe 'sample spec' do
   it 'should validate types' do
     get 'http://example.com/api/v1/simple_get' #json api that returns { "name" : "John Doe" }
-    expect_json_types({name: :string})
+    expect_json_types(name: :string)
   end
 
   it 'should validate values' do
     get 'http://example.com/api/v1/simple_get' #json api that returns { "name" : "John Doe" }
-    expect_json({:name => "John Doe"})
+    expect_json(name: 'John Doe')
   end
 end
 ```
@@ -60,7 +60,7 @@ If the properties are optional and may not appear in the response, you can appen
 describe 'sample spec' do
   it 'should validate types' do
     get 'http://example.com/api/v1/simple_get' #json api that returns { "name" : "John Doe" } or { "name" : "John Doe", "age" : 45 }
-    expect_json_types({name: :string, age: :int_or_null})
+    expect_json_types(name: :string, age: :int_or_null)
   end
 end
 ```
@@ -70,7 +70,7 @@ Additionally, if an entire object could be null, but you'd still want to test th
 ```ruby
 it 'should allow optional nested hash' do
   get '/simple_path_get' #may or may not return coordinates
-  expect_json_types("address.coordinates", optional({latitude: :float, longitude: :float}))
+  expect_json_types('address.coordinates', optional(latitude: :float, longitude: :float))
 end
 ```
 
@@ -80,7 +80,7 @@ Additionally, when calling `expect_json`, you can provide a regex pattern in a c
 describe 'sample spec' do
   it 'should validate types' do
     get 'http://example.com/api/v1/simple_get' #json api that returns { "name" : "John Doe" }
-    expect_json({name: regex("^John")})
+    expect_json(name: regex("^John"))
   end
 end
 ```
@@ -91,7 +91,7 @@ When calling `expect_json` or `expect_json_types`, you can optionally provide a 
 describe 'sample spec' do
   it 'should validate types' do
     get 'http://example.com/api/v1/simple_get' #json api that returns { "name" : "John Doe" }
-    expect_json({name: -> (name){expect(name.length).to eq(8)}})
+    expect_json(name: -> (name){ expect(name.length).to eq(8) })
   end
 end
 ```
@@ -102,7 +102,7 @@ Calling `expect_json_sizes` actually make use of the above feature and call `exp
 describe 'sample spec' do
   it 'should validate types' do
     get 'http://example.com/api/v1/simple_get_collection' #json api that returns { "ids" : [1, 2, 3, 4] }
-    expect_json_sizes({ids: 4})
+    expect_json_sizes(ids: 4)
   end
 end
 ```
@@ -129,19 +129,19 @@ end
 When calling any of the methods above, you can pass request headers to be used.
 
 ```ruby
-get 'http://example.com/api/v1/my_api', {'x-auth-token' => 'my_token'}
+get 'http://example.com/api/v1/my_api', { 'x-auth-token' => 'my_token' }
 ```
 
 For requests that require a body (`post`, `put`, `patch`) you can pass the body as a hash as well:
 
 ```ruby
-post 'http://example.com/api/v1/my_api', {:name => 'John Doe'}, {'x-auth-token' => 'my_token'}
+post 'http://example.com/api/v1/my_api', { :name => 'John Doe' }, { 'x-auth-token' => 'my_token' }
 ```
 
 For requests that require Query params you can pass a params hash into headers.
 
 ```ruby
-post 'http://example.com/api/v1/my_api', {}, {'params' => {'param_key' => 'param_value'}
+post 'http://example.com/api/v1/my_api', { }, { 'params' => {'param_key' => 'param_value' }
 ```
 
 ##Testing Rack Applications
@@ -165,10 +165,10 @@ If you're testing an API you've written in Rails, Airborne plays along with `rsp
 require 'rails_helper'
 
 RSpec.describe HomeController, :type => :controller do
-  describe "GET index" do
-    it "returns correct types" do
+  describe 'GET index' do
+    it 'returns correct types' do
       get :index, :format => 'json' #if your route responds to both html and json
-      expect_json_types({foo: :string})
+      expect_json_types(foo: :string)
     end
   end
 end
@@ -211,9 +211,9 @@ This test would only test the address object:
 describe 'path spec' do
   it 'should allow simple path and verify only that path' do
     get 'http://example.com/api/v1/simple_path_get'
-    expect_json_types('address', {street: :string, city: :string, state: :string, coordinates: :object })
+    expect_json_types('address', street: :string, city: :string, state: :string, coordinates: :object)
     #or this
-    expect_json_types('address', {street: :string, city: :string, state: :string, coordinates: { latitude: :float, longitude: :float } })
+    expect_json_types('address', street: :string, city: :string, state: :string, coordinates: { latitude: :float, longitude: :float })
   end
 end
 ```
@@ -231,7 +231,7 @@ Alternativley, if we only want to test `coordinates` we can dot into just the `c
 ```ruby
 it 'should allow nested paths' do
   get 'http://example.com/api/v1/simple_path_get'
-  expect_json('address.coordinates', {latitude: 33.3872, longitude: 104.5281} )
+  expect_json('address.coordinates', latitude: 33.3872, longitude: 104.5281)
 end
 ```
 
@@ -259,7 +259,7 @@ We can test against just the first car like this:
 ```ruby
 it 'should index into array and test against specific element' do
   get '/array_api'
-  expect_json('cars.0', {make: "Tesla", model: "Model S"})
+  expect_json('cars.0', make: 'Tesla', model: 'Model S')
 end
 ```
 
@@ -268,8 +268,8 @@ To test the types of all elements in the array:
 ```ruby
 it 'should test all elements of the array' do
   get 'http://example.com/api/v1/array_api'
-  expect_json('cars.?', {make: "Tesla", model: "Model S"}) # tests that one car in array matches the tesla
-  expect_json_types('cars.*', {make: :string, model: :string}) # tests all cars in array for make and model of type string
+  expect_json('cars.?', make: 'Tesla', model: 'Model S') # tests that one car in array matches the tesla
+  expect_json_types('cars.*', make: :string, model: :string) # tests all cars in array for make and model of type string
 end
 ```
 
@@ -305,7 +305,7 @@ end
 ```ruby
 it 'should check all nested arrays for specified elements' do
   get 'http://example.com/api/v1/array_with_nested'
-  expect_json_types('cars.*.owners.*', {name: :string})
+  expect_json_types('cars.*.owners.*', name: :string)
 end
 ```
 
@@ -315,7 +315,7 @@ JSON has no support for dates, however airborne gives you the ability to check f
 ```ruby
 it 'should verify date type' do
   get '/get_date' #api that returns {createdAt: "Mon Oct 20 2014 16:10:42 GMT-0400 (EDT)"}
-  expect_json_types({createdAt: :date})
+  expect_json_types(createdAt: :date)
 end
 ```
 However if you want to check the actual date data with `expect_json`, you need to call the `date` function:
@@ -326,7 +326,7 @@ it 'should verify correct date value' do
   prev_day = DateTime.new(2014,10,19)
   next_day = DateTime.new(2014,10,21)
   #within the date callback, you can use regular RSpec expectations that work with dates
-  expect_json({createdAt: date {|value| expect(value).to be_between(prev_day, next_day)}})
+  expect_json(createdAt: date { |value| expect(value).to be_between(prev_day, next_day) })
 end
 ```
 
@@ -346,13 +346,13 @@ Additionally, you can specify a `base_url` and default `headers` to be used on e
 ```ruby
 Airborne.configure do |config|
   config.base_url = 'http://example.com/api/v1'
-  config.headers = {'x-auth-token' => 'my_token'}
+  config.headers = { 'x-auth-token' => 'my_token' }
 end
 
 describe 'spec' do
   it 'now we no longer need the full url' do
     get '/simple_get'
-    expect_json_types({name: :string})
+    expect_json_types(name: :string)
   end
 end
 ```
