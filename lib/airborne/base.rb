@@ -45,8 +45,8 @@ module Airborne
     @response = make_request(:put, url, body: put_body, headers: headers)
   end
 
-  def delete(url, headers = nil)
-    @response = make_request(:delete, url, headers: headers)
+  def delete(url, delete_body = nil, headers = nil)
+    @response = make_request(:delete, url, body: delete_body, headers: headers)
   end
 
   def head(url, headers = nil)
