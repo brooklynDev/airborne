@@ -10,7 +10,7 @@ describe 'expect_json' do
   it 'should fail when incorrect json is tested' do
     mock_get('simple_get')
     get '/simple_get'
-    expect { expect_json(bad: 'data') }.to raise_error
+    expect { expect_json(bad: 'data') }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
   end
 
   it 'should allow full object graph' do
@@ -22,6 +22,6 @@ describe 'expect_json' do
   it 'should ensure keys in hashes do match' do
     mock_get('hash_property')
     get '/hash_property'
-    expect { expect_json(person: { name: 'Alex', something: nil }) }.to raise_error
+    expect { expect_json(person: { name: 'Alex', something: nil }) }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
   end
 end
