@@ -10,7 +10,7 @@ describe 'expect_json_types' do
   it 'should fail when incorrect json types tested' do
     mock_get('simple_get')
     get '/simple_get'
-    expect { expect_json_types(bad: :bool) }.to raise_error
+    expect { expect_json_types(bad: :bool) }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
   end
 
   it 'should not fail when optional property is not present' do
@@ -34,7 +34,7 @@ describe 'expect_json_types' do
   it 'should ensure all valid types in a simple array' do
     mock_get('array_of_values')
     get '/array_of_values'
-    expect { expect_json_types(bad: :array_of_ints) }.to raise_error
+    expect { expect_json_types(bad: :array_of_ints) }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
   end
 
   it 'should allow empty array' do
