@@ -18,4 +18,18 @@ describe 'expect header' do
     get '/simple_get'
     expect { expect_header(:foo, 'bar') }.to raise_error
   end
+
+  describe 'with multi-value headers' do
+    it 'should find exact match for header content' do
+      mock_get('simple_get', 'Set-Cookie' => ['cookie-name=myvalue; Path=/', 'another=value;'])
+      get '/simple_get'
+      expect_header(:set_cookie, 'cookie-name=myvalue; Path=/')
+    end
+
+    it 'should find exact match for header content' do
+      mock_get('simple_get', 'Set-Cookie' => ['cookie-name=myvalue; Path=/', 'another=value;'])
+      get '/simple_get'
+      expect { expect_header(:set_cookie, 'another=') }.to raise_error
+    end
+  end
 end

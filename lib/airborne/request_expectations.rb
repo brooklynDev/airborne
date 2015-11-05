@@ -59,12 +59,24 @@ module Airborne
     private
 
     def expect_header_impl(key, content, contains = nil)
-      header = headers[key]
-      if header
+      content = content.downcase
+      header  = headers[key]
+
+      if header.is_a?(Array)
+        header  = header.map(&:downcase)
+
         if contains
-          expect(header.downcase).to include(content.downcase)
+          expect(header).to include(a_string_matching(content))
         else
-          expect(header.downcase).to eq(content.downcase)
+          expect(header).to include(content)
+        end
+      elsif header
+        header = header.downcase
+
+        if contains
+          expect(header).to include(content)
+        else
+          expect(header).to eq(content)
         end
       else
         fail RSpec::Expectations::ExpectationNotMetError, "Header #{key} not present in HTTP response"
