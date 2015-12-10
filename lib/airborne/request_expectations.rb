@@ -72,6 +72,8 @@ module Airborne
     end
 
     def expect_json_impl(expected, actual)
+      return if nil_optional_hash?(expected, actual)
+
       actual = actual.to_s if expected.class == Regexp
 
       return expect(actual).to match(expected) if property?(expected)
@@ -90,7 +92,7 @@ module Airborne
         expected_value  = extract_expected(expected, prop)
         actual_value    = extract_actual(actual, prop)
 
-        next expect_json_impl(expected_value, actual_value) if expected_value.is_a?(Hash)
+        next expect_json_impl(expected_value, actual_value) if hash?(expected_value)
         next expected_value.call(actual_value) if expected_value.is_a?(Proc)
         next expect(actual_value.to_s).to match(expected_value) if expected_value.is_a?(Regexp)
 
