@@ -8,6 +8,8 @@ require 'airborne/base'
 RSpec.configure do |config|
   config.include Airborne
   config.add_setting :base_url
+  config.add_setting :match_expected, :default => true
+  config.add_setting :match_actual, :default => false
   config.add_setting :headers
   config.add_setting :rack_app
   config.add_setting :requester_type
