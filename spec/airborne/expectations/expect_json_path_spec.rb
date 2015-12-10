@@ -35,7 +35,7 @@ describe 'expect_json with path' do
   it 'should ensure at least one match' do
     mock_get('array_with_index')
     get '/array_with_index'
-    expect { expect_json('cars.?.make', 'Teslas') }.to raise_error
+    expect { expect_json('cars.?.make', 'Teslas') }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
   end
 
   it 'should check for at least one match' do
@@ -47,7 +47,7 @@ describe 'expect_json with path' do
   it 'should ensure at least one match' do
     mock_get('array_with_nested')
     get '/array_with_nested'
-    expect { expect_json('cars.?.owners.?', name: 'Bart Simpsons') }.to raise_error
+    expect { expect_json('cars.?.owners.?', name: 'Bart Simpsons') }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
   end
 
   it 'should check for one match that matches all ' do
@@ -65,13 +65,13 @@ describe 'expect_json with path' do
   it 'should ensure one match that matches all with lambda' do
     mock_get('array_with_nested')
     get '/array_with_nested'
-    expect { expect_json('cars.?.owners.*', name: ->(name) { expect(name).to eq('Bart Simpsons') }) }.to raise_error
+    expect { expect_json('cars.?.owners.*', name: ->(name) { expect(name).to eq('Bart Simpsons') }) }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
   end
 
   it 'should ensure one match that matches all' do
     mock_get('array_with_nested')
     get '/array_with_nested'
-    expect { expect_json('cars.?.owners.*', name: 'Bart Simpsons') }.to raise_error
+    expect { expect_json('cars.?.owners.*', name: 'Bart Simpsons') }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
   end
 
   it 'should allow indexing' do
