@@ -80,13 +80,9 @@ module Airborne
 
       keys = []
 
-      if match_expected
-        keys << expected.keys
-      elsif match_actual
-        keys << actual.keys
-      else
-        keys << expected.keys
-      end
+      keys << expected.keys if match_expected?
+      keys << actual.keys if match_actual?
+      keys = expected.keys & actual.keys if match_none?
 
       keys.flatten.uniq.each do |prop|
         expected_value  = extract_expected(expected, prop)
@@ -112,13 +108,9 @@ module Airborne
 
       keys = []
 
-      if match_expected
-        keys << expected.keys
-      elsif match_actual
-        keys << actual.keys
-      else
-        keys << expected.keys
-      end
+      keys << expected.keys if match_expected?
+      keys << actual.keys if match_actual?
+      keys = expected.keys & actual.keys if match_none?
 
       keys.flatten.uniq.each do |prop|
         type  = extract_expected(expected, prop)
@@ -140,7 +132,7 @@ module Airborne
 
     def call_with_path(args)
       if args.length == 2
-        get_by_path(args[0], json_body) do|json_chunk|
+        get_by_path(args[0], json_body) do |json_chunk|
           yield(args[1], json_chunk)
         end
       else
@@ -159,9 +151,8 @@ module Airborne
 
     def extract_actual(actual, prop)
       begin
-        actual[prop]
+        value = actual[prop]
       rescue
-        return if match_none
         raise ExpectationError, "Expected #{actual.class} #{actual}\nto be an object with property #{prop}"
       end
     end
@@ -270,16 +261,16 @@ module Airborne
       end
     end
 
-    def match_none
-      !match_actual && !match_expected
+    def match_none?
+      !match_actual? && !match_expected?
     end
 
-    def match_actual
-      Airborne.configuration.match_actual
+    def match_actual?
+      Airborne.configuration.match_actual?
     end
 
-    def match_expected
-      Airborne.configuration.match_expected
+    def match_expected?
+      Airborne.configuration.match_expected?
     end
   end
 end
