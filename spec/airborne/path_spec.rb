@@ -10,13 +10,13 @@ describe 'expect path' do
     it 'should raise PathError when incorrect path containing .. is used' do
       expect do
         expect_json('cars..make', 'Tesla')
-      end.to raise_error(Airborne::PathError, "Invalid Path, contains '..'")
+      end.to raise_error(PathError, "Invalid Path, contains '..'")
     end
 
     it 'should raise PathError when trying to call property on an array' do
       expect do
         expect_json('cars.make', 'Tesla')
-      end.to raise_error(Airborne::PathError, "Expected Array\nto be an object with property make")
+      end.to raise_error(PathError, "Expected Array\nto be an object with property make")
     end
   end
 

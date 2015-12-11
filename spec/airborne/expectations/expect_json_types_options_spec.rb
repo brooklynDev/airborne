@@ -5,7 +5,7 @@ describe 'expect_json_types options' do
     it 'should require all expected properties' do
       mock_get 'simple_get'
       get '/simple_get'
-      expect{ expect_json_types(name: :string, other: :string) }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
+      expect{ expect_json_types(name: :string, other: :string) }.to raise_error(ExpectationNotMetError)
     end
 
     it 'should not require the actual properties' do
@@ -19,7 +19,7 @@ describe 'expect_json_types options' do
     it 'should require all actual properties' do
       mock_get 'simple_get'
       get '/simple_get'
-      expect{ expect_json_types(name: :string) }.to raise_error(Airborne::ExpectationError)
+      expect{ expect_json_types(name: :string) }.to raise_error(ExpectationError)
     end
 
     it 'should not require the expected properties' do
@@ -33,13 +33,13 @@ describe 'expect_json_types options' do
     it 'should require all actual properties' do
       mock_get 'simple_get'
       get '/simple_get'
-      expect{ expect_json_types(name: :string) }.to raise_error(Airborne::ExpectationError)
+      expect{ expect_json_types(name: :string) }.to raise_error(ExpectationError)
     end
 
     it 'should require all expected properties' do
       mock_get 'simple_get'
       get '/simple_get'
-      expect{ expect_json_types(name: :string, other: :string) }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
+      expect{ expect_json_types(name: :string, other: :string) }.to raise_error(ExpectationNotMetError)
     end
   end
 

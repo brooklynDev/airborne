@@ -10,7 +10,7 @@ describe 'expect_json' do
   it 'should fail when incorrect json is tested' do
     mock_get('simple_get')
     get '/simple_get'
-    expect { expect_json(bad: 'data') }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
+    expect { expect_json(bad: 'data') }.to raise_error(ExpectationNotMetError)
   end
 
   it 'should allow full object graph' do

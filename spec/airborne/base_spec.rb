@@ -17,7 +17,7 @@ describe 'base spec' do
     mock_get('invalid_json')
     get '/invalid_json'
     expect(body).to eq('1234')
-    expect { json_body }.to raise_error(Airborne::InvalidJsonError)
+    expect { json_body }.to raise_error(InvalidJsonError)
   end
 
   it 'when request is made headers should be hash with indifferent access' do
