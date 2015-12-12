@@ -16,8 +16,8 @@ Install Airborne:
 $ gem install airborne
 ```
 Or add it to your Gemfile:
-```shell
-$ gem 'airborne'
+```ruby
+gem 'airborne'
 ```
 ##Creating Tests
 
