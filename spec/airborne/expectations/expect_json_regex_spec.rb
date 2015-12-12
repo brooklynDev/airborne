@@ -10,7 +10,7 @@ describe 'expect_json regex' do
   it 'should raise an error if regex does not match' do
     mock_get('simple_get')
     get '/simple_get'
-    expect { expect_json(name: regex('^B')) }.to raise_error
+    expect { expect_json(name: regex('^B')) }.to raise_error(ExpectationNotMetError)
   end
 
   it 'should allow regex(Regexp) to be tested against a path' do

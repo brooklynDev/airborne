@@ -23,7 +23,7 @@ describe 'rack app' do
 
   it 'should ensure correct values from sinatra app' do
     get '/'
-    expect { expect_json_types(foo: :int) }.to raise_error
+    expect { expect_json_types(foo: :int) }.to raise_error(ExpectationNotMetError)
   end
 
   it 'Should set json_body even when not using the airborne http requests' do

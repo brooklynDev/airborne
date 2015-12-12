@@ -12,13 +12,13 @@ RSpec driven API testing framework
 ## Installation
 
 Install Airborne:
-
-    gem install airborne
-
+```shell
+$ gem install airborne
+```
 Or add it to your Gemfile:
-
-    gem 'airborne'
-
+```shell
+$ gem 'airborne'
+```
 ##Creating Tests
 
 ```ruby
@@ -357,10 +357,39 @@ describe 'spec' do
 end
 ```
 
+You can also control the strictness of `expect_json` and `expect_json_types` with the global settings `match_expected_default` and `match_actual_default` like this.
+
+```ruby
+Airborne.configure do |config|
+  config.match_expected_default = true
+  config.match_actual_default = false
+end
+```
+
+Airborne sets `match_expected_default` to `true` and `match_actual_default` to `false` by default.
+
+You can use the `match_expected` and `match_actual` settings to override your global defaults in test blocks like this.
+
+```ruby
+describe 'test something', match_expected: true, match_actual: false do
+end
+```
+
+OR
+
+```ruby
+describe 'test something' do
+  Airborne.configuration.match_expected = true
+  Airborne.configuration.match_actual = false
+end
+```
+
 ## Run it from the CLI
 
-    $ cd your/project
-    $ rspec spec
+```shell
+$ cd your/project
+$ rspec spec
+```
 ## Authors
 * [Seth Pollack](https://github.com/sethpollack)
 * [Alex Friedman](https://github.com/brooklynDev)

@@ -40,6 +40,6 @@ module StubHelper
   private
 
   def get_json_response_file(name)
-    IO.read(File.join('spec/test_responses', name + '.json'))
+    IO.read("spec/test_responses/#{name}.json")
   end
 end

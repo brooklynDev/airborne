@@ -11,5 +11,13 @@ module Airborne
         yield(k, v)
       end
     end
+
+    def [](val)
+      @hash[val]
+    end
+
+    def keys
+      @hash.keys
+    end
   end
 end

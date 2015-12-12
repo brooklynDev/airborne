@@ -10,6 +10,6 @@ describe 'expect_json_keys with path' do
   it 'should fail when keys are missing with path' do
     mock_get('simple_nested_path')
     get '/simple_nested_path', {}
-    expect { expect_json_keys('address', [:bad]) }.to raise_error
+    expect { expect_json_keys('address', [:bad]) }.to raise_error(ExpectationNotMetError)
   end
 end

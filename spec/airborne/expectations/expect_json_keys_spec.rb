@@ -4,7 +4,7 @@ describe 'expect_json_keys' do
   it 'should fail when json keys are missing' do
     mock_get('simple_json')
     get '/simple_json', {}
-    expect { expect_json_keys([:foo, :bar, :baz, :bax]) }.to raise_error
+    expect { expect_json_keys([:foo, :bar, :baz, :bax]) }.to raise_error(ExpectationNotMetError)
   end
 
   it 'should ensure correct json keys' do

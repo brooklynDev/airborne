@@ -10,12 +10,12 @@ describe 'expect header contains' do
   it 'should ensure header is present' do
     mock_get('simple_get', 'Content-Type' => 'application/json')
     get '/simple_get'
-    expect { expect_header_contains(:foo, 'bar') }.to raise_error
+    expect { expect_header_contains(:foo, 'bar') }.to raise_error(ExpectationNotMetError)
   end
 
   it 'should ensure partial header is present' do
     mock_get('simple_get', 'Content-Type' => 'application/json')
     get '/simple_get'
-    expect { expect_header_contains(:content_type, 'bar') }.to raise_error
+    expect { expect_header_contains(:content_type, 'bar') }.to raise_error(ExpectationNotMetError)
   end
 end
