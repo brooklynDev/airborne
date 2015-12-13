@@ -85,7 +85,7 @@ module Airborne
       keys = expected.keys & actual.keys if match_none?
 
       keys.flatten.uniq.each do |prop|
-        expected_value  = extract_expected(expected, prop)
+        expected_value  = extract_expected_value(expected, prop)
         actual_value    = extract_actual(actual, prop)
 
         next expect_json_impl(expected_value, actual_value) if hash?(expected_value)
@@ -113,7 +113,7 @@ module Airborne
       keys = expected.keys & actual.keys if match_none?
 
       keys.flatten.uniq.each do |prop|
-        type  = extract_expected(expected, prop)
+        type  = extract_expected_type(expected, prop)
         value = extract_actual(actual, prop)
         value = convert_to_date(value) if type == :date
 
@@ -140,7 +140,16 @@ module Airborne
       end
     end
 
-    def extract_expected(expected, prop)
+    def extract_expected_value(expected, prop)
+      begin
+        raise unless expected.keys.include?(prop)
+        expected[prop]
+      rescue
+        raise ExpectationError, "Expectation is expected to contain property: #{prop}"
+      end
+    end
+
+    def extract_expected_type(expected, prop)
       begin
         type = expected[prop]
         type.nil? ? raise : type
