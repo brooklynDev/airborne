@@ -74,7 +74,7 @@ module Airborne
     def expect_json_impl(expected, actual)
       return if nil_optional_hash?(expected, actual)
 
-      actual = actual.to_s if expected.class == Regexp
+      actual = actual.to_s if expected.is_a?(Regexp)
 
       return expect(actual).to match(expected) if property?(expected)
 
@@ -229,7 +229,7 @@ module Airborne
     end
 
     def property?(expectations)
-      [String, Regexp, Float, Fixnum, Bignum, TrueClass, FalseClass, NilClass].include?(expectations.class)
+      [String, Regexp, Float, Fixnum, Bignum, TrueClass, FalseClass, NilClass, Array].include?(expectations.class)
     end
 
     def get_mapper
