@@ -7,7 +7,7 @@ module Airborne
 
   include RequestExpectations
 
-  attr_reader :response, :headers, :body
+  attr_reader :response, :headers, :body, :rest_url, :rest_method
 
   def self.configure
     RSpec.configure do |config|
@@ -30,22 +30,27 @@ module Airborne
   end
 
   def get(url, headers = nil)
+    @rest_method = :get
     @response = make_request(:get, url, headers: headers)
   end
 
   def post(url, post_body = nil, headers = nil)
+    @rest_method = :post
     @response = make_request(:post, url, body: post_body, headers: headers)
   end
 
   def patch(url, patch_body = nil, headers = nil)
+    @rest_method = :patch
     @response = make_request(:patch, url, body: patch_body, headers: headers)
   end
 
   def put(url, put_body = nil, headers = nil)
+    @rest_method = :put
     @response = make_request(:put, url, body: put_body, headers: headers)
   end
 
   def delete(url, delete_body = nil, headers = nil)
+    @rest_method = :delete
     @response = make_request(:delete, url, body: delete_body, headers: headers)
   end
 
@@ -76,6 +81,7 @@ module Airborne
   private
 
   def get_url(url)
+    @rest_url = url
     base = Airborne.configuration.base_url || ''
     base + url
   end
