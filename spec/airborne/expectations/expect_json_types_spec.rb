@@ -38,17 +38,31 @@ describe 'expect_json_types' do
   end
 
   it "should allow array of types to be null" do
-    mock_get('simple_get')
-    get '/simple_get'
-    expect_json_types(address: :array_or_null)
-    expect_json_types(address: :array_of_integers_or_null)
-    expect_json_types(address: :array_of_ints_or_null)
-    expect_json_types(address: :array_of_floats_or_null)
-    expect_json_types(address: :array_of_strings_or_null)
-    expect_json_types(address: :array_of_booleans_or_null)
-    expect_json_types(address: :array_of_bools_or_null)
-    expect_json_types(address: :array_of_objects_or_null)
-    expect_json_types(address: :array_of_arrays_or_null)
+    mock_get('array_of_types')
+    get '/array_of_types'
+    expect_json_types(nil_array: :array_or_null)
+    expect_json_types(nil_array: :array_of_integers_or_null)
+    expect_json_types(nil_array: :array_of_ints_or_null)
+    expect_json_types(nil_array: :array_of_floats_or_null)
+    expect_json_types(nil_array: :array_of_strings_or_null)
+    expect_json_types(nil_array: :array_of_booleans_or_null)
+    expect_json_types(nil_array: :array_of_bools_or_null)
+    expect_json_types(nil_array: :array_of_objects_or_null)
+    expect_json_types(nil_array: :array_of_arrays_or_null)
+  end
+
+  it "should check array types when not null" do
+    mock_get('array_of_types')
+    get '/array_of_types'
+    expect_json_types(array_of_ints: :array_or_null)
+    expect_json_types(array_of_ints: :array_of_integers_or_null)
+    expect_json_types(array_of_ints: :array_of_ints_or_null)
+    expect_json_types(array_of_floats: :array_of_floats_or_null)
+    expect_json_types(array_of_strings: :array_of_strings_or_null)
+    expect_json_types(array_of_bools: :array_of_booleans_or_null)
+    expect_json_types(array_of_bools: :array_of_bools_or_null)
+    expect_json_types(array_of_objects: :array_of_objects_or_null)
+    expect_json_types(array_of_arrays: :array_of_arrays_or_null)
   end
 
   it 'should allow empty array' do
