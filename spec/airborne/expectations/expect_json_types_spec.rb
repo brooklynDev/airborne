@@ -37,6 +37,20 @@ describe 'expect_json_types' do
     expect { expect_json_types(bad: :array_of_ints) }.to raise_error(ExpectationNotMetError)
   end
 
+  it "should allow array of types to be null" do
+    mock_get('simple_get')
+    get '/simple_get'
+    expect_json_types(address: :array_or_null)
+    expect_json_types(address: :array_of_integers_or_null)
+    expect_json_types(address: :array_of_ints_or_null)
+    expect_json_types(address: :array_of_floats_or_null)
+    expect_json_types(address: :array_of_strings_or_null)
+    expect_json_types(address: :array_of_booleans_or_null)
+    expect_json_types(address: :array_of_bools_or_null)
+    expect_json_types(address: :array_of_objects_or_null)
+    expect_json_types(address: :array_of_arrays_or_null)
+  end
+
   it 'should allow empty array' do
     mock_get('array_of_values')
     get '/array_of_values'

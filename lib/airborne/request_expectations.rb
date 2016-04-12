@@ -122,7 +122,9 @@ module Airborne
 
         val_class = value.class
 
-        if type.to_s.include?('array_of')
+        type_string = type.to_s
+
+        if type_string.include?('array_of') && !type_string.include?('or_null')
           check_array_types(value, val_class, prop, type)
         else
           expect_type(type, val_class, prop)
