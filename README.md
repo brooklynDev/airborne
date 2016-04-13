@@ -366,6 +366,17 @@ Airborne.configure do |config|
 end
 ```
 
+`match_expected_default` requires all the keys in the expected JSON are present in the response.
+`match_actual_default` requires that the keys in the response are tested in the expected Hash.
+
+So you can do the following combinations:
+
+`match_expected_default=false`, `match_actual_default=false` - check only intersection
+`match_expected_default=false`, `match_actual_default=true` - raise on extra key in response
+`match_expected_default=true`, `match_actual_default=false` - raise on missing key in response
+`match_expected_default=true`, `match_actual_default=true` - expect exact match
+
+
 Airborne sets `match_expected_default` to `true` and `match_actual_default` to `false` by default.
 
 You can use the `match_expected` and `match_actual` settings to override your global defaults in test blocks like this.
