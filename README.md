@@ -141,7 +141,7 @@ post 'http://example.com/api/v1/my_api', { :name => 'John Doe' }, { 'x-auth-toke
 For requests that require Query params you can pass a params hash into headers.
 
 ```ruby
-post 'http://example.com/api/v1/my_api', { }, { 'params' => {'param_key' => 'param_value' }
+post 'http://example.com/api/v1/my_api', { }, { 'params' => {'param_key' => 'param_value' } }
 ```
 
 ##Testing Rack Applications
