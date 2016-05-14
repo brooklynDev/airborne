@@ -117,6 +117,10 @@ module Airborne
         value = extract_actual(actual, prop)
         value = convert_to_date(value) if type == :date
 
+        if hash?(type) && value.nil?
+          raise ExpectationError, "Missing expected hash #{prop}"
+        end
+
         next expect_json_types_impl(type, value) if hash?(type)
         next type.call(value) if type.is_a?(Proc)
 
