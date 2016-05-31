@@ -12,5 +12,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'rest-client', '~> 1.7', '>= 1.7.3' # version 1.7.3 fixes security vulnerability https://github.com/brooklynDev/airborne/issues/41
   s.add_runtime_dependency 'rack-test', '~> 0.6', '>= 0.6.2'
   s.add_runtime_dependency 'activesupport', '>= 3.0.0', '>= 3.0.0'
+  s.add_runtime_dependency 'json-schema'
+  s.add_runtime_dependency 'json-schema-generator'
   s.add_development_dependency 'webmock', '~> 0'
 end

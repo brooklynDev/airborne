@@ -1,6 +1,7 @@
 require 'rspec'
 require 'date'
 require 'rack/utils'
+require 'json-schema'
 
 module Airborne
   class ExpectationError < StandardError; end
@@ -42,6 +43,23 @@ module Airborne
 
     def expect_header_contains(key, content)
       expect_header_impl(key, content, true)
+    end
+
+    def expect_json_schema(file=nil)
+      path = "#{Dir.pwd}/#{Airborne.configuration.schema_path}#{rest_url}"
+      path = path.tr('?', '/').tr('&', '/').tr('[', '-').tr(']', '')
+      path = path.gsub(/\/\d*\//, "/ID/").gsub(/\/\d*$/, "/ID").tr('=', '/')
+
+      file ||= "#{path}/#{rest_method}.schema"
+
+      schema = File.read(file)
+
+      expect { JSON::Validator.validate!(schema, json_body, strict: true) }.not_to raise_error
+    rescue Errno::ENOENT => ex
+      warn "Can not verify schema; #{ex.message}"
+    ensure
+      json_file = file.gsub('.schema', '.json')
+      File.delete json_file if File.exist? json_file
     end
 
     def optional(hash)
