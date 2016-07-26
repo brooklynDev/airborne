@@ -1,9 +1,7 @@
 source 'https://rubygems.org'
 
-gem 'rspec'
-gem 'rest-client'
-gem 'rack-test'
-gem 'activesupport'
+gemspec
+
 gem 'coveralls', require: false
 
 group :test do
