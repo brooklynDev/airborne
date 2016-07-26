@@ -16,7 +16,7 @@ describe 'base spec' do
   it 'should throw an InvalidJsonError when accessing json_body on invalid json' do
     mock_get('invalid_json')
     get '/invalid_json'
-    expect(body).to eq('1234')
+    expect(body).to eq('invalid1234')
     expect { json_body }.to raise_error(InvalidJsonError)
   end
 
