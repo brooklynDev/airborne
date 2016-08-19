@@ -41,6 +41,12 @@ describe 'expect_json options' do
       get '/simple_get'
       expect{ expect_json(name: 'Alex', other: 'other') }.to raise_error(ExpectationNotMetError)
     end
+
+    it 'should require all expected properties' do
+      mock_get 'simple_get'
+      get '/simple_get'
+      expect{ expect_json(name: 'Alex', nested: {}) }.to raise_error(ExpectationNotMetError)
+    end
   end
 
   describe 'match_none', match_expected: false, match_actual: false do
@@ -53,7 +59,7 @@ describe 'expect_json options' do
     it 'should not require the expected properties' do
       mock_get 'simple_get'
       get '/simple_get'
-      expect_json(name: 'Alex', age: 32, address: nil, other: 'other')
+      expect_json(name: 'Alex', age: 32, address: nil, other: 'other', nested: {})
     end
   end
 end

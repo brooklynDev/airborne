@@ -88,7 +88,7 @@ module Airborne
         expected_value  = extract_expected_value(expected, prop)
         actual_value    = extract_actual(actual, prop)
 
-        next expect_json_impl(expected_value, actual_value) if hash?(expected_value)
+        next expect_json_impl(expected_value, actual_value) if hash?(expected_value) && hash?(actual_value)
         next expected_value.call(actual_value) if expected_value.is_a?(Proc)
         next expect(actual_value.to_s).to match(expected_value) if expected_value.is_a?(Regexp)
 
