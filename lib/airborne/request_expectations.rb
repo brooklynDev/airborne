@@ -267,7 +267,7 @@ module Airborne
       candidate = Rack::Utils::SYMBOL_TO_STATUS_CODE[candidate] if candidate.is_a?(Symbol)
       case authority
       when String then candidate.to_s
-      when Fixnum then candidate.to_i
+      when Integer then candidate.to_i
       else candidate
       end
     end
