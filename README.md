@@ -19,7 +19,7 @@ Or add it to your Gemfile:
 ```ruby
 gem 'airborne'
 ```
-##Creating Tests
+## Creating Tests
 
 ```ruby
 require 'airborne'
@@ -107,7 +107,7 @@ describe 'sample spec' do
 end
 ```
 
-##Making requests
+## Making requests
 
 Airborne uses `rest_client` to make the HTTP request, and supports all HTTP verbs. When creating a test, you can call any of the following methods: `get`, `post`, `put`, `patch`, `delete`, `head`, `options`. This will then give you access the following properties:
 
@@ -144,7 +144,7 @@ For requests that require Query params you can pass a params hash into headers.
 post 'http://example.com/api/v1/my_api', { }, { 'params' => {'param_key' => 'param_value' } }
 ```
 
-##Testing Rack Applications
+## Testing Rack Applications
 
 If you have an existing Rack application like `sinatra` or `grape` you can run Airborne against your application and test without actually having a server running. To do that, just specify your rack application in your Airborne configuration:
 
@@ -156,7 +156,7 @@ end
 
 Under the covers, Airborne uses [rack-test](https://github.com/brynary/rack-test) to make the requests.
 
-##Rails Applications
+## Rails Applications
 
 If you're testing an API you've written in Rails, Airborne plays along with `rspec-rails`:
 
@@ -174,7 +174,7 @@ RSpec.describe HomeController, :type => :controller do
 end
 ```
 
-##API
+## API
 
 * `expect_json_types` - Tests the types of the JSON property values returned
 * `expect_json` - Tests the values of the JSON property values returned
@@ -184,7 +184,7 @@ end
 * `expect_header` - Tests for a specified header in the response
 * `expect_header_contains` - Partial match test on a specified header
 
-##Path Matching
+## Path Matching
 
 When calling `expect_json_types`, `expect_json`, `expect_json_keys` or `expect_json_sizes` you can optionally specify a path as a first parameter.
 
@@ -309,7 +309,8 @@ it 'should check all nested arrays for specified elements' do
 end
 ```
 
-##Dates
+## Dates
+
 JSON has no support for dates, however airborne gives you the ability to check for dates using the following. For `expect_json_types` you would use it as you would for any of the other types:
 
 ```ruby
@@ -330,7 +331,7 @@ it 'should verify correct date value' do
 end
 ```
 
-##Configuration
+## Configuration
 
 When setting up Airborne, you can call `configure` just like you would with `rspec`:
 
