@@ -231,17 +231,17 @@ module Airborne
     end
 
     def property?(expectations)
-      [String, Regexp, Float, Fixnum, Bignum, TrueClass, FalseClass, NilClass, Array].include?(expectations.class)
+      [String, Regexp, Float, Integer, TrueClass, FalseClass, NilClass, Array].include?(expectations.class)
     end
 
     def get_mapper
       base_mapper = {
-        integer: [Fixnum, Bignum],
-        array_of_integers: [Fixnum, Bignum],
-        int: [Fixnum, Bignum],
-        array_of_ints: [Fixnum, Bignum],
-        float: [Float, Fixnum, Bignum],
-        array_of_floats: [Float, Fixnum, Bignum],
+        integer: [Integer],
+        array_of_integers: [Integer],
+        int: [Integer],
+        array_of_ints: [Integer],
+        float: [Float, Integer],
+        array_of_floats: [Float, Integer],
         string: [String],
         array_of_strings: [String],
         boolean: [TrueClass, FalseClass],
