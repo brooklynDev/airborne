@@ -103,7 +103,7 @@ module Airborne
 
       actual = convert_to_date(actual) if expected == :date
 
-      return expect_type(expected, actual.class) if expected.is_a?(Symbol)
+      return expect_type(expected, actual) if expected.is_a?(Symbol)
       return expected.call(actual) if expected.is_a?(Proc)
 
       keys = []
@@ -120,14 +120,12 @@ module Airborne
         next expect_json_types_impl(type, value) if hash?(type)
         next type.call(value) if type.is_a?(Proc)
 
-        val_class = value.class
-
         type_string = type.to_s
 
         if type_string.include?('array_of') && !(type_string.include?('or_null') && value.nil?)
-          check_array_types(value, val_class, prop, type)
+          check_array_types(value, prop, type)
         else
-          expect_type(type, val_class, prop)
+          expect_type(type, value, prop)
         end
       end
     end
@@ -168,13 +166,13 @@ module Airborne
       end
     end
 
-    def expect_type(expected_type, value_class, prop_name = nil)
+    def expect_type(expected_type, value, prop_name = nil)
       fail ExpectationError, "Expected type #{expected_type}\nis an invalid type" if @mapper[expected_type].nil?
 
       insert = prop_name.nil? ? '' : "#{prop_name} to be of type"
-      message = "Expected #{insert} #{expected_type}\n got #{value_class} instead"
+      message = "Expected #{insert} #{expected_type}\n got #{value.class} instead"
 
-      expect(@mapper[expected_type].include?(value_class)).to eq(true), message
+      expect(@mapper[expected_type].any?{|type| value.is_a?(type)}).to eq(true), message
     end
 
     def convert_to_date(value)
@@ -184,10 +182,10 @@ module Airborne
       end
     end
 
-    def check_array_types(value, value_class, prop_name, expected_type)
-      expect_array(value_class, prop_name, expected_type)
+    def check_array_types(value, prop_name, expected_type)
+      expect_array(value, prop_name, expected_type)
       value.each do |val|
-        expect_type(expected_type, val.class, prop_name)
+        expect_type(expected_type, val, prop_name)
       end
     end
 
@@ -199,8 +197,8 @@ module Airborne
       hash.is_a?(Hash) || hash.is_a?(Airborne::OptionalHashTypeExpectations)
     end
 
-    def expect_array(value_class, prop_name, expected_type)
-      expect(value_class).to eq(Array), "Expected #{prop_name}\n to be of type #{expected_type}\n got #{value_class} instead"
+    def expect_array(value, prop_name, expected_type)
+      expect(value.class).to eq(Array), "Expected #{prop_name}\n to be of type #{expected_type}\n got #{value.class} instead"
     end
 
     def convert_expectations_for_json_sizes(old_expectations)
@@ -230,18 +228,18 @@ module Airborne
       end
     end
 
-    def property?(expectations)
-      [String, Regexp, Float, *integer_types, TrueClass, FalseClass, NilClass, Array].include?(expectations.class)
+    def property?(expectation)
+      [String, Regexp, Float, Integer, TrueClass, FalseClass, NilClass, Array].any?{|type| expectation.is_a?(type)}
     end
 
     def get_mapper
       base_mapper = {
-        integer: integer_types,
-        array_of_integers: integer_types,
-        int: integer_types,
-        array_of_ints: integer_types,
-        float: [Float, *integer_types],
-        array_of_floats: [Float, *integer_types],
+        integer: [Integer],
+        array_of_integers: [Integer],
+        int: [Integer],
+        array_of_ints: [Integer],
+        float: [Float, Integer],
+        array_of_floats: [Float, Integer],
         string: [String],
         array_of_strings: [String],
         boolean: [TrueClass, FalseClass],
@@ -282,14 +280,6 @@ module Airborne
 
     def match_expected?
       Airborne.configuration.match_expected?
-    end
-
-    def integer_types
-      if 0.class == Integer
-        [Integer]
-      else
-        [Fixnum, Bignum]
-      end
     end
   end
 end
