@@ -101,7 +101,7 @@ module Airborne
 
       @mapper ||= get_mapper
 
-      actual = convert_to_date(actual) if expected == :date
+      actual = convert_to_date(actual) if ((expected == :date) || (expected == :date_or_null))
 
       return expect_type(expected, actual) if expected.is_a?(Symbol)
       return expected.call(actual) if expected.is_a?(Proc)
@@ -115,7 +115,7 @@ module Airborne
       keys.flatten.uniq.each do |prop|
         type  = extract_expected_type(expected, prop)
         value = extract_actual(actual, prop)
-        value = convert_to_date(value) if type == :date
+        value = convert_to_date(value) if ((type == :date) || (type == :date_or_null))
 
         next expect_json_types_impl(type, value) if hash?(type)
         next type.call(value) if type.is_a?(Proc)
