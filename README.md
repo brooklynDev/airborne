@@ -1,4 +1,4 @@
-# Airborne
+# Airborne 
 
 [![airborne travis](http://img.shields.io/travis/brooklynDev/airborne.svg?branch=master&style=flat-square)](https://travis-ci.org/brooklynDev/airborne)
 [![airborne coveralls](http://img.shields.io/coveralls/brooklynDev/airborne/master.svg?style=flat-square)](https://coveralls.io/r/brooklynDev/airborne?branch=master)
@@ -8,6 +8,11 @@
 [![airborne gem stable downloads](http://img.shields.io/gem/dv/airborne/stable.svg?style=flat-square)](http://rubygems.org/gems/airborne)
 
 RSpec driven API testing framework
+
+## Looking for Project Maintainers
+I am looking for project maintainers to help keep airborne up to date and bug-free while avoiding feature creep and maintaining backwards compatibility.
+
+Comment [here](https://github.com/brooklynDev/airborne/issues/134) if you would like to help out.
 
 ## Installation
 
