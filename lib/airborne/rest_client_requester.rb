@@ -3,23 +3,28 @@ require 'rest_client'
 module Airborne
   module RestClientRequester
     def make_request(method, url, options = {})
-      headers = base_headers.merge(options[:headers] || {})
-      res = if method == :post || method == :patch || method == :put
-        begin
-          request_body = options[:body].nil? ? '' : options[:body]
-          request_body = request_body.to_json if options[:body].is_a?(Hash)
-          RestClient.send(method, get_url(url), request_body, headers)
-        rescue RestClient::Exception => e
-          e.response
-        end
-      else
-        begin
-          RestClient.send(method, get_url(url), headers)
-        rescue RestClient::Exception => e
-          e.response
+      rest_client_params = {
+        method: method,
+        url: get_url(url),
+        headers: base_headers.merge(options[:headers] || {})
+      }
+      rest_client_params.merge!(options[:advanced_options]) unless options[:advanced_options].nil?
+
+      if method == :post || method == :patch || method == :put
+        rest_client_params[:payload] = if options[:body].nil?
+          ''
+        elsif options[:body].is_a?(Hash)
+          options[:body].to_json
+        else
+          options[:body]
         end
       end
-      res
+
+      begin
+        RestClient::Request.execute(rest_client_params)
+      rescue RestClient::Exception => e
+        e.response
+      end
     end
 
     private
