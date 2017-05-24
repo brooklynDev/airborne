@@ -1,13 +1,15 @@
 require 'json'
 require 'active_support'
 require 'active_support/core_ext/hash/indifferent_access'
+require 'active_support/core_ext/module/delegation'
+require 'airborne/response'
 
 module Airborne
   class InvalidJsonError < StandardError; end
 
   include RequestExpectations
 
-  attr_reader :response, :headers, :body
+  attr_reader :headers, :body
 
   def self.configure
     RSpec.configure do |config|
@@ -15,19 +17,23 @@ module Airborne
     end
   end
 
-  def self.included(base)
-    if !Airborne.configuration.requester_module.nil?
-      base.send(:include, Airborne.configuration.requester_module)
-    elsif !Airborne.configuration.rack_app.nil?
-      base.send(:include, RackTestRequester)
-    else
-      base.send(:include, RestClientRequester)
-    end
-  end
-
   def self.configuration
     RSpec.configuration
   end
+
+  def requester
+    Class.new(self.class) do
+      if !Airborne.configuration.requester_module.nil?
+        include Airborne.configuration.requester_module
+      elsif !Airborne.configuration.rack_app.nil?
+        include RackTestRequester
+      else
+        include RestClientRequester
+      end
+    end.new
+  end
+
+  delegate :make_request, to: :requester
 
   def get(url, headers = nil)
     @response = make_request(:get, url, headers: headers)
@@ -58,15 +64,15 @@ module Airborne
   end
 
   def response
-    @response
+    Response.new(@response)
   end
 
   def headers
-    HashWithIndifferentAccess.new(response.headers)
+    HashWithIndifferentAccess.new(@response.headers)
   end
 
   def body
-    response.body
+    @response.body
   end
 
   def json_body

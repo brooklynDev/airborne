@@ -11,11 +11,12 @@ class SampleApp < Sinatra::Application
   end
 end
 
-Airborne.configure do |config|
-  config.rack_app = SampleApp
-end
+TestResponse = Struct.new(:body, :headers)
 
 describe 'rack app' do
+  before { Airborne.configuration.rack_app = SampleApp }
+  after { Airborne.configuration.rack_app = nil }
+
   it 'should allow requests against a sinatra app' do
     get '/'
     expect_json_types(foo: :string)
@@ -27,17 +28,15 @@ describe 'rack app' do
   end
 
   it 'Should set json_body even when not using the airborne http requests' do
-    Response = Struct.new(:body, :headers)
-    @response = Response.new({ foo: 'bar' }.to_json)
+    @response = TestResponse.new({ foo: 'bar' }.to_json)
     expect(json_body).to eq(foo: 'bar')
   end
 
   it 'Should work with consecutive requests' do
-    Response = Struct.new(:body, :headers)
-    @response = Response.new({ foo: 'bar' }.to_json)
+    @response = TestResponse.new({ foo: 'bar' }.to_json)
     expect(json_body).to eq(foo: 'bar')
 
-    @response = Response.new({ foo: 'boo' }.to_json)
+    @response = TestResponse.new({ foo: 'boo' }.to_json)
     expect(json_body).to eq(foo: 'boo')
   end
 end
