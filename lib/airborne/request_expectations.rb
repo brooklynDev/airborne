@@ -22,7 +22,7 @@ module Airborne
 
     def expect_json_keys(*args)
       call_with_path(args) do |param, body|
-        expect(body.keys).to include(*param)
+        expect(body.keys).to include(*param.map(&:to_s))
       end
     end
 
