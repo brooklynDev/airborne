@@ -160,7 +160,7 @@ module Airborne
 
     def extract_actual(actual, prop)
       begin
-        value = actual[prop]
+        value = actual[prop.to_s]
       rescue
         raise ExpectationError, "Expected #{actual.class} #{actual}\nto be an object with property #{prop}"
       end
