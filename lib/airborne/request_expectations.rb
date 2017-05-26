@@ -143,7 +143,12 @@ module Airborne
     def extract_expected_value(expected, prop)
       begin
         raise unless expected.keys.include?(prop)
-        expected[prop]
+
+        if expected[prop].kind_of?(Array)
+          expected[prop].map{|x| x.stringify_keys}
+        else
+          expected[prop]
+        end
       rescue
         raise ExpectationError, "Expectation is expected to contain property: #{prop}"
       end
