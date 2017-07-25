@@ -6,6 +6,7 @@ module Airborne
   class InvalidJsonError < StandardError; end
 
   include RequestExpectations
+  include CurlCommandBuilder
 
   attr_reader :response, :headers, :body
 
@@ -71,6 +72,10 @@ module Airborne
 
   def json_body
     JSON.parse(response.body, symbolize_names: true) rescue fail InvalidJsonError, 'Api request returned invalid json'
+  end
+
+  def curl
+    curl_command
   end
 
   private

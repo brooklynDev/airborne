@@ -4,10 +4,16 @@ module Airborne
   module RestClientRequester
     def make_request(method, url, options = {})
       headers = base_headers.merge(options[:headers] || {})
+      @method = method
+      @url = url
+      @options = options
+      @headers = headers
+      @request_body = ''
       res = if method == :post || method == :patch || method == :put
         begin
           request_body = options[:body].nil? ? '' : options[:body]
           request_body = request_body.to_json if options[:body].is_a?(Hash)
+          @request_body = request_body
           RestClient.send(method, get_url(url), request_body, headers)
         rescue RestClient::Exception => e
           e.response

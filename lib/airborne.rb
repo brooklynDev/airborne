@@ -2,6 +2,7 @@ require 'airborne/optional_hash_type_expectations'
 require 'airborne/path_matcher'
 require 'airborne/request_expectations'
 require 'airborne/rest_client_requester'
+require 'airborne/curl_command_builder'
 require 'airborne/rack_test_requester'
 require 'airborne/base'
 
