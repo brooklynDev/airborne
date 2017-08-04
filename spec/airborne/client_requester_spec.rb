@@ -33,4 +33,18 @@ describe 'client requester' do
     expect(RestClient).to have_received(:send)
                             .with(:get, 'http://www.example.com/foo', { content_type: 'text/plain' })
   end
+
+  it 'should serialize body to json when :content_type is :json' do
+    post '/foo', { test: 'serialized' }
+
+    expect(RestClient).to have_received(:send)
+                            .with(:post, 'http://www.example.com/foo', '{"test":"serialized"}', { content_type: :json })
+  end
+
+  it 'should not serialize body to json when :content_type is not :json' do
+    post '/foo', { test: 'not serialized' }, { content_type: 'text/plain' }
+
+    expect(RestClient).to have_received(:send)
+                            .with(:post, 'http://www.example.com/foo', { test: 'not serialized' }, { content_type: 'text/plain' })
+  end
 end
