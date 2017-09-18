@@ -25,7 +25,8 @@ module Airborne
     private
 
     def is_json_request(headers)
-      headers.fetch(:content_type) == :json
+      header = headers.fetch(:content_type)
+      header == :json || /application\/([a-zA-Z0-9\.\_\-]*\+?)json/ =~ header
     end
 
     def base_headers
