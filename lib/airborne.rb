@@ -22,7 +22,7 @@ module Airborne
   end
 end
 
-RSpec.configure do |config|
+Airborne.configure do |config|
   config.include Airborne::Base
   config.filter_run_when_matching :focus
   config.order = :random
