@@ -8,6 +8,7 @@ RSpec.configure do |config|
   config.add_setting :rack_app
   config.add_setting :requester_type
   config.add_setting :requester_module
+  config.add_setting :use_faraday, default: true
   config.around(:example, match_expected: !config.match_expected_default) do |example|
     config.match_expected = !config.match_expected_default
     example.run
