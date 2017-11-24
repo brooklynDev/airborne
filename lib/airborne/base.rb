@@ -11,9 +11,11 @@ module Airborne
     attr_reader :response, :headers, :body
 
     def self.included(base)
-      if !Airborne.configuration.requester_module.nil?
+      if Airborne.configuration.use_faraday
+        base.send(:include, Airborne::FaradayRequester)
+      elsif Airborne.configuration.requester_module
         base.send(:include, Airborne.configuration.requester_module)
-      elsif !Airborne.configuration.rack_app.nil?
+      elsif Airborne.configuration.rack_app
         base.send(:include, RackTestRequester)
       else
         base.send(:include, RestClientRequester)
