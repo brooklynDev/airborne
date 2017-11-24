@@ -7,6 +7,7 @@ require 'pry'
 Airborne.configure do |config|
   config.base_url = 'http://www.example.com'
   config.include StubHelper
+  config.use_faraday = false
 end
 
 ExpectationNotMetError = RSpec::Expectations::ExpectationNotMetError
