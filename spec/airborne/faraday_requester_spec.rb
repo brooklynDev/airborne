@@ -3,10 +3,7 @@ require 'spec_helper'
 RSpec.fdescribe Airborne::FaradayRequester do
   before do
     stub_request(:any, /www.example.com/)
-    Airborne.configure do |config|
-      config.use_faraday = true
-      config.base_url = 'http://www.example.com'
-    end
+    allow(Airborne).to receive_message_chain(:configuration, :base_url).and_return 'http://www.example.com'
   end
 
   subject { described_class.new }
