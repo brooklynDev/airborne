@@ -4,7 +4,9 @@ require 'airborne/path_matcher'
 require 'airborne/request_expectations'
 require 'airborne/rest_client_requester'
 require 'airborne/rack_test_requester'
+require 'airborne/faraday_requester'
 require 'airborne/base'
+
 
 module Airborne
   class << self
