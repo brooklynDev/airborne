@@ -20,32 +20,32 @@ module Airborne
       end
     end
 
-    def get(url, headers = nil)
-      @response = make_request(:get, url, headers: headers)
+    def get(path, body = nil, headers = nil, &block)
+      @response = make_request(:get, path, body, headers, &block)
     end
 
-    def post(url, post_body = nil, headers = nil)
-      @response = make_request(:post, url, body: post_body, headers: headers)
+    def post(path, post_body = nil, headers = nil, &block)
+      @response = make_request(:post, path, post_body, headers, &block)
     end
 
-    def patch(url, patch_body = nil, headers = nil)
-      @response = make_request(:patch, url, body: patch_body, headers: headers)
+    def patch(path, patch_body = nil, headers = nil, &block)
+      @response = make_request(:patch, path, patch_body, headers, &block)
     end
 
-    def put(url, put_body = nil, headers = nil)
-      @response = make_request(:put, url, body: put_body, headers: headers)
+    def put(path, put_body = nil, headers = nil, &block)
+      @response = make_request(:put, path, put_body, headers, &block)
     end
 
-    def delete(url, delete_body = nil, headers = nil)
-      @response = make_request(:delete, url, body: delete_body, headers: headers)
+    def delete(path, delete_body = nil, headers = nil, &block)
+      @response = make_request(:delete, path, delete_body, headers, &block)
     end
 
-    def head(url, headers = nil)
-      @response = make_request(:head, url, headers: headers)
+    def head(path, body = nil, headers = nil, &block)
+      @response = make_request(:head, path, body, headers, &block)
     end
 
-    def options(url, headers = nil)
-      @response = make_request(:options, url, headers: headers)
+    def options(path, body = nil, headers = nil, &block)
+      @response = make_request(:options, path, body, headers, &block)
     end
 
     def response
