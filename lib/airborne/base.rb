@@ -58,8 +58,9 @@ module Airborne
       HashWithIndifferentAccess.new(response.headers)
     end
 
-    def basic_auth(username, password)
-      "Basic " + ["#{username}:#{password}"].pack('m*')
+    def basic_auth(login, pass)
+      val = Base64.encode64([login, pass].join(':')).gsub!("\n", '')
+      "Basic #{val}"
     end
 
     def body

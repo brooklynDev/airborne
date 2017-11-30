@@ -3,38 +3,42 @@ require 'spec_helper'
 RSpec.describe Airborne::FaradayRequester do
   before do
     stub_request(:any, /www.example.com/)
-    allow(Airborne).to receive_message_chain(:configuration, :base_url).and_return 'http://www.example.com'
+    allow(Airborne).to receive_message_chain(:configuration, :base_url).and_return 'https://www.example.com'
   end
 
-  subject { described_class.new }
+  class Test
+    include Airborne::FaradayRequester
+  end
+
+  subject { Test.new }
 
   shared_examples 'faraday_get_delete_requests' do |kind_of_request|
     describe "##{kind_of_request}" do
       context 'when have only path' do
         it "makes a simple #{kind_of_request} call" do
           subject.make_request kind_of_request, '/asdasd'
-          expect(a_request(kind_of_request, "www.example.com/asdasd").with(body: {})).to have_been_made.once
+          expect(a_request(kind_of_request, "https://www.example.com/asdasd").with(body: {})).to have_been_made.once
         end
       end
 
       context 'when request has body' do
         it 'makes calls with body specified in the body params' do
           subject.make_request kind_of_request, '/asdasd', { jane: 'doe' }
-          expect(a_request(kind_of_request, "www.example.com/asdasd?jane=doe")).to have_been_made.once
+          expect(a_request(kind_of_request, "https://www.example.com/asdasd?jane=doe")).to have_been_made.once
         end
       end
 
       context 'when request also has headers' do
         it 'makes calls with headers specified' do
           subject.make_request kind_of_request, '/asdasd', { }, { a: '1' }
-          expect(a_request(kind_of_request, "www.example.com/asdasd").with({headers: {'A' => '1'}})).to have_been_made.once
+          expect(a_request(kind_of_request, "https://www.example.com/asdasd").with({headers: {'A' => '1'}})).to have_been_made.once
         end
       end
 
       context 'when request has body and headers' do
         it 'makes calls with body specified in the body params' do
           subject.make_request kind_of_request, '/asdasd', { jane: 'doe' }, { a: '1' }
-          expect(a_request(kind_of_request, "www.example.com/asdasd?jane=doe").with({headers: {'A' => '1'}})).to have_been_made.once
+          expect(a_request(kind_of_request, "https://www.example.com/asdasd?jane=doe").with({headers: {'A' => '1'}})).to have_been_made.once
         end
       end
 
@@ -42,11 +46,13 @@ RSpec.describe Airborne::FaradayRequester do
         before { stub_request(:any, /www.example.de/) }
 
         it 'makes calls with body specified in the body params' do
+
           subject.make_request kind_of_request, '/asdasd', { jane: 'doe' } do |k, c|
             c.url_prefix = 'http://www.example.de'
+            c.basic_auth 'asdsa', 'asdsa'
             k.headers.merge!({ a: '1' })
           end
-          expect(a_request(kind_of_request, "www.example.de/asdasd?jane=doe").with({headers: {'A' => '1'}})).to have_been_made.once
+          expect(a_request(kind_of_request, "www.example.de/asdasd?jane=doe").with({headers: {'A' => '1', 'Authorization' => "Basic YXNkc2E6YXNkc2E="}})).to have_been_made.once
         end
       end
     end
@@ -57,28 +63,28 @@ RSpec.describe Airborne::FaradayRequester do
       context 'when have only path' do
         it "makes a simple #{kind_of_request} call" do
           subject.make_request kind_of_request, '/asdasd'
-          expect(a_request(kind_of_request, "www.example.com/asdasd").with(body: {})).to have_been_made.once
+          expect(a_request(kind_of_request, "https://www.example.com/asdasd").with(body: {})).to have_been_made.once
         end
       end
 
       context 'when request has body' do
         it 'makes calls with body specified in the body params' do
           subject.make_request kind_of_request, '/asdasd', { jane: 'doe' }
-          expect(a_request(kind_of_request, "www.example.com/asdasd").with(body: 'jane=doe')).to have_been_made.once
+          expect(a_request(kind_of_request, "https://www.example.com/asdasd").with(body: 'jane=doe')).to have_been_made.once
         end
       end
 
       context 'when request also has headers' do
         it 'makes calls with headers specified' do
           subject.make_request kind_of_request, '/asdasd', { }, { a: '1' }
-          expect(a_request(kind_of_request, "www.example.com/asdasd").with({headers: {'A' => '1'}})).to have_been_made.once
+          expect(a_request(kind_of_request, "https://www.example.com/asdasd").with({headers: {'A' => '1'}})).to have_been_made.once
         end
       end
 
       context 'when request has body and headers' do
         it 'makes calls with body specified in the body params' do
           subject.make_request kind_of_request, '/asdasd', { jane: 'doe' }, { a: '1' }
-          expect(a_request(kind_of_request, "www.example.com/asdasd").with({headers: {'A' => '1'}, body: 'jane=doe'})).to have_been_made.once
+          expect(a_request(kind_of_request, "https://www.example.com/asdasd").with({headers: {'A' => '1'}, body: 'jane=doe'})).to have_been_made.once
         end
       end
 
