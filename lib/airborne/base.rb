@@ -58,6 +58,10 @@ module Airborne
       HashWithIndifferentAccess.new(response.headers)
     end
 
+    def basic_auth(username, password)
+      "Basic " + ["#{username}:#{password}"].pack('m*')
+    end
+
     def body
       response.body
     end
