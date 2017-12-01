@@ -1,6 +1,7 @@
 require 'json'
 require 'active_support'
 require 'active_support/core_ext/hash/indifferent_access'
+require 'base64'
 
 module Airborne
   module Base
