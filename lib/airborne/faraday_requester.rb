@@ -25,3 +25,11 @@ module Airborne
       end
   end
 end
+
+module FaradayResponse
+  def code
+    status
+  end
+end
+
+Faraday::Response.send(:include, FaradayResponse)
