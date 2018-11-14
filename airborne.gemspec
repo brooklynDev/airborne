@@ -15,5 +15,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'rack-test', '~> 0.6', '>= 0.6.2'
   s.add_runtime_dependency 'rack'
   s.add_runtime_dependency 'activesupport'
+  s.add_runtime_dependency 'faraday', '~> 0.13'
   s.add_development_dependency 'webmock', '~> 0'
+  s.add_development_dependency 'pry'
 end
