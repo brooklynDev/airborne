@@ -7,7 +7,7 @@ module Airborne
       res = if method == :post || method == :patch || method == :put
         begin
           request_body = options[:body].nil? ? '' : options[:body]
-          request_body = request_body.to_json if options[:body].is_a?(Hash)
+          request_body = request_body.to_json if is_json_request(headers)
           RestClient.send(method, get_url(url), request_body, headers)
         rescue RestClient::Exception => e
           e.response
@@ -23,6 +23,11 @@ module Airborne
     end
 
     private
+
+    def is_json_request(headers)
+      header = headers.fetch(:content_type)
+      header == :json || /application\/([a-zA-Z0-9\.\_\-]*\+?)json/ =~ header
+    end
 
     def base_headers
       { content_type: :json }.merge(Airborne.configuration.headers || {})

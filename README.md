@@ -137,10 +137,17 @@ When calling any of the methods above, you can pass request headers to be used.
 get 'http://example.com/api/v1/my_api', { 'x-auth-token' => 'my_token' }
 ```
 
-For requests that require a body (`post`, `put`, `patch`) you can pass the body as a hash as well:
+For requests that require a body (`post`, `put`, `patch`) you can pass the body as well:
 
 ```ruby
 post 'http://example.com/api/v1/my_api', { :name => 'John Doe' }, { 'x-auth-token' => 'my_token' }
+```
+
+The body may be any JSON-serializable type, as long as you want to post `application/json` content type.
+You may set a different content type and post a string body this way:
+
+```ruby
+post 'http://example.com/api/v1/my_api', "Hello there!", { content_type: 'text/plain' }
 ```
 
 For requests that require Query params you can pass a params hash into headers.
