@@ -6,7 +6,6 @@ require 'airborne/rack_test_requester'
 require 'airborne/base'
 
 RSpec.configure do |config|
-  config.include Airborne
   config.add_setting :base_url
   config.add_setting :match_expected
   config.add_setting :match_actual
@@ -22,4 +21,7 @@ RSpec.configure do |config|
     config.match_actual = example.metadata[:match_actual].nil? ?
       Airborne.configuration.match_actual_default? : example.metadata[:match_actual]
   end
+
+  # Include last since it depends on the configuration already being added
+  config.include Airborne
 end
