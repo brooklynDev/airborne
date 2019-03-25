@@ -15,5 +15,5 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'rack-test', '< 2.0', '>= 1.1.0'
   s.add_runtime_dependency 'rack'
   s.add_runtime_dependency 'activesupport'
-  s.add_development_dependency 'webmock', '~> 0'
+  s.add_development_dependency 'webmock', '~> 3'
 end
