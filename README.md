@@ -205,6 +205,8 @@ describe 'test something' do
 end
 ```
 
+This feature currently isn't supported when testing loaded Rack applications (see "Testing Rack Applications" below). If you need to set `verify_ssl: false`, then we recommend starting your Rack app server and sending the `airborne` HTTP requests as you would when testing any other service.
+
 ## Testing Rack Applications
 
 If you have an existing Rack application like `sinatra` or `grape` you can run Airborne against your application and test without actually having a server running. To do that, just specify your rack application in your Airborne configuration:
