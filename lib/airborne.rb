@@ -15,11 +15,14 @@ RSpec.configure do |config|
   config.add_setting :rack_app
   config.add_setting :requester_type
   config.add_setting :requester_module
+  config.add_setting :verify_ssl, default: true
   config.before do |example|
     config.match_expected = example.metadata[:match_expected].nil? ?
       Airborne.configuration.match_expected_default? : example.metadata[:match_expected]
     config.match_actual = example.metadata[:match_actual].nil? ?
       Airborne.configuration.match_actual_default? : example.metadata[:match_actual]
+    config.verify_ssl = example.metadata[:verify_ssl].nil? ?
+      Airborne.configuration.verify_ssl? : example.metadata[:verify_ssl]
   end
 
   # Include last since it depends on the configuration already being added

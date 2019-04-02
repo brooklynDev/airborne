@@ -4,6 +4,7 @@ module Airborne
   module RestClientRequester
     def make_request(method, url, options = {})
       headers = base_headers.merge(options[:headers] || {})
+      verify_ssl = options.fetch(:verify_ssl, true)
       res = if method == :post || method == :patch || method == :put
         begin
           request_body = options[:body].nil? ? '' : options[:body]
@@ -12,7 +13,8 @@ module Airborne
             method: method,
             url: get_url(url),
             payload: request_body,
-            headers: headers
+            headers: headers,
+            verify_ssl: verify_ssl
           ) { |response, request, result| response }
         rescue RestClient::Exception => e
           e.response
@@ -22,7 +24,8 @@ module Airborne
           RestClient::Request.execute(
             method: method,
             url: get_url(url),
-            headers: headers
+            headers: headers,
+            verify_ssl: verify_ssl
           ) { |response, request, result| response }
         rescue RestClient::Exception => e
           e.response
