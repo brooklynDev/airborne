@@ -158,7 +158,11 @@ post 'http://example.com/api/v1/my_api', { }, { 'params' => {'param_key' => 'par
 
 ### (Not) Verifying SSL Certificates
 
-SSL certificate verification is enabled by default (specifically, `OpenSSL::SSL::VERIFY_PEER`). You can override this behavior per request:
+SSL certificate verification is enabled by default (specifically, `OpenSSL::SSL::VERIFY_PEER`).
+
+Carefully consider how you use this. It's not a solution for getting around a failed SSL cert verification; rather, it's intended for testing systems that don't have a legitimate SSL cert, such as a development or test environment.
+
+You can override this behavior per request:
 
 ```ruby
 verify_ssl = false
