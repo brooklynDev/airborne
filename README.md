@@ -1,4 +1,4 @@
-# Airborne 
+# Airborne
 
 [![airborne travis](http://img.shields.io/travis/brooklynDev/airborne.svg?branch=master&style=flat-square)](https://travis-ci.org/brooklynDev/airborne)
 [![airborne coveralls](http://img.shields.io/coveralls/brooklynDev/airborne/master.svg?style=flat-square)](https://coveralls.io/r/brooklynDev/airborne?branch=master)
@@ -156,6 +156,57 @@ For requests that require Query params you can pass a params hash into headers.
 post 'http://example.com/api/v1/my_api', { }, { 'params' => {'param_key' => 'param_value' } }
 ```
 
+### (Not) Verifying SSL Certificates
+
+SSL certificate verification is enabled by default (specifically, `OpenSSL::SSL::VERIFY_PEER`).
+
+Carefully consider how you use this. It's not a solution for getting around a failed SSL cert verification; rather, it's intended for testing systems that don't have a legitimate SSL cert, such as a development or test environment.
+
+You can override this behavior per request:
+
+```ruby
+verify_ssl = false
+post 'http://example.com/api/v1/my_api', "Hello there!", { content_type: 'text/plain' }, verify_ssl
+```
+
+or with a global Airborne configuration:
+
+```ruby
+Airborne.configure do |config|
+  config.verify_ssl = false # equivalent to OpenSSL::SSL::VERIFY_NONE
+end
+```
+
+Note the per-request option always overrides the Airborne configuration:
+
+```ruby
+before do
+  Airborne.configuration.verify_ssl = false
+end
+
+it 'will still verify the SSL certificate' do
+  verify_ssl = true
+  post 'http://example.com/api/v1/my_api', "Hello there!", { content_type: 'text/plain' }, verify_ssl
+end
+```
+
+You can use the `verify_ssl` setting to override your global defaults in test blocks like this:
+
+```ruby
+describe 'test something', verify_ssl: false do
+end
+```
+
+OR
+
+```ruby
+describe 'test something' do
+  Airborne.configuration.verify_ssl = false
+end
+```
+
+This feature currently isn't supported when testing loaded Rack applications (see "Testing Rack Applications" below). If you need to set `verify_ssl: false`, then we recommend starting your Rack app server and sending the `airborne` HTTP requests as you would when testing any other service.
+
 ## Testing Rack Applications
 
 If you have an existing Rack application like `sinatra` or `grape` you can run Airborne against your application and test without actually having a server running. To do that, just specify your rack application in your Airborne configuration:
@@ -238,7 +289,7 @@ it 'should allow nested paths' do
 end
 ```
 
-Alternativley, if we only want to test `coordinates` we can dot into just the `coordinates`:
+Alternatively, if we only want to test `coordinates` we can dot into just the `coordinates`:
 
 ```ruby
 it 'should allow nested paths' do

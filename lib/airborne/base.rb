@@ -29,24 +29,24 @@ module Airborne
     RSpec.configuration
   end
 
-  def get(url, headers = nil)
-    @response = make_request(:get, url, headers: headers)
+  def get(url, headers = nil, verify_ssl = base_verify_ssl)
+    @response = make_request(:get, url, headers: headers, verify_ssl: verify_ssl)
   end
 
-  def post(url, post_body = nil, headers = nil)
-    @response = make_request(:post, url, body: post_body, headers: headers)
+  def post(url, post_body = nil, headers = nil, verify_ssl = base_verify_ssl)
+    @response = make_request(:post, url, body: post_body, headers: headers, verify_ssl: verify_ssl)
   end
 
-  def patch(url, patch_body = nil, headers = nil)
-    @response = make_request(:patch, url, body: patch_body, headers: headers)
+  def patch(url, patch_body = nil, headers = nil, verify_ssl = base_verify_ssl)
+    @response = make_request(:patch, url, body: patch_body, headers: headers, verify_ssl: verify_ssl)
   end
 
-  def put(url, put_body = nil, headers = nil)
-    @response = make_request(:put, url, body: put_body, headers: headers)
+  def put(url, put_body = nil, headers = nil, verify_ssl = base_verify_ssl)
+    @response = make_request(:put, url, body: put_body, headers: headers, verify_ssl: verify_ssl)
   end
 
-  def delete(url, delete_body = nil, headers = nil)
-    @response = make_request(:delete, url, body: delete_body, headers: headers)
+  def delete(url, delete_body = nil, headers = nil, verify_ssl = base_verify_ssl)
+    @response = make_request(:delete, url, body: delete_body, headers: headers, verify_ssl: verify_ssl)
   end
 
   def head(url, headers = nil)
@@ -78,5 +78,9 @@ module Airborne
   def get_url(url)
     base = Airborne.configuration.base_url || ''
     base + url
+  end
+
+  def base_verify_ssl
+    Airborne.configuration.verify_ssl || false
   end
 end
