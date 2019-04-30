@@ -5,7 +5,7 @@ module Airborne
     def make_request(method, url, options = {})
       headers = base_headers.merge(options[:headers] || {})
       verify_ssl = options.fetch(:verify_ssl, true)
-      res = if method == :post || method == :patch || method == :put
+      res = if method == :post || method == :patch || method == :put || method == :delete
         begin
           request_body = options[:body].nil? ? '' : options[:body]
           request_body = request_body.to_json if is_json_request(headers)

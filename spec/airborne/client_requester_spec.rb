@@ -83,6 +83,19 @@ describe 'client requester' do
     )
   end
 
+  it 'should send payload with delete request' do
+    payload = { example: 'this is the payload' }
+    delete '/foo', payload
+
+    expect(RestClient::Request).to have_received(:execute).with(
+      method: :delete,
+      url: 'http://www.example.com/foo',
+      payload: payload.to_json,
+      headers: { content_type: :json },
+      verify_ssl: true
+    )
+  end
+
   context 'verify_ssl' do
     it 'should be true by default' do
       get '/foo'
