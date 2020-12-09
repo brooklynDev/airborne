@@ -7,8 +7,8 @@ module Airborne
       verify_ssl = options.fetch(:verify_ssl, true)
       res = if method == :post || method == :patch || method == :put || method == :delete
         begin
-          request_body = options[:body].nil? || options[:body].empty? ? '' : options[:body]
-          request_body = request_body.to_json if is_json_request(headers) && !request_body.empty?
+          request_body = options[:body].nil? || is_empty(options[:body]) ? '' : options[:body]
+          request_body = request_body.to_json if is_json_request(headers) && !is_empty(request_body)
           RestClient::Request.execute(
             method: method,
             url: get_url(url),
@@ -39,6 +39,12 @@ module Airborne
     def is_json_request(headers)
       header = headers.fetch(:content_type)
       header == :json || /application\/([a-zA-Z0-9\.\_\-]*\+?)json/ =~ header
+    end
+
+    def is_empty(body)
+      return body.empty? if body.respond_to?(:empty?)
+
+      false
     end
 
     def base_headers
