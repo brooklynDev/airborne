@@ -17,7 +17,7 @@ module Airborne
             verify_ssl: verify_ssl
           ) { |response, request, result| response }
         rescue RestClient::Exception => e
-          e.response
+          e.response ? e.response : e.original_exception
         end
       else
         begin
@@ -28,7 +28,7 @@ module Airborne
             verify_ssl: verify_ssl
           ) { |response, request, result| response }
         rescue RestClient::Exception => e
-          e.response
+          e.response ? e.response : e.original_exception
         end
       end
       res
