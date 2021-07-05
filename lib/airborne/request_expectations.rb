@@ -44,6 +44,10 @@ module Airborne
       expect_header_impl(key, content, true)
     end
 
+    def expect_header_matches(key, content)
+      expect_header_impl(key, content, false, true)
+    end
+
     def optional(hash)
       OptionalHashTypeExpectations.new(hash)
     end
@@ -58,11 +62,13 @@ module Airborne
 
     private
 
-    def expect_header_impl(key, content, contains = nil)
+    def expect_header_impl(key, content, contains = nil, matches = nil)
       header = headers[key]
       if header
         if contains
           expect(header.downcase).to include(content.downcase)
+        elsif matches
+          expect(header.downcase).to match(content)
         else
           expect(header.downcase).to eq(content.downcase)
         end
