@@ -54,7 +54,7 @@ module Airborne
         part = part.to_i
         json = json[part]
       else
-        json = json[part.to_sym]
+        json = json[part.to_s]
       end
       json
     end
