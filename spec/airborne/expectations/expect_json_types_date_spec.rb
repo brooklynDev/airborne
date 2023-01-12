@@ -1,14 +1,16 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'date'
 
 describe 'expect_json_types with date' do
-  it 'should verify correct date types' do
+  it 'verifies correct date types' do
     mock_get('date_response')
     get '/date_response'
     expect_json_types(createdAt: :date)
   end
 
-  it 'should verify correct date types with path' do
+  it 'verifies correct date types with path' do
     mock_get('date_response')
     get '/date_response'
     expect_json_types('createdAt', :date)
@@ -16,7 +18,7 @@ describe 'expect_json_types with date' do
 end
 
 describe 'expect_json with date' do
-  it 'should verify correct date value' do
+  it 'verifies correct date value' do
     mock_get('date_response')
     get '/date_response'
     prev_day = DateTime.new(2014, 10, 19)
@@ -26,25 +28,25 @@ describe 'expect_json with date' do
 end
 
 describe 'expect_json_types with date_or_null' do
-  it 'should verify date_or_null when date is null' do
+  it 'verifies date_or_null when date is null' do
     mock_get('date_is_null_response')
     get '/date_is_null_response'
     expect_json_types(dateDeleted: :date_or_null)
   end
 
-  it 'should verify date_or_null when date is null with path' do
+  it 'verifies date_or_null when date is null with path' do
     mock_get('date_is_null_response')
     get '/date_is_null_response'
     expect_json_types('dateDeleted', :date_or_null)
   end
 
-  it 'should verify date_or_null with date' do
+  it 'verifies date_or_null with date' do
     mock_get('date_response')
     get '/date_response'
     expect_json_types(createdAt: :date_or_null)
   end
 
-  it 'should verify date_or_null with date with path' do
+  it 'verifies date_or_null with date with path' do
     mock_get('date_response')
     get '/date_response'
     expect_json_types('createdAt', :date_or_null)

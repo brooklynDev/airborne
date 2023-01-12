@@ -1,15 +1,17 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'expect_json_types optional' do
-  it 'should test optional nested hash when exists' do
+  it 'tests optional nested hash when exists' do
     mock_get('simple_nested_path')
     get '/simple_nested_path'
-    expect_json_types('address.coordinates', optional(lattitude: :float, longitutde: :float))
+    expect_json_types('address.coordinates', optional(latitude: :float, longitude: :float))
   end
 
-  it 'should allow optional nested hash' do
+  it 'allows optional nested hash' do
     mock_get('simple_path_get')
     get '/simple_path_get'
-    expect_json_types('address.coordinates', optional(lattitude: :float, longitutde: :float))
+    expect_json_types('address.coordinates', optional(latitude: :float, longitude: :float))
   end
 end

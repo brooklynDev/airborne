@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 require 'rspec'
 require 'date'
 require 'rack/utils'
 
 module Airborne
   class ExpectationError < StandardError; end
+
   module RequestExpectations
     include RSpec
     include PathMatcher
@@ -60,14 +63,12 @@ module Airborne
 
     def expect_header_impl(key, content, contains = nil)
       header = headers[key]
-      if header
-        if contains
-          expect(header.downcase).to include(content.downcase)
-        else
-          expect(header.downcase).to eq(content.downcase)
-        end
+      raise RSpec::Expectations::ExpectationNotMetError, "Header #{key} not present in the HTTP response" unless header
+
+      if contains
+        expect(header.downcase).to include(content.downcase)
       else
-        fail RSpec::Expectations::ExpectationNotMetError, "Header #{key} not present in the HTTP response"
+        expect(header.downcase).to eq(content.downcase)
       end
     end
 
@@ -85,8 +86,8 @@ module Airborne
       keys = expected.keys & actual.keys if match_none?
 
       keys.flatten.uniq.each do |prop|
-        expected_value  = extract_expected_value(expected, prop)
-        actual_value    = extract_actual(actual, prop)
+        expected_value = extract_expected_value(expected, prop)
+        actual_value = extract_actual(actual, prop)
 
         next expect_json_impl(expected_value, actual_value) if hash?(expected_value) && hash?(actual_value)
         next expected_value.call(actual_value) if expected_value.is_a?(Proc)
@@ -99,9 +100,9 @@ module Airborne
     def expect_json_types_impl(expected, actual)
       return if nil_optional_hash?(expected, actual)
 
-      @mapper ||= get_mapper
+      @mapper ||= mapper
 
-      actual = convert_to_date(actual) if ((expected == :date) || (expected == :date_or_null))
+      actual = convert_to_date(actual) if (expected == :date) || (expected == :date_or_null)
 
       return expect_type(expected, actual) if expected.is_a?(Symbol)
       return expected.call(actual) if expected.is_a?(Proc)
@@ -113,9 +114,9 @@ module Airborne
       keys = expected.keys & actual.keys if match_none?
 
       keys.flatten.uniq.each do |prop|
-        type  = extract_expected_type(expected, prop)
+        type = extract_expected_type(expected, prop)
         value = extract_actual(actual, prop)
-        value = convert_to_date(value) if ((type == :date) || (type == :date_or_null))
+        value = convert_to_date(value) if (type == :date) || (type == :date_or_null)
 
         next expect_json_types_impl(type, value) if hash?(type)
         next type.call(value) if type.is_a?(Proc)
@@ -141,45 +142,39 @@ module Airborne
     end
 
     def extract_expected_value(expected, prop)
-      begin
-        raise unless expected.keys.include?(prop)
-        expected[prop]
-      rescue
-        raise ExpectationError, "Expectation is expected to contain property: #{prop}"
-      end
+      raise unless expected.key?(prop)
+
+      expected[prop]
+    rescue StandardError
+      raise ExpectationError, "Expectation is expected to contain property: #{prop}"
     end
 
     def extract_expected_type(expected, prop)
-      begin
-        type = expected[prop]
-        type.nil? ? raise : type
-      rescue
-        raise ExpectationError, "Expectation is expected to contain property: #{prop}"
-      end
+      type = expected[prop]
+      type.nil? ? raise : type
+    rescue StandardError
+      raise ExpectationError, "Expectation is expected to contain property: #{prop}"
     end
 
     def extract_actual(actual, prop)
-      begin
-        value = actual[prop]
-      rescue
-        raise ExpectationError, "Expected #{actual.class} #{actual}\nto be an object with property #{prop}"
-      end
+      actual[prop]
+    rescue StandardError
+      raise ExpectationError, "Expected #{actual.class} #{actual}\nto be an object with property #{prop}"
     end
 
     def expect_type(expected_type, value, prop_name = nil)
-      fail ExpectationError, "Expected type #{expected_type}\nis an invalid type" if @mapper[expected_type].nil?
+      raise ExpectationError, "Expected type #{expected_type}\nis an invalid type" if @mapper[expected_type].nil?
 
       insert = prop_name.nil? ? '' : "#{prop_name} to be of type"
       message = "Expected #{insert} #{expected_type}\n got #{value.class} instead"
 
-      expect(@mapper[expected_type].any?{|type| value.is_a?(type)}).to eq(true), message
+      expect(@mapper[expected_type].any? { |type| value.is_a?(type) }).to eq(true), message
     end
 
     def convert_to_date(value)
-      begin
-        DateTime.parse(value)
-      rescue
-      end
+      DateTime.parse(value)
+    rescue StandardError
+      nil
     end
 
     def check_array_types(value, prop_name, expected_type)
@@ -198,13 +193,12 @@ module Airborne
     end
 
     def expect_array(value, prop_name, expected_type)
-      expect(value.class).to eq(Array), "Expected #{prop_name}\n to be of type #{expected_type}\n got #{value.class} instead"
+      expect(value.class).to eq(Array),
+                             "Expected #{prop_name}\n to be of type #{expected_type}\n got #{value.class} instead"
     end
 
     def convert_expectations_for_json_sizes(old_expectations)
-      unless old_expectations.is_a?(Hash)
-        return convert_expectation_for_json_sizes(old_expectations)
-      end
+      return convert_expectation_for_json_sizes(old_expectations) unless old_expectations.is_a?(Hash)
 
       old_expectations.each_with_object({}) do |(prop_name, expected_size), memo|
         new_value = if expected_size.is_a?(Hash)
@@ -221,18 +215,16 @@ module Airborne
     end
 
     def ensure_hash_contains_prop(prop_name, hash)
-      begin
-        yield
-      rescue
-        raise ExpectationError, "Expected #{hash.class} #{hash}\nto be an object with property #{prop_name}"
-      end
+      yield
+    rescue StandardError
+      raise ExpectationError, "Expected #{hash.class} #{hash}\nto be an object with property #{prop_name}"
     end
 
     def property?(expectation)
-      [String, Regexp, Float, Integer, TrueClass, FalseClass, NilClass, Array].any?{|type| expectation.is_a?(type)}
+      [String, Regexp, Float, Integer, TrueClass, FalseClass, NilClass, Array].any? { |type| expectation.is_a?(type) }
     end
 
-    def get_mapper
+    def mapper
       base_mapper = {
         integer: [Integer],
         array_of_integers: [Integer],
@@ -256,7 +248,7 @@ module Airborne
 
       mapper = base_mapper.clone
       base_mapper.each do |key, value|
-        mapper[(key.to_s + '_or_null').to_sym] = value + [NilClass]
+        mapper["#{key}_or_null".to_sym] = value + [NilClass]
       end
       mapper
     end

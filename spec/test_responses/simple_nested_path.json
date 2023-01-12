@@ -5,8 +5,8 @@
 		"city": "Roswell",
 		"state": "NM",
 		"coordinates":{
-			"lattitude": 33.3872,
-			"longitutde": 104.5281 
+			"latitude": 33.3872,
+			"longitude": 104.5281
 		}
 	}
 }
