@@ -1,29 +1,44 @@
+# frozen_string_literal: true
+
 module Airborne
   class PathError < StandardError; end
 
   module PathMatcher
-    def get_by_path(path, json, &block)
-      fail PathError, "Invalid Path, contains '..'" if /\.\./ =~ path
+    WILDCARDS = ['*', '?'].freeze
+
+    def get_by_path(path, json, &block) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength
+      raise PathError, "Invalid Path, contains '..'" if /\.\./.match?(path)
+
       type = false
       parts = path.split('.')
+      exit_now = false
       parts.each_with_index do |part, index|
-        if part == '*' || part == '?'
+        if WILDCARDS.include?(part)
           ensure_array(path, json)
           type = part
+
           if index < parts.length.pred
-            walk_with_path(type, index, path, parts, json, &block) && return
+            walk_with_path(type, index, path, parts, json, &block)
+            exit_now = true
+            break
           end
+
           next
         end
+
         begin
           json = process_json(part, json)
-        rescue
+        rescue StandardError
           raise PathError, "Expected #{json.class}\nto be an object with property #{part}"
         end
       end
-      if type == '*'
+
+      return if exit_now
+
+      case type
+      when '*'
         expect_all(json, &block)
-      elsif type == '?'
+      when '?'
         expect_one(path, json, &block)
       else
         yield json
@@ -32,15 +47,15 @@ module Airborne
 
     private
 
-    def walk_with_path(type, index, path, parts, json, &block)
-      last_error  = nil
+    def walk_with_path(type, index, path, parts, json, &block) # rubocop:disable Metrics/MethodLength
+      last_error = nil
       item_count = json.length
       error_count = 0
       json.each do |element|
         begin
           sub_path = parts[(index.next)...(parts.length)].join('.')
           get_by_path(sub_path, element, &block)
-        rescue Exception => e
+        rescue Exception => e # rubocop:disable Lint/RescueException
           last_error = e
           error_count += 1
         end
@@ -63,39 +78,43 @@ module Airborne
       part =~ /^\d+$/
     end
 
-    def expect_one(path, json, &block)
+    def expect_one(path, json)
       item_count = json.length
       error_count = 0
       json.each do |part|
-        begin
-          yield part
-        rescue Exception
-          error_count += 1
-          ensure_match_one(path, item_count, error_count)
-        end
+        yield part
+      rescue Exception # rubocop:disable Lint/RescueException
+        error_count += 1
+        ensure_match_one(path, item_count, error_count)
       end
     end
 
     def expect_all(json, &block)
       last_error = nil
       begin
-        json.each { |part| yield part }
-      rescue Exception => e
+        json.each(&block)
+      rescue Exception => e # rubocop:disable Lint/RescueException
         last_error = e
       end
       ensure_match_all(last_error)
     end
 
     def ensure_match_one(path, item_count, error_count)
-      fail RSpec::Expectations::ExpectationNotMetError, "Expected one object in path #{path} to match provided JSON values" if item_count == error_count
+      return unless item_count == error_count
+
+      raise RSpec::Expectations::ExpectationNotMetError,
+            "Expected one object in path #{path} to match provided JSON values"
     end
 
     def ensure_match_all(error)
-      fail error unless error.nil?
+      raise error unless error.nil?
     end
 
     def ensure_array(path, json)
-      fail RSpec::Expectations::ExpectationNotMetError, "Expected #{path} to be array got #{json.class} from JSON response" unless json.class == Array
+      return if json.is_a?(Array)
+
+      raise RSpec::Expectations::ExpectationNotMetError,
+            "Expected #{path} to be array got #{json.class} from JSON response"
     end
   end
 end

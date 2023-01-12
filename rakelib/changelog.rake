@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'github_changelog_generator/task'
 
 if ENV['CHANGELOG_GITHUB_TOKEN'].nil?
@@ -11,4 +13,3 @@ GitHubChangelogGenerator::RakeTask.new :changelog do |config|
   # change this to your github username if you plan to submit a PR with a new CHANGELOG.md
   config.user = 'brooklynDev'
 end
-

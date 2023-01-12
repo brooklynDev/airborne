@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'active_support'
 require 'active_support/core_ext/hash/indifferent_access'
@@ -7,12 +9,10 @@ module Airborne
 
   include RequestExpectations
 
-  attr_reader :response, :headers, :body
+  attr_reader :response
 
-  def self.configure
-    RSpec.configure do |config|
-      yield config
-    end
+  def self.configure(&block)
+    RSpec.configure(&block)
   end
 
   def self.included(base)
@@ -57,10 +57,6 @@ module Airborne
     @response = make_request(:options, url, headers: headers)
   end
 
-  def response
-    @response
-  end
-
   def headers
     HashWithIndifferentAccess.new(response.headers)
   end
@@ -70,7 +66,9 @@ module Airborne
   end
 
   def json_body
-    JSON.parse(response.body, symbolize_names: true) rescue fail InvalidJsonError, 'Api request returned invalid json'
+    JSON.parse(response.body, symbolize_names: true)
+  rescue StandardError
+    raise InvalidJsonError, 'Api request returned invalid json'
   end
 
   private

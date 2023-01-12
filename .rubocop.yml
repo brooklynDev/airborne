@@ -1,0 +1,49 @@
+require:
+  - rubocop-performance
+  - rubocop-rake
+  - rubocop-rspec
+
+AllCops:
+  TargetRubyVersion: 2.7
+  NewCops: enable
+
+### Metrics ###
+
+Metrics:
+  Exclude:
+    - lib/airborne/request_expectations.rb
+
+Metrics/MethodLength:
+  CountAsOne:
+    - hash
+
+### Style ###
+
+Style/Documentation:
+  Enabled: false
+
+Style/SymbolArray:
+  EnforcedStyle: brackets
+
+### RSpec ###
+
+RSpec/ContextWording:
+  Enabled: false
+
+RSpec/DescribeClass:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/MultipleDescribes:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/NotToNot:
+  EnforcedStyle: to_not
+
+RSpec/RepeatedDescription:
+  Enabled: false

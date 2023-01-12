@@ -1,15 +1,16 @@
+# frozen_string_literal: true
+
 module Airborne
   class OptionalHashTypeExpectations
     include Enumerable
     attr_accessor :hash
+
     def initialize(hash)
       @hash = hash
     end
 
-    def each
-      @hash.each do|k, v|
-        yield(k, v)
-      end
+    def each(&block)
+      @hash.each(&block)
     end
 
     def [](val)
