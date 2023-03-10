@@ -18,7 +18,7 @@ module Airborne
   def self.included(base)
     if !Airborne.configuration.requester_module.nil?
       base.send(:include, Airborne.configuration.requester_module)
-    elsif !Airborne.configuration.rack_app.nil?
+    elsif !Airborne.configuration.rack_app.nil? || !Airborne.configuration.rack_browser.nil?
       base.send(:include, RackTestRequester)
     else
       base.send(:include, RestClientRequester)
