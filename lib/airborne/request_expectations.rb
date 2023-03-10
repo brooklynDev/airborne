@@ -22,7 +22,10 @@ module Airborne
 
     def expect_json_keys(*args)
       call_with_path(args) do |param, body|
-        expect(body.keys).to include(*param)
+        expected = param
+        expected.map!(&:to_s) if expected.kind_of?(Array)
+
+        expect(body.keys).to include( *expected )
       end
     end
 
@@ -143,7 +146,12 @@ module Airborne
     def extract_expected_value(expected, prop)
       begin
         raise unless expected.keys.include?(prop)
-        expected[prop]
+
+        if expected[prop].kind_of?(Array)
+          expected[prop].map{|x| x.stringify_keys}
+        else
+          expected[prop]
+        end
       rescue
         raise ExpectationError, "Expectation is expected to contain property: #{prop}"
       end
@@ -160,7 +168,7 @@ module Airborne
 
     def extract_actual(actual, prop)
       begin
-        value = actual[prop]
+        value = actual[prop.to_s]
       rescue
         raise ExpectationError, "Expected #{actual.class} #{actual}\nto be an object with property #{prop}"
       end
