@@ -1,11 +1,10 @@
 # Airborne
 
-[![airborne travis](http://img.shields.io/travis/brooklynDev/airborne.svg?branch=master&style=flat-square)](https://travis-ci.org/brooklynDev/airborne)
-[![airborne coveralls](http://img.shields.io/coveralls/brooklynDev/airborne/master.svg?style=flat-square)](https://coveralls.io/r/brooklynDev/airborne?branch=master)
-[![Code Climate](https://api.codeclimate.com/v1/badges/00644ffcf94d5813aa80/maintainability)](https://codeclimate.com/github/brooklynDev/airborne/maintainability)
-[![airborne gem version](http://img.shields.io/gem/v/airborne.svg?style=flat-square)](http://rubygems.org/gems/airborne)
-[![airbore gem downloads](http://img.shields.io/gem/dt/airborne.svg?style=flat-square)](http://rubygems.org/gems/airborne)
-[![airborne gem stable downloads](http://img.shields.io/gem/dv/airborne/stable.svg?style=flat-square)](http://rubygems.org/gems/airborne)
+[![Tests](https://img.shields.io/github/actions/workflow/status/brooklynDev/airborne/tests.yml?branch=master&style=flat-square&label=tests)](https://github.com/brooklynDev/airborne/actions/workflows/tests.yml)
+[![Coverage](https://img.shields.io/coverallsCoverage/github/brooklynDev/airborne?branch=master&style=flat-square)](https://coveralls.io/github/brooklynDev/airborne?branch=master)
+[![Gem version](https://img.shields.io/gem/v/airborne?style=flat-square)](https://rubygems.org/gems/airborne)
+[![Total downloads](https://img.shields.io/gem/dt/airborne?style=flat-square)](https://rubygems.org/gems/airborne)
+[![Stable version downloads](https://img.shields.io/gem/dv/airborne/stable?style=flat-square)](https://rubygems.org/gems/airborne)
 
 RSpec driven API testing framework
 
