@@ -8,11 +8,6 @@
 
 RSpec driven API testing framework
 
-## Looking for Project Maintainers
-I am looking for project maintainers to help keep airborne up to date and bug-free while avoiding feature creep and maintaining backwards compatibility.
-
-Comment [here](https://github.com/brooklynDev/airborne/issues/134) if you would like to help out.
-
 ## Installation
 
 Install Airborne:
