@@ -1,6 +1,6 @@
 # Change Log
 
-## Unreleased
+## [v0.4.1](https://github.com/brooklynDev/airborne/tree/v0.4.1) (2026-11-24)
 
 - Preserve Rails request helpers and response accessors when Airborne is loaded after `rspec-rails`.
 - Add Rails request and controller integration tests in both load orders, including the JSON assertion reported in #167 and consecutive requests.
