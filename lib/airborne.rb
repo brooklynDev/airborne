@@ -11,12 +11,17 @@ RSpec.configure do |config|
   config.add_setting :match_actual
   config.add_setting :match_expected_default, default: true
   config.add_setting :match_actual_default, default: false
+  config.add_setting :allow_empty_arrays_default, default: true
+  config.add_setting :allow_empty_arrays, default: true
   config.add_setting :headers
   config.add_setting :rack_app
   config.add_setting :requester_type
   config.add_setting :requester_module
   config.add_setting :verify_ssl, default: true
   config.before do |example|
+    config.allow_empty_arrays = example.metadata.fetch(:allow_empty_arrays) do
+      Airborne.configuration.allow_empty_arrays_default?
+    end
     config.match_expected = example.metadata[:match_expected].nil? ?
       Airborne.configuration.match_expected_default? : example.metadata[:match_expected]
     config.match_actual = example.metadata[:match_actual].nil? ?

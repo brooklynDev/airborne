@@ -22,7 +22,7 @@ module Airborne
 
     def expect_json_keys(*args)
       call_with_path(args) do |param, body|
-        expect(body.keys).to include(*param)
+        expect(body.keys).to include(*param.map { |key| key.is_a?(String) ? key.to_sym : key })
       end
     end
 
@@ -134,12 +134,28 @@ module Airborne
     end
 
     def call_with_path(args)
+      expected = normalize_json_keys(args.last)
       if args.length == 2
         get_by_path(args[0], json_body) do |json_chunk|
-          yield(args[1], json_chunk)
+          yield(expected, json_chunk)
         end
       else
-        yield(args[0], json_body)
+        yield(expected, json_body)
+      end
+    end
+
+    def normalize_json_keys(value)
+      case value
+      when Hash
+        value.each_with_object({}) do |(key, item), normalized|
+          normalized[key.is_a?(String) ? key.to_sym : key] = normalize_json_keys(item)
+        end
+      when Array
+        value.map { |item| normalize_json_keys(item) }
+      when OptionalHashTypeExpectations
+        OptionalHashTypeExpectations.new(normalize_json_keys(value.hash))
+      else
+        value
       end
     end
 

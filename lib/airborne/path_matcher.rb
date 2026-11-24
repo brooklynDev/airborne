@@ -8,7 +8,7 @@ module Airborne
       parts = path.split('.')
       parts.each_with_index do |part, index|
         if part == '*' || part == '?'
-          ensure_array(path, json)
+          ensure_array(path, json, part)
           type = part
           if index < parts.length.pred
             walk_with_path(type, index, path, parts, json, &block) && return
@@ -94,8 +94,11 @@ module Airborne
       fail error unless error.nil?
     end
 
-    def ensure_array(path, json)
+    def ensure_array(path, json, wildcard)
       fail RSpec::Expectations::ExpectationNotMetError, "Expected #{path} to be array got #{json.class} from JSON response" unless json.class == Array
+      if json.empty? && (wildcard == '?' || !Airborne.configuration.allow_empty_arrays?)
+        fail RSpec::Expectations::ExpectationNotMetError, "Expected #{path} to match a non-empty array"
+      end
     end
   end
 end

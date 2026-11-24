@@ -1,5 +1,11 @@
 # Change Log
 
+## [v0.4.2](https://github.com/brooklynDev/airborne/tree/v0.4.2) (2026-11-24)
+
+- Normalize equivalent request header names before merging configuration and request overrides. HTTP-style `Content-Type` headers now select the correct JSON, form, or multipart encoding (#64, #73).
+- Accept string and symbol keys consistently in JSON value, type, key, and size assertions, including nested hashes and matching modes (#86).
+- Reject empty arrays for `?` wildcard assertions. Add the `allow_empty_arrays: false` example metadata and `allow_empty_arrays_default = false` configuration to require nonempty `*` wildcard results (#100). Existing `*` behavior is preserved by default.
+
 ## [v0.4.1](https://github.com/brooklynDev/airborne/tree/v0.4.1) (2026-11-24)
 
 - Preserve Rails request helpers and response accessors when Airborne is loaded after `rspec-rails`.

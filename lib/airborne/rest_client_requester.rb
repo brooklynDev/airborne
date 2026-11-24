@@ -3,7 +3,7 @@ require 'rest_client'
 module Airborne
   module RestClientRequester
     def make_request(method, url, options = {})
-      headers = base_headers.merge(options[:headers] || {})
+      headers = base_headers.merge(normalize_request_headers(options[:headers] || {}))
       verify_ssl = options.fetch(:verify_ssl, true)
       res = if method == :post || method == :patch || method == :put || method == :delete
         begin
@@ -38,7 +38,7 @@ module Airborne
 
     def is_json_request(headers)
       header = headers.fetch(:content_type)
-      header == :json || /application\/([a-zA-Z0-9\.\_\-]*\+?)json/ =~ header
+      header == :json || /\Aapplication\/(?:[a-z0-9._-]+\+)?json\z/i.match?(header.to_s.split(';', 2).first.to_s.strip)
     end
 
     def is_empty(body)
@@ -48,7 +48,13 @@ module Airborne
     end
 
     def base_headers
-      { content_type: :json }.merge(Airborne.configuration.headers || {})
+      { content_type: :json }.merge(normalize_request_headers(Airborne.configuration.headers || {}))
+    end
+
+    def normalize_request_headers(headers)
+      headers.each_with_object({}) do |(name, value), normalized|
+        normalized[name.to_s.downcase.tr('-', '_').to_sym] = value
+      end
     end
   end
 end

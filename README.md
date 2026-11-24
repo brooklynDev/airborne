@@ -144,6 +144,16 @@ You may set a different content type and post a string body this way:
 post 'http://example.com/api/v1/my_api', "Hello there!", { content_type: 'text/plain' }
 ```
 
+With the HTTP client, header names such as `'Content-Type'`, `'content-type'`, and
+`:content_type` are equivalent. Request headers override equivalent global headers,
+and the effective content type determines whether the body is JSON-encoded.
+For form submissions, pass a hash with the form content type:
+
+```ruby
+post '/login', { email: 'user', password: 'pass' },
+     'Content-Type' => 'application/x-www-form-urlencoded'
+```
+
 For requests that require Query params you can pass a params hash into headers.
 
 ```ruby
@@ -278,6 +288,14 @@ end
 
 ## API
 
+JSON assertions accept string and symbol keys, including nested expectations:
+
+```ruby
+expect_json('@id' => '1234', 'nested' => { 'dc:title' => 'Unicorns' })
+expect_json_types('@id' => :string)
+expect_json_keys(['@id', :nested])
+```
+
 * `expect_json_types` - Tests the types of the JSON property values returned
 * `expect_json` - Tests the values of the JSON property values returned
 * `expect_json_keys` - Tests the existence of the specified keys in the JSON object
@@ -374,6 +392,28 @@ it 'should test all elements of the array' do
   expect_json_types('cars.*', make: :string, model: :string) # tests all cars in array for make and model of type string
 end
 ```
+
+`?` requires at least one matching element and fails on an empty array. By default,
+`*` checks every existing element and allows an empty array. To require nonempty
+arrays at every wildcard in a spec, use `allow_empty_arrays: false`:
+
+```ruby
+it 'returns users', allow_empty_arrays: false do
+  get '/users'
+  expect_json_types('*', name: :string) # fails if the response is []
+end
+```
+
+To make that the default for all specs:
+
+```ruby
+Airborne.configure do |config|
+  config.allow_empty_arrays_default = false
+end
+```
+
+Individual specs can override the default with `allow_empty_arrays: true`.
+Explicit assertions such as `expect_json_sizes(items: 0)` still accept empty arrays.
 
 `*` and `?` work for nested arrays as well. Given the following JSON:
 
