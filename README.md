@@ -2,7 +2,7 @@
 
 [![Tests](https://img.shields.io/github/actions/workflow/status/brooklynDev/airborne/tests.yml?branch=master&style=flat-square&label=tests)](https://github.com/brooklynDev/airborne/actions/workflows/tests.yml)
 [![Coverage](https://img.shields.io/coverallsCoverage/github/brooklynDev/airborne?branch=master&style=flat-square)](https://coveralls.io/github/brooklynDev/airborne?branch=master)
-[![Gem version](https://img.shields.io/gem/v/airborne?style=flat-square&cacheSeconds=300)](https://rubygems.org/gems/airborne)
+[![Gem version](https://img.shields.io/gem/v/airborne.svg?style=flat-square&cacheSeconds=300)](https://rubygems.org/gems/airborne)
 [![Total downloads](https://img.shields.io/gem/dt/airborne?style=flat-square)](https://rubygems.org/gems/airborne)
 [![Stable version downloads](https://img.shields.io/gem/dv/airborne/stable?style=flat-square)](https://rubygems.org/gems/airborne)
 
