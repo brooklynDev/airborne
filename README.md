@@ -240,6 +240,28 @@ RACK_VERSION='~> 3.0' SINATRA_VERSION='~> 4.0' bundle exec rake
 
 If you're testing an API you've written in Rails, Airborne plays along with `rspec-rails`:
 
+Require `airborne` in `rails_helper.rb` alongside `rspec/rails`. Rails request and
+controller specs use Rails' own request helpers and response object; Airborne adds
+JSON, status, and header assertions without requiring a separate server or `base_url`.
+
+```ruby
+require 'rails_helper'
+
+RSpec.describe 'Users API', type: :request do
+  it 'returns an error for a missing user' do
+    get '/api/users/1'
+    expect_status(:not_found)
+    expect_json('error', message: 'not found')
+  end
+end
+```
+
+If an older installation reports `undefined method '[]' for nil:NilClass`, check
+the Airborne version in `Gemfile.lock` and run `bundle update airborne`. Early
+versions such as 0.0.18 only populated `json_body` after Airborne's own requests;
+current versions parse the Rails response directly, including after consecutive requests.
+
+Controller specs are also supported:
 
 ```ruby
 require 'rails_helper'

@@ -2,13 +2,12 @@ require 'json'
 require 'active_support'
 require 'active_support/core_ext/hash/indifferent_access'
 require 'airborne/response_headers'
+require 'airborne/request_methods'
 
 module Airborne
   class InvalidJsonError < StandardError; end
 
   include RequestExpectations
-
-  attr_reader :response, :headers, :body
 
   def self.configure
     RSpec.configure do |config|
@@ -17,6 +16,12 @@ module Airborne
   end
 
   def self.included(base)
+    # Rails request and controller specs own their request helpers and response.
+    if defined?(RSpec::Rails::RequestExampleGroup)
+      return if base < RSpec::Rails::RequestExampleGroup || base < RSpec::Rails::ControllerExampleGroup
+    end
+
+    base.send(:include, RequestMethods)
     if !Airborne.configuration.requester_module.nil?
       base.send(:include, Airborne.configuration.requester_module)
     elsif !Airborne.configuration.rack_app.nil?
@@ -28,38 +33,6 @@ module Airborne
 
   def self.configuration
     RSpec.configuration
-  end
-
-  def get(url, headers = nil, verify_ssl = base_verify_ssl)
-    @response = make_request(:get, url, headers: headers, verify_ssl: verify_ssl)
-  end
-
-  def post(url, post_body = nil, headers = nil, verify_ssl = base_verify_ssl)
-    @response = make_request(:post, url, body: post_body, headers: headers, verify_ssl: verify_ssl)
-  end
-
-  def patch(url, patch_body = nil, headers = nil, verify_ssl = base_verify_ssl)
-    @response = make_request(:patch, url, body: patch_body, headers: headers, verify_ssl: verify_ssl)
-  end
-
-  def put(url, put_body = nil, headers = nil, verify_ssl = base_verify_ssl)
-    @response = make_request(:put, url, body: put_body, headers: headers, verify_ssl: verify_ssl)
-  end
-
-  def delete(url, delete_body = nil, headers = nil, verify_ssl = base_verify_ssl)
-    @response = make_request(:delete, url, body: delete_body, headers: headers, verify_ssl: verify_ssl)
-  end
-
-  def head(url, headers = nil)
-    @response = make_request(:head, url, headers: headers)
-  end
-
-  def options(url, headers = nil)
-    @response = make_request(:options, url, headers: headers)
-  end
-
-  def response
-    @response
   end
 
   def headers
