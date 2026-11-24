@@ -1,6 +1,7 @@
 require 'json'
 require 'active_support'
 require 'active_support/core_ext/hash/indifferent_access'
+require 'airborne/response_headers'
 
 module Airborne
   class InvalidJsonError < StandardError; end
@@ -62,7 +63,7 @@ module Airborne
   end
 
   def headers
-    HashWithIndifferentAccess.new(response.headers)
+    ResponseHeaders.new(response.headers.to_h)
   end
 
   def body

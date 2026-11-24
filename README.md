@@ -217,7 +217,30 @@ Airborne.configure do |config|
 end
 ```
 
-Under the covers, Airborne uses [rack-test](https://github.com/brynary/rack-test) to make the requests.
+Under the covers, Airborne uses [rack-test](https://github.com/rack/rack-test) 2.x to make the requests. Rack 2 and Rack 3 are supported.
+
+Response header names can be accessed using either HTTP spelling or underscored symbols:
+
+```ruby
+headers[:content_type]        # same as headers['Content-Type']
+expect_header(:content_type, 'application/json')
+expect_header_contains('Content-Type', 'json')
+```
+
+Rack 3 can return arrays for repeated response headers, such as `Set-Cookie`.
+Airborne preserves these arrays in `headers`. For an array-valued header,
+`expect_header` matches any complete value and `expect_header_contains` matches
+a substring of any value. Header names and assertion values are case-insensitive.
+
+To run the test suite against a specific Rack version:
+
+```shell
+RACK_VERSION='~> 2.2' SINATRA_VERSION='~> 2.2' bundle update
+RACK_VERSION='~> 2.2' SINATRA_VERSION='~> 2.2' bundle exec rake
+
+RACK_VERSION='~> 3.0' SINATRA_VERSION='~> 4.0' bundle update
+RACK_VERSION='~> 3.0' SINATRA_VERSION='~> 4.0' bundle exec rake
+```
 
 ## Rails Applications
 

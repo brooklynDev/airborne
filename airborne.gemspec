@@ -2,7 +2,7 @@ require 'date'
 
 Gem::Specification.new do |s|
   s.name        = 'airborne'
-  s.version     = '0.3.7'
+  s.version     = '0.4.0'
   s.date        = Date.today.to_s
   s.summary = 'RSpec driven API testing framework'
   s.authors     = ['Alex Friedman', 'Seth Pollack']
@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
   s.add_runtime_dependency 'rspec', '~> 3.8'
   s.add_runtime_dependency 'rest-client', '< 3.0', '>= 2.0.2'
-  s.add_runtime_dependency 'rack-test', '< 3', '>= 1.1.0'
+  s.add_runtime_dependency 'rack-test', '< 3', '>= 2.0.0'
   s.add_runtime_dependency 'rack'
   s.add_runtime_dependency 'activesupport'
   s.add_development_dependency 'webmock', '~> 3'

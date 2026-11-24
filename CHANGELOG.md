@@ -1,5 +1,20 @@
 # Change Log
 
+## [v0.4.0](https://github.com/brooklynDev/airborne/tree/v0.4.0) (2026-11-24)
+
+**Rack 3 support:**
+
+- Support Rack 3 while retaining compatibility with Rack 2.
+- Accept HTTP header names and underscored symbols in response header lookups and assertions, regardless of case.
+- Preserve array-valued Rack 3 response headers. Header assertions match an individual value in the array.
+- Add regression coverage for request methods, JSON and form bodies, query parameters, response headers, and status assertions.
+- Test Rack 2 and Rack 3 separately in CI, and isolate Sinatra test configuration.
+
+**Compatibility changes:**
+
+- Require rack-test 2.x; projects pinned to rack-test 1.x must upgrade.
+- Normalize keys returned by `headers.keys` to lowercase names with underscores (for example, `content_type`). Individual lookups also accept HTTP spelling such as `Content-Type`. The original `response.headers` is unchanged.
+
 ## [v0.3.4](https://github.com/brooklynDev/airborne/tree/v0.3.4) (2019-04-30)
 [Full Changelog](https://github.com/brooklynDev/airborne/compare/v0.3.3...v0.3.4)
 

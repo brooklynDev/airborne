@@ -26,12 +26,32 @@ describe 'base spec' do
     expect(headers).to be_kind_of(Hash)
     expect(headers[:content_type]).to eq('application/json')
     expect(headers['content_type']).to eq('application/json')
+    expect(headers['Content-Type']).to eq('application/json')
+    expect(headers['content-type']).to eq('application/json')
   end
 
   it 'when request is made body should be set' do
     mock_get('simple_get')
     get '/simple_get'
     expect(body).to_not be(nil)
+  end
+
+  it 'normalizes mixed-case Rack response headers without changing the response' do
+    original_headers = { 'Content-Type' => 'application/json', 'X-Request-ID' => 'request-42' }.freeze
+    @response = Struct.new(:headers).new(original_headers)
+
+    expect(headers[:content_type]).to eq('application/json')
+    expect(headers['X-Request-ID']).to eq('request-42')
+    expect(headers.fetch(:x_request_id)).to eq('request-42')
+    expect(headers.key?('X-REQUEST-ID')).to eq(true)
+    expect(response.headers).to eq('Content-Type' => 'application/json', 'X-Request-ID' => 'request-42')
+  end
+
+  it 'normalizes headers already wrapped in a hash with indifferent access' do
+    @response = Struct.new(:headers).new(HashWithIndifferentAccess.new('Content-Type' => 'application/json'))
+
+    expect(headers[:content_type]).to eq('application/json')
+    expect_header('CONTENT-TYPE', 'application/json')
   end
 
   it 'when request is made json body should be symbolized hash' do

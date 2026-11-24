@@ -61,7 +61,10 @@ module Airborne
     def expect_header_impl(key, content, contains = nil)
       header = headers[key]
       if header
-        if contains
+        if header.is_a?(Array)
+          expected = contains ? a_string_including(content.downcase) : content.downcase
+          expect(header.map(&:downcase)).to include(expected)
+        elsif contains
           expect(header.downcase).to include(content.downcase)
         else
           expect(header.downcase).to eq(content.downcase)
